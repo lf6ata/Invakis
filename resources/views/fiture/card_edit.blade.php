@@ -48,31 +48,74 @@
 
     //button create post event
     
-    $(document).ready(function () {
-    $('#categoriUpdate').on('click', '#btn-edit-categori', function () {
-        console.log('sukses');
-    
+   //button create post event
+   $('body').on('click', '#btn-edit-categori', function () {
+
+
+        let post_id = $(this).data('id');
+
+        //fetch detail post with ajax
+        $.ajax({
+            url: `/invakis/barang/edit_categori/${post_id}`,
+            type: "GET",
+            cache: false,
+            success:function(response){
+                
+                //fill data to form
+                $('#idcategoriUpdate').val(response.data.id_categori);
+                $('#categoriUpdate').val(response.data.categori);
+
+                //open modal
+                $('#updateCategoriModal').modal('show');
+            }
         });
     });
-        
-        //$('#updateCategoriModal').modal('show');
-        // let post_id = $(this).data('id');
 
-        // //fetch detail post with ajax
-        // $.ajax({
-        //     url: `/invakis/barang/edit_categori/${post_id}`,
-        //     type: "GET",
-        //     cache: false,
-        //     success:function(response){
+    // Mengupdate kategori saat tombol update diklik
+    $('#categoriUpdateBtn').on('click', function() {
+        let categoryId = $('#idcategoriUpdate').val();
+        let categoryName = $('#categoriUpdate').val();
 
-        //         //fill data to form
-        //         $('#idcategoriUpdate').val(response.data.id_categori);
-        //         $('#categoriUpdate').val(response.data.categori);
+        $.ajax({
+            url: `/invakis/barang/edit_categori/post/${categoryId}`,
+            type: "PUT",
+            data: {
+                "id_categori": categoryId, 
+                "categori": categoryName,
+                "_token": $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                alert(response.message);
+                $('#updateCategoryModal').modal('hide');
+                // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
+                location.reload(); // Atau update daftar kategori dengan cara lain
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON.message);
+            }
+        });
+    });
 
-        //         //open modal
-        //         $('#updateCategoriModal').modal('show');
-        //     }
-        // });
-    // });
+    $(document).on('click', '#btn-delete-categori', function() {
+    let categoryId = $(this).data('id');
+
+    if (confirm('Are you sure you want to delete this category?')) {
+        $.ajax({
+            url: `/invakis/barang/delete/${categoryId}`,
+            type: "DELETE",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                alert(response.message);
+                // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
+                location.reload(); // Atau update daftar kategori dengan cara lain
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON.message);
+            }
+        });
+    }
+});
       
 </script>

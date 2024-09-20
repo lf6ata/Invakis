@@ -17,8 +17,12 @@ Route::get('/dashboard', [DashboardController::class,'pageDashboard'])->name('pa
 Route::get('/invakis/barang/categori', [MasterdataController::class,'pageCategori'])->name('page.categori');
 //View Content Create Categori
 Route::post('/invakis/barang/create_categori', [MasterdataController::class,'categoriCreate'])->name('create.categori');
-//View Content Edit Categori
-Route::get('/invakis/barang/edit_categori/{id}', [MasterdataController::class,'categoriEdit'])->name('fiture.edit_categori');
+//View Content Show Edit Categori
+Route::get('/invakis/barang/edit_categori/{post_id}', [MasterdataController::class,'showCategoriEdit'])->name('fiture.edit_categori');
+// Route::resource('/posts', App\Http\Controllers\MasterdataController::class);
+Route::put('/invakis/barang/edit_categori/post/{post_id}', [MasterdataController::class,'updateCategoriEdit']);
+//Delete Data Categori
+Route::delete('/invakis/barang/delete/{post_id}', [MasterdataController::class,'destroyCategori']);
 
 
 

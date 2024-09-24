@@ -15,3 +15,9 @@
     <!-- Page level custom scripts -->
     <script src={{ asset("template/js/demo/datatables-demo.js")}}></script>
     
+    {{-- Script Inisialisasi Table Jquery --}}
+    <script>
+    $(document).ready(function() {
+        $('#dataTable-Categori').DataTable();
+    });
+    </script>

@@ -24,6 +24,16 @@ Route::put('/invakis/barang/edit_categori/post/{post_id}', [MasterdataController
 //Delete Data Categori
 Route::delete('/invakis/barang/delete/{post_id}', [MasterdataController::class,'destroyCategori']);
 
+//Input Data Jenis
+Route::post('/invakis/barang/create_jenis', [MasterdataController::class,'createJenis'])->name('create.jenis');
+//View Content Show Edit Categori
+Route::get('/invakis/barang/tampil_jenis', [MasterdataController::class,'DataJenis'])->name('halaman.jenis');
+
+
+//TES TAMPIL DATA AJA
+Route::get('/tes', [MasterdataController::class,'getJenis'])->name('jenis.get');
+//TES DELETE DATA AJA
+Route::delete('/jenis/delete/{id}', [MasterdataController::class,'destroyJenis'])->name('jenis.delete');
 
 
 

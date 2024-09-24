@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\categori;
+use App\Models\Jenis;
 use Illuminate\Http\Request;
-use PhpParser\Node\Expr\Cast\String_;
-use Ramsey\Uuid\Type\Integer;
+use Yajra\DataTables\DataTables;
 
 class MasterdataController extends Controller
 {
@@ -45,7 +45,7 @@ class MasterdataController extends Controller
     {   
         $request->validate([
             'id_categori' => 'required|max:2|unique:categori,id_categori',
-            'categori' =>  'required',
+            'categori' =>  'required|unique:categori,categori',
         ]
     );
      
@@ -87,7 +87,7 @@ class MasterdataController extends Controller
     public function updateCategoriEdit(Request $request, $id)
     {
         //define validation rules
-        $validator = $request->validate([
+        $request->validate([
             'id_categori' => 'required|max:2',
             'categori' =>  'required'
         ]);
@@ -131,7 +131,55 @@ function destroyCategori($id)
     return response()->json(['message' => 'Category deleted successfully'], 200);
 }
 
+/**
+     * store
+     *
+     * @param  mixed $request
+     */
 
+function createJenis(Request $request)
+    {
+        // Validasi input data
+        $validatedData = $request->validate([
+            'id_jenis' => 'required|max:2',
+            'jenis' => 'required',
+        ]);
+
+        // Simpan data ke database atau lakukan tindakan lain
+        // Misalnya:
+        Jenis::create($validatedData);
+
+        // Mengirim respons sukses
+        return response()->json(['success' => true]);
+    }
+
+function DataJenis()
+    {
+        // Ambil data dari database
+        $data = Jenis::latest()->get();
+
+        // Kirim response sebagai JSON
+        return response()->json($data);
+    }
+
+public function getJenis(Request $request){
+    if($request->ajax()){
+        //Ambil Data
+        $jenis = Jenis::query();
+        return DataTables::of($jenis)->make(true);
+    }
+
+}
+
+public function destroyJenis($id)
+    {
+        // Cari kategori berdasarkan ID dan hapus
+        $jenis=Jenis::where('id_jenis',$id)->first();
+        $jenis->delete();
+
+        // Kembalikan response sukses
+        return response()->json(['success' => 'Kategori berhasil dihapus']);
+    }
     
 
 

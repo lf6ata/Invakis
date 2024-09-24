@@ -46,11 +46,11 @@
 
 <script>
 
-    //button create post event
-    
-   //button create post event
-   $('body').on('click', '#btn-edit-categori', function () {
-
+$(document).ready(function() {
+   //button view modal edit categori and view data
+   $('body').on('click', '#btn-edit-categori', function (e) {
+        
+        e.preventDefault(); 
 
         let post_id = $(this).data('id');
 
@@ -116,6 +116,7 @@
             }
         });
     }
+});
 });
       
 </script>

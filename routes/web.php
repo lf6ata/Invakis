@@ -33,8 +33,11 @@ Route::get('/invakis/barang/tampil_jenis', [MasterdataController::class,'DataJen
 //TES TAMPIL DATA AJA
 Route::get('/tes', [MasterdataController::class,'getJenis'])->name('jenis.get');
 //TES DELETE DATA AJA
-Route::delete('/jenis/delete/{id}', [MasterdataController::class,'destroyJenis'])->name('jenis.delete');
-
+Route::delete('/tes/delete/{id_jenis}', [MasterdataController::class,'destroyJenis'])->name('jenis.delete');
+//TES VIEW DATA EDIT AJA
+Route::get('/tes/edit/{id_jenis}', [MasterdataController::class,'showJenis']);
+//TES UPDATE DATA  AJA
+Route::put('/tes/update/{id_jenis}', [MasterdataController::class,'updateJenis']);
 
 
 

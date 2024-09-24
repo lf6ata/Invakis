@@ -1,6 +1,6 @@
 
     <!-- Form Add Jenis-->
-    <div class="modal fade" id="addJenis" tabindex="-1" role="dialog" aria-labelledby="addLabel"
+    <div class="modal fade" id="addMerek" tabindex="-1" role="dialog" aria-labelledby="addLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -10,19 +10,18 @@
             <div id="jenisaddSuccess" class="alert alert-success d-none" role="alert"></div>
 
             <div class="modal-header">
-                <h5 class="modal-title" id="addLabel">Add Jenis</h5>
+                <h5 class="modal-title" id="addLabel">Add Merek</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body ">
 
-                <form id="inputJenis">
+                <form id="inputMerek">
 
                     @csrf
 
                     <div class="form-group">
-                      <label for="idjenisAdd">Id Jenis</label>
+                      <label for="idmerekAdd">Id Jenis</label>
                       <input type="Text" class="form-control" id="idjenisAdd" name="id_jenis" placeholder="Id Jenis">
                     </div>
 
@@ -39,11 +38,7 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-plus fa-sm" id="btn-add-jenis"> Add</i>
                         </button>
-                        <button type="button" class="btn btn-warning mr-2 ">
-                            <i class="fas fa-sm" id="btn-update-jenis"> Update</i>
-                        </button>
                     </div>
-
                 </form>
             </div>
 
@@ -95,7 +90,7 @@
                     render: function(data, type, row, meta) {
                         // 'data' di sini mengacu pada ID kategori, bisa digunakan untuk mengisi URL
                         return `
-                            <a href="javascript:void(0)" id="btnUpdate" data-id="${data}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="/categories/edit/${data}" class="btn btn-sm btn-warning">Edit</a>
                             <a href="javascript:void(0)" id="btnDelete" data-id="${data}" class="btn btn-sm btn-danger">Delete</a>
                         `;
                         }
@@ -159,54 +154,7 @@
             }
     });
 
-
-    $('body').on('click', '#btnUpdate', function (e) {
         
-        e.preventDefault(); 
-
-        let id_jenis = $(this).data('id');
-
-        //fetch detail post with ajax
-        $.ajax({
-            url: `/tes/edit/${id_jenis}`,
-            type: "GET",
-            cache: false,
-            success:function(response){
-                
-                //fill data to form
-                $('#idjenisAdd').val(response.data.id_jenis);
-                $('#jenisAdd').val(response.data.jenis);
-
-                // //open modal
-                // $('#updateCategoriModal').modal('show');
-            }
-        });
-    });
-
-    // Mengupdate kategori saat tombol update diklik
-    $('#btn-update-jenis').on('click', function() {
-        console.log("DI KLIK");
-        
-        let jenisId = $('#idjenisAdd').val();
-        let jenisName = $('#jenisAdd').val();
-
-        $.ajax({
-            url: `/tes/update/${jenisId}`,
-            type: "PUT",
-            data: {
-                "id_jenis": jenisId, 
-                "jenis": jenisName,
-                "_token": $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                alert(response.message);
-                $('#dataTable-Jenis').DataTable().ajax.reload();  // Reload tabel setelah update
-            },
-            error: function(xhr) {
-                alert(xhr.responseJSON.message);
-            }
-        });
-    });  
         
     
 </script>

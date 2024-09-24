@@ -45,7 +45,7 @@ class MasterdataController extends Controller
     {   
         $request->validate([
             'id_categori' => 'required|max:2|unique:categori,id_categori',
-            'categori' =>  'required|unique:categori,categori',
+            'categori' =>  'required',
         ]
     );
      
@@ -131,6 +131,8 @@ function destroyCategori($id)
     return response()->json(['message' => 'Category deleted successfully'], 200);
 }
 
+
+
 /**
      * store
      *
@@ -173,18 +175,57 @@ public function getJenis(Request $request){
 
 public function destroyJenis($id)
     {
+        $jenis_tes = Jenis::find($id);
         // Cari kategori berdasarkan ID dan hapus
-        $jenis=Jenis::where('id_jenis',$id)->first();
-        $jenis->delete();
+        // dd($jenis_tes);
+        
+        $jenis_tes->delete();
 
         // Kembalikan response sukses
         return response()->json(['success' => 'Kategori berhasil dihapus']);
     }
     
+public function showJenis($id)
+    {
 
+        $id_jenis = Jenis::find($id);
+        //return response
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil di update',
+            'data'    => $id_jenis
+        ]); 
 
+    }
 
+    public function updateJenis(Request $request, $id)
+    {
+        //define validation rules
+        $request->validate([
+            'id_jenis' => 'required|max:2',
+            'jenis' =>  'required'
+        ]);
 
+        //check if validation fails
+        // if ($validator->fails()) {
+        //     return response()->json($validator->errors(), 422);
+        // }
+
+        
+        //create post
+        $id_Jenis = Jenis::find($id);
+        $id_Jenis->update([
+            'id_jenis'  => $request->id_jenis, 
+            'jenis'   => $request->jenis
+        ]);
+
+        //return response
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil Diudapte!'
+        ]);
+    }
 
 
 

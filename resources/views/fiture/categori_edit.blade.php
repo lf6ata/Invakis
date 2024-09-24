@@ -98,7 +98,7 @@ $(document).ready(function() {
 
     $(document).on('click', '#btn-delete-categori', function() {
     let categoryId = $(this).data('id');
-
+    console.log(typeof(categoryId)+categoryId);
     if (confirm('Are you sure you want to delete this category?')) {
         $.ajax({
             url: `/invakis/barang/delete/${categoryId}`,

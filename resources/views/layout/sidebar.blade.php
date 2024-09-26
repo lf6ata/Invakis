@@ -62,11 +62,8 @@
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Data Barang:</h6>
-                        <a class="collapse-item" href={{ Route('page.categori') }}>Input Categori</a>
-                        <a class="collapse-item" href={{ Route('page.jenis') }}>Input Jenis</a>
-                        <a class="collapse-item" href={{ Route('page.merek') }}>Input Merek</a>
-                        <a class="collapse-item" href={{ Route('page.warna') }}>Input Warna</a>
-                        <a class="collapse-item" href={{ Route('page.barang') }}>Input Barang</a>
+                        <a class="collapse-item" href={{ Route('page.categori') }}>Categoris</a>
+                        <a class="collapse-item" href={{ Route('page.barang') }}>Barang</a>
                         <div class="collapse-divider"></div>
                         <h6 class="collapse-header">Cetak:</h6>
                         <a class="collapse-item" href="404.html">Cetak Data Barang</a>

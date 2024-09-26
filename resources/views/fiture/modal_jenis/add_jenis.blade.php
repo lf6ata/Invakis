@@ -24,6 +24,7 @@
                     <div class="form-group">
                       <label for="idjenisAdd">Id Jenis</label>
                       <input type="Text" class="form-control" id="idjenisAdd" name="id_jenis" placeholder="Id Jenis">
+                        <span style="color: red; font-size:13px;">form value harus di isi dengan 2 charcter, contoh : AA</span>
                     </div>
 
                     <div class="form-group">
@@ -53,7 +54,7 @@
                         <table class="table table-bordered" id="dataTable-Jenis" width="100%" cellspacing="0">
                             <thead align="center">
                                 <tr>
-                                    {{-- <th width="5%">No</th> --}}
+                                    <th width="5%">No</th>
                                     <th>Id Jenis</th>
                                     <th>Jenis</th>  
                                     <th>Action</th>
@@ -85,6 +86,7 @@
                 type: 'GET'
             },
             columns: [
+                {data: 'DT_RowIndex', neme: 'DT_RowIndex', orderable: false, searchable: false},
                 {data: 'id_jenis', neme: 'id_jenis'},
                 {data: 'jenis', neme: 'jenis'},
                 {

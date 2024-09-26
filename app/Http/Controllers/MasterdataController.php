@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use App\Models\categori;
+use App\Models\Category;
 use App\Models\Jenis;
+use App\Models\Merek;
 use Illuminate\Http\Request;
+use Symfony\Component\Console\Input\Input;
 use Yajra\DataTables\DataTables;
 
 class MasterdataController extends Controller
@@ -54,6 +58,17 @@ class MasterdataController extends Controller
       return redirect()->route('page.categori');  
     }
 
+    function categoriEdit(Request $request, string $id)  
+    {   
+        $data = $request->validate([
+            'id_categori' => 'required|max:2',
+            'categori' =>  'required'
+        ]);
+     
+
+        categori::find($id)->update($data);
+        return redirect()->route('page.categori');  
+    }
 
 
     /**
@@ -132,6 +147,10 @@ function destroyCategori($id)
 }
 
 
+/***************************************/
+/****** CONROLLER SUB FORM JENIS ********/
+/***************************************/
+
 
 /**
      * store
@@ -143,7 +162,7 @@ function createJenis(Request $request)
     {
         // Validasi input data
         $validatedData = $request->validate([
-            'id_jenis' => 'required|max:2',
+            'id_jenis' => 'required|max:2|alpha',
             'jenis' => 'required',
         ]);
 
@@ -164,11 +183,12 @@ function DataJenis()
         return response()->json($data);
     }
 
+
 public function getJenis(Request $request){
     if($request->ajax()){
         //Ambil Data
         $jenis = Jenis::query();
-        return DataTables::of($jenis)->make(true);
+        return DataTables::of($jenis)->addIndexColumn()->make(true);
     }
 
 }
@@ -229,28 +249,131 @@ public function showJenis($id)
 
 
 
+    
 
 
+    /***************************************/
+    /****** CONROLLER SUB FORM MEREK ********/
+    /***************************************/
+    
+    public function getMerek(Request $request){
+        if($request->ajax()){
+            //Ambil Data
+            $merek = Merek::query();
+            return DataTables::of($merek)->addIndexColumn()->make(true);
+        }
+    
+    }
 
-
-
-
-    function categoriEdit(Request $request, string $id)  
-    {   
-        $data = $request->validate([
-            'id_categori' => 'required|max:2',
-            'categori' =>  'required'
+    function storeMerek(Request $request)
+    {
+        // Validasi input data
+        $validatedData = $request->validate([
+            'id_merek' => 'required|max:2|unique:merek,id_merek',
+            'merek' => 'required|unique:merek,merek',
         ]);
-     
 
-        categori::find($id)->update($data);
-        return redirect()->route('page.categori');  
+        // Simpan data ke database atau lakukan tindakan lain
+        // Misalnya:
+        Merek::create($validatedData);
+
+        // Mengirim respons sukses
+        return response()->json(['success' => true]);
+    }
+
+    public function destroyMerek($id)
+    {
+        $merek_id = Merek::find($id);
+        // Cari kategori berdasarkan ID dan hapus
+        // dd($jenis_tes);
+        
+        $merek_id->delete();
+
+        // Kembalikan response sukses
+        return response()->json(['success' => 'Kategori berhasil dihapus']);
+    }
+
+    public function showMerek($id)
+    {
+
+        $merek_id = Merek::find($id);
+        //return response
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil di update',
+            'data'    => $merek_id
+        ]); 
+
+    }
+
+    public function updateMerek(Request $request, $id)
+    {
+        //define validation rules
+        $request->validate([
+            'id_merek' => 'required|max:2',
+            'merek' =>  'required'
+        ]);
+
+        //check if validation fails
+        // if ($validator->fails()) {
+        //     return response()->json($validator->errors(), 422);
+        // }
+
+        
+        //create post
+        $merek_id = Merek::find($id);
+        $merek_id->update([
+            'id_merek'  => $request->id_merek, 
+            'merek'   => $request->merek
+        ]);
+
+        //return response
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil Diudapte!'
+        ]);
+    }
+
+    
+    /***************************************/
+    /****** CONROLLER BARANG ********/
+    /***************************************/
+
+    public function getBarang(){
+        $get_barang = Barang::all();
+        $get_categori = categori::all();
+
+        return view('menu.barang.input_barang', compact('get_barang', 'get_categori'));
     }
 
 
+    public function storeBarang(Request $request) {
+        // Validasi file upload
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal 2MB
+            'id_jenis' => 'required|exists:categori,id_jenis'
+        ]);
 
+       
 
+        if ($request->hasFile('image')) {
 
+            $file = $request->file('image');
+
+            // Buat nama file baru dengan timestamp dan nama asli
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Pindahkan file ke folder storage atau public
+            $path = $file->storeAs('images', $filename, 'public'); // Simpan di folder 'public/images'
+
+            // Mengirimkan response berhasil dengan nama file dan lokasi
+            return back()->with('success', 'Gambar berhasil diupload!')->with('image', $filename);
+        }
+
+        return back()->with('error', 'Gagal mengupload gambar!');
+
+    }
 
 
 
@@ -272,9 +395,9 @@ public function showJenis($id)
         return view('menu.barang.input_warna');
     }
 
-    public function pageBarang()  
-    {
-        return view('menu.barang.input_barang');
-    }
+    // public function pageBarang()  
+    // {
+    //     return view('menu.barang.input_barang');
+    // }
 
 }

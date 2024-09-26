@@ -5,9 +5,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MasterdataController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('menu.dashboard.dashboard');
-});
+// Route::get('/', function () {
+//     return view('/invakis/barang/categori');
+// });
+
+Route::get('/', [MasterdataController::class,'pageCategori'])->name('page.dashboard');
 
 //View Content Dashboard
 Route::get('/dashboard', [DashboardController::class,'pageDashboard'])->name('page.dashboard');
@@ -28,8 +30,6 @@ Route::delete('/invakis/barang/delete/{post_id}', [MasterdataController::class,'
 Route::post('/invakis/barang/create_jenis', [MasterdataController::class,'createJenis'])->name('create.jenis');
 //View Content Show Edit Categori
 Route::get('/invakis/barang/tampil_jenis', [MasterdataController::class,'DataJenis'])->name('halaman.jenis');
-
-
 //TES TAMPIL DATA AJA
 Route::get('/tes', [MasterdataController::class,'getJenis'])->name('jenis.get');
 //TES DELETE DATA AJA
@@ -39,21 +39,24 @@ Route::get('/tes/edit/{id_jenis}', [MasterdataController::class,'showJenis']);
 //TES UPDATE DATA  AJA
 Route::put('/tes/update/{id_jenis}', [MasterdataController::class,'updateJenis']);
 
+//TAMPIL DATA MEREK
+Route::get('/invakis/barang/get-merek', [MasterdataController::class,'getMerek'])->name('merek.get');
+//Input Data Merek
+Route::post('/invakis/barang/store_merek', [MasterdataController::class,'storeMerek'])->name('store.merek');
+//DELETE DATA MEREK
+Route::delete('/invakis/delete/merek/{id_merek}', [MasterdataController::class,'destroyMerek'])->name('destroy.merek');
+//TES VIEW DATA EDIT AJA
+Route::get('/invakis/edit/{id_merek}', [MasterdataController::class,'showMerek']);
+//TES UPDATE DATA  AJA
+Route::put('/invakis/update/{id_merek}', [MasterdataController::class,'updateMerek']);
 
 
+Route::post('/upload-image', [MasterdataController::class, 'storeBarang'])->name('image.upload');
+Route::get('/invakis/barang/view_barang', [MasterdataController::class,'getBarang'])->name('page.barang');
 
 
-
-
-
-//View Content Data Jenis
-Route::get('/invakis/barang/jenis', [MasterdataController::class,'pageJenis'])->name('page.jenis');
-//View Content Data Merek
-Route::get('/invakis/barang/merek', [MasterdataController::class,'pageMerek'])->name('page.merek');
-//View Content Data Warna
-Route::get('/invakis/barang/warna', [MasterdataController::class,'pageMerek'])->name('page.warna');
 //View Content Data Barang
-Route::get('/invakis/barang/input_barang', [MasterdataController::class,'pageBarang'])->name('page.barang');
+// Route::get('/invakis/barang/input_barang', [MasterdataController::class,'pageBarang'])->name('page.barang');
 
 
 Route::get('/barang',[MasterdataController::class, "tampil"])->name("masterdata.tampil");

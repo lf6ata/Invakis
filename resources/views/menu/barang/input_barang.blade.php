@@ -20,51 +20,71 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form action="{{ route('image.upload') }}" method="POST" enctype="multipart/form-data">
+                            
+                            @csrf
+
                             <div class="form-group">
-                              <label for="categoriLabel">Categori</label>
-                              <input type="Text" class="form-control" id="categoriLabel"  placeholder="Categori">
+                                <label for="brand_id">Categori:</label>
+                                <select name="brand_id" id="brand_id" class="form-control" required>
+                                    <option value="">-- Pilih Categori --</option>
+                                    @foreach($get_categori as $c)
+                                        <option value="{{ $c->id_categori }} ">{{ $c->categori }}</option>
+                                     @endforeach
+                                </select>
+                            </div>
+
+                            {{-- <div class="form-group">
+                                <label for="brand_id">Jenis:</label>
+                                <select name="brand_id" id="brand_id" class="form-control" required>
+                                    <option value="">-- Pilih Jenis --</option>
+                                    @foreach($get_barang as $b)
+                                        <option value="{{ $b->tbJenis[0]->id_jenis }} ">{{ $b->tbJenis[0]->jenis }}</option>
+                                     @endforeach
+                                </select>
                             </div>
 
                             <div class="form-group">
-                              <label for="jenisLabel">Jenis</label>
-                              <input type="Text" class="form-control" id="jenisLabel" placeholder="Jenis">
-                            </div>
+                                <label for="brand_id">Merek:</label>
+                                <select name="brand_id" id="brand_id" class="form-control" required>
+                                    <option value="">-- Pilih Merek --</option>
+                                    @foreach($get_barang as $b)
+                                        <option value="{{ $b->tbMerek[0]->id_merek }} ">{{ $b->tbMerek[0]->merek }}</option>
+                                     @endforeach
+                                </select>
+                            </div> --}}
+                            
 
                             <div class="form-group">
-                                <label for="merekLabel">Merek</label>
-                                <input type="Text" class="form-control" id="merekLabel" placeholder="Merek">
+                                <label for="image">Pilih Gambar atau Ambil Foto:</label>
+                                <input type="file" class="form-control" name="image" id="image" accept="image/*" capture="camera">
                             </div>
 
-                            <div class="form-group">
-                                <label for="merekLabel">Merek</label>
-                                <input type="Text" class="form-control" id="merekLabel" placeholder="Merek">
-                            </div>
+                            
 
-                            <div class="form-group">
-                                <label for="merekLabel">Merek</label>
-                                <input type="Text" class="form-control" id="merekLabel" placeholder="Merek">
-                            </div>
+                                @if (session('success'))
+                                    <div class="alert alert-success">
+                                        {{ session('success') }}
+                                    </div>
+                                    <img src="{{ asset('storage/images/' . session('image')) }}" alt="Uploaded Image" style="max-width: 200px;">
+                                @endif
+                    
+                                @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                                @endif
 
-                            <div class="form-group">
-                                <label for="merekLabel">Merek</label>
-                                <input type="Text" class="form-control" id="merekLabel" placeholder="Merek">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="merekLabel">Merek</label>
-                                <input type="Text" class="form-control" id="merekLabel" placeholder="Merek">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="merekLabel">Merek</label>
-                                <input type="Text" class="form-control" id="merekLabel" placeholder="Merek">
-                            </div>
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                            <button class="btn btn-primary" type="submit">Save</button>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="login.html">Save</a>
+                        
                     </div>
                 </div>
             </div>
@@ -81,56 +101,33 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>No Asset</th>
-                                                <th>Categori</th>
-                                                <th>Jenis</th>
-                                                <th>Merek</th>
-                                                <th>Warna</th>
-                                                <th>Lokasi</th>
-                                                <th>NPK</th>
-                                                <th>Foto Asset</th>
-                                                <th>Nama Karyawan</th>
-                                                <th>Divisi</th>
-                                                <th>Serial Number</th>
-                                                <th>Jenis License</th>
-                                                <th>Kode License</th>
-                                                <th>Tanggal Masuk</th>  
+                                                <th width=20%>No Asset</th> 
+                                                <th>Categori</th> 
+                                                <th>Jenis</th> 
+                                                <th>Merek</th> 
+                                                
                                             </tr>
                                         </thead>
                                        
                                         <tbody>
-                                            <tr>
-                                                <td>001-AA-AA-02</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
-                                                <td>2011/04/25</td>
-                                                <td>$320,800</td>
-                                                <td>$320,800</td>
-                                                <td>Tiger Nixon</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
-                                                <td>2011/04/25</td>
-                                                <td>$320,800</td>
-                                                <td>$320,800</td>
-                                            </tr>
-                                            <tr>
-                                                <td>002-AB-BA-01</td>
-                                                <td>Accountant</td>
-                                                <td>Tokyo</td>
-                                                <td>63</td>
-                                                <td>2011/07/25</td>
-                                                <td>$170,750</td>
-                                                <td>$320,800</td>
-                                                <td>Tiger Nixon</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
-                                                <td>2011/04/25</td>
-                                                <td>$320,800</td>
-                                                <td>$320,800</td>
-                                            </tr>
+                                            @foreach($get_barang as $no=>$b)
+                                                <tr>
+                                                    <td>{{ $b->tbCategori[0]->id_categori }}-{{ $b->tbJenis[0]->id_jenis }}</td>
+                                                    <td>{{ $b->tbCategori[0]->categori }}</td>
+                                                    <td>{{ $b->tbJenis[0]->jenis }}</td>
+                                                    <td>{{ $b->tbMerek[0]->merek }}</td>
+
+                                                </tr>
+                                            @endforeach
+                                            {{-- @foreach($get_jenis as $data_jenis)
+                                                <tr>
+                                                    @foreach($data_jenis->getJenis as $no=>$djenis)
+                                                        
+                                                            <td>{{ $djenis->id_jenis}}</td>
+                                                        
+                                                    @endforeach
+                                                </tr>
+                                            @endforeach --}}
                                             
                                         </tbody>
                                     </table>

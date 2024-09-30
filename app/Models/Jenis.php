@@ -21,8 +21,8 @@ class Jenis extends Model
     ];
     
     protected $table = 'jenis';
-    protected $primaryKey = 'id_jenis';
-    protected $keyType = 'string';
+    // protected $primaryKey = 'id_jenis';
+    // protected $keyType = 'string';
     //public $timestamps = false;
     
 

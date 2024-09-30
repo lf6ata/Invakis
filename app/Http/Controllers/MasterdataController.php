@@ -47,11 +47,12 @@ class MasterdataController extends Controller
 
     function categoriCreate(Request $request)  
     {   
-        $request->validate([
-            'id_categori' => 'required|max:2|unique:categori,id_categori',
-            'categori' =>  'required',
-        ]
-    );
+            $request->validate
+            (   [
+                    'id_categori' => 'required|digits_between:1,2|numeric|unique:categori,id_categori',
+                    'categori' =>  'required',
+                ]
+            );
      
 
       categori::create($request->all());
@@ -129,84 +130,82 @@ class MasterdataController extends Controller
     }
 
 
-function destroyCategori($id)
-{
-    // Cari kategori berdasarkan ID
-    $categori = categori::where('id_categori',$id)->first();
-
-    // Jika kategori tidak ditemukan, kembalikan respon 404
-    if (!$categori) {
-        return response()->json(['message' => 'Category not found'], 404);
-    }
-
-    // Hapus kategori
-    $categori->delete();
-
-    // Kembalikan respon sukses
-    return response()->json(['message' => 'Category deleted successfully'], 200);
-}
-
-
-/***************************************/
-/****** CONROLLER SUB FORM JENIS ********/
-/***************************************/
-
-
-/**
-     * store
-     *
-     * @param  mixed $request
-     */
-
-function createJenis(Request $request)
+    function destroyCategori($id)
     {
-        // Validasi input data
-        $validatedData = $request->validate([
-            'id_jenis' => 'required|max:2|alpha',
-            'jenis' => 'required',
-        ]);
+        // Cari kategori berdasarkan ID
+        $categori = categori::where('id_categori',$id)->first();
 
-        // Simpan data ke database atau lakukan tindakan lain
-        // Misalnya:
-        Jenis::create($validatedData);
+        // Jika kategori tidak ditemukan, kembalikan respon 404
+        if (!$categori) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
 
-        // Mengirim respons sukses
-        return response()->json(['success' => true]);
-    }
+        // Hapus kategori
+        $categori->delete();
 
-function DataJenis()
-    {
-        // Ambil data dari database
-        $data = Jenis::latest()->get();
-
-        // Kirim response sebagai JSON
-        return response()->json($data);
+        // Kembalikan respon sukses
+        return response()->json(['message' => 'Category deleted successfully'], 200);
     }
 
 
-public function getJenis(Request $request){
-    if($request->ajax()){
-        //Ambil Data
-        $jenis = Jenis::query();
-        return DataTables::of($jenis)->addIndexColumn()->make(true);
+    /***************************************/
+    /****** CONROLLER SUB FORM JENIS ********/
+    /***************************************/
+
+
+        /**
+         * @param  mixed $request
+         */
+
+    function createJenis(Request $request)
+        {
+            // Validasi input data
+            $validatedData = $request->validate([
+                'id_jenis' => 'required|max:2|alpha',
+                'jenis' => 'required',
+            ]);
+
+            // Simpan data ke database atau lakukan tindakan lain
+            // Misalnya:
+            Jenis::create($validatedData);
+
+            // Mengirim respons sukses
+            return response()->json(['success' => true]);
+        }
+
+    function DataJenis()
+        {
+            // Ambil data dari database
+            $data = Jenis::latest()->get();
+
+            // Kirim response sebagai JSON
+            return response()->json($data);
+        }
+
+
+    public function getJenis(Request $request){
+        if($request->ajax()){
+            //Ambil Data
+            $jenis = Jenis::query();
+            return DataTables::of($jenis)->addIndexColumn()->make(true);
+        }
+
     }
 
-}
+    public function destroyJenis($id)
+        {
+            $jenis_tes = Jenis::find($id);
+            // Cari kategori berdasarkan ID dan hapus
+            // dd($jenis_tes);
+            
+            $jenis_tes->delete();
 
-public function destroyJenis($id)
-    {
-        $jenis_tes = Jenis::find($id);
-        // Cari kategori berdasarkan ID dan hapus
-        // dd($jenis_tes);
+            // Kembalikan response sukses
+            return response()->json(['success' => 'Kategori berhasil dihapus']);
+        }
         
-        $jenis_tes->delete();
-
-        // Kembalikan response sukses
-        return response()->json(['success' => 'Kategori berhasil dihapus']);
-    }
-    
-public function showJenis($id)
-    {
+    public function showJenis($id)
+        {
 
         $id_jenis = Jenis::find($id);
         //return response
@@ -247,14 +246,10 @@ public function showJenis($id)
         ]);
     }
 
-
-
-    
-
-
     /***************************************/
     /****** CONROLLER SUB FORM MEREK ********/
     /***************************************/
+
     
     public function getMerek(Request $request){
         if($request->ajax()){
@@ -265,7 +260,7 @@ public function showJenis($id)
     
     }
 
-    function storeMerek(Request $request)
+    public function storeMerek(Request $request)
     {
         // Validasi input data
         $validatedData = $request->validate([
@@ -343,40 +338,57 @@ public function showJenis($id)
     public function getBarang(){
         $get_barang = Barang::all();
         $get_categori = categori::all();
+        $get_jenis = Jenis::all();
+        $get_merek = Merek::all();
 
-        return view('menu.barang.input_barang', compact('get_barang', 'get_categori'));
+        return view('menu.barang.input_barang', compact('get_barang', 'get_categori', 'get_jenis', 'get_merek'));
     }
 
 
     public function storeBarang(Request $request) {
+        $tb_barang = new Barang();
         // Validasi file upload
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal 2MB
-            'id_jenis' => 'required|exists:categori,id_jenis'
+        // $request->validate([
+        //     // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal 2MB
+        //     'id_categori' => 'required',
+        //     'id_jenis' => 'required',
+        //     'id_merek' => 'required'
+        // ]);
+
+        $asset_categori = categori::find($request->categori_id)->id_categori;
+        $asset_jenis = Jenis::find($request->jenis_id)->id_jenis;
+        $asset_merek = Merek::find($request->merek_id)->id_merek;
+
+        $tb_barang::create([
+            'no_asset' => $asset_categori.'-'.$asset_jenis.'-'.$asset_merek,
+            'id_categori' => $request->categori_id,
+            'id_jenis' => $request->jenis_id,
+            'id_merek' => $request->merek_id,
         ]);
 
+        return back();
+
+        // dd($tes);
        
+        // dd($tes);
 
-        if ($request->hasFile('image')) {
+        // if ($request->hasFile('image')) {
 
-            $file = $request->file('image');
+        //     $file = $request->file('image');
 
-            // Buat nama file baru dengan timestamp dan nama asli
-            $filename = time() . '_' . $file->getClientOriginalName();
+        //     // Buat nama file baru dengan timestamp dan nama asli
+        //     $filename = time() . '_' . $file->getClientOriginalName();
 
-            // Pindahkan file ke folder storage atau public
-            $path = $file->storeAs('images', $filename, 'public'); // Simpan di folder 'public/images'
+        //     // Pindahkan file ke folder storage atau public
+        //     $path = $file->storeAs('images', $filename, 'public'); // Simpan di folder 'public/images'
 
-            // Mengirimkan response berhasil dengan nama file dan lokasi
-            return back()->with('success', 'Gambar berhasil diupload!')->with('image', $filename);
-        }
+        //     // Mengirimkan response berhasil dengan nama file dan lokasi
+        //     return back()->with('success', 'Gambar berhasil diupload!')->with('image', $filename);
+        // }
 
-        return back()->with('error', 'Gagal mengupload gambar!');
+        // return back()->with('error', 'Gagal mengupload gambar!');
 
     }
-
-
-
 
 
 

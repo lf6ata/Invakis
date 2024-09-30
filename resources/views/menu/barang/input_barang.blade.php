@@ -4,9 +4,11 @@
 @section('content')
 
     <!-- Add Button -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addBarang">
-        <i class="fas fa-plus fa-sm"></i> Add Barang
-    </button>
+    <div class="card-header py-3 d-flex flex-row-reverse">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addBarang">
+            <i class="fas fa-plus fa-sm"></i> Add Barang
+        </button>
+    </div>
 
         <!-- Form Add Barang-->
         <div class="modal fade" id="addBarang" tabindex="-1" role="dialog" aria-labelledby="addLabel"
@@ -24,12 +26,33 @@
                             
                             @csrf
 
+
                             <div class="form-group">
-                                <label for="brand_id">Categori:</label>
-                                <select name="brand_id" id="brand_id" class="form-control" required>
+                                <label for="categori_id">Categori:</label>
+                                <select name="categori_id" id="categori_id" class="form-control" required>
                                     <option value="">-- Pilih Categori --</option>
                                     @foreach($get_categori as $c)
-                                        <option value="{{ $c->id_categori }} ">{{ $c->categori }}</option>
+                                        <option value="{{ $c->id }} ">{{ $c->categori }}</option>
+                                     @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="jenis_id">Jenis:</label>
+                                <select name="jenis_id" id="jenis_id" class="form-control" required>
+                                    <option value="">-- Pilih Jenis --</option>
+                                    @foreach($get_jenis as $j)
+                                        <option value="{{ $j->id }} ">{{ $j->jenis }}</option>
+                                     @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="merek_id">Merek:</label>
+                                <select name="merek_id" id="merek_id" class="form-control" required>
+                                    <option value="">-- Pilih Merek --</option>
+                                    @foreach($get_merek as $m)
+                                        <option value="{{ $m->id}} ">{{ $m->merek }}</option>
                                      @endforeach
                                 </select>
                             </div>
@@ -112,10 +135,17 @@
                                         <tbody>
                                             @foreach($get_barang as $no=>$b)
                                                 <tr>
-                                                    <td>{{ $b->tbCategori[0]->id_categori }}-{{ $b->tbJenis[0]->id_jenis }}</td>
+                                                    <td>{{ $b->tbCategori[0]->id_categori }}-{{ strtoupper($b->tbJenis[0]->id_jenis) }}-{{ strtoupper($b->tbMerek[0]->id_merek) }}-{{ $b->id }}</td>
                                                     <td>{{ $b->tbCategori[0]->categori }}</td>
                                                     <td>{{ $b->tbJenis[0]->jenis }}</td>
-                                                    <td>{{ $b->tbMerek[0]->merek }}</td>
+                                                    <td>{{ $b->tbMerek[0]->merek  }}</td>
+                                                    {{-- <td>
+                                                        @if (!empty($b->tbMerek[0]->merek) )
+                                                            {{ $b->tbMerek[0]->merek  }}
+                                                        @else
+                                                            <span class="btn btn-secondary">dihapus</span>
+                                                        @endif
+                                                    </td> --}}
 
                                                 </tr>
                                             @endforeach

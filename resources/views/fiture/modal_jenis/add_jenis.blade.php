@@ -23,6 +23,7 @@
 
                     <div class="form-group">
                       <label for="idjenisAdd">Id Jenis</label>
+                      <input hidden type="text" id="id_index_jenis">
                       <input type="Text" class="form-control" id="idjenisAdd" name="id_jenis" placeholder="Id Jenis">
                         <span style="color: red; font-size:13px;">form value harus di isi dengan 2 charcter, contoh : AA</span>
                     </div>
@@ -90,14 +91,14 @@
                 {data: 'id_jenis', neme: 'id_jenis'},
                 {data: 'jenis', neme: 'jenis'},
                 {
-                    data: 'id_jenis',  // Kolom ini bisa diisi dengan ID atau data lain
+                    data: 'id',  // Kolom ini bisa diisi dengan ID atau data lain
                     name: 'action',
                     orderable: false,  // Nonaktifkan sorting untuk kolom action
                     searchable: false, // Nonaktifkan searching untuk kolom action
                     render: function(data, type, row, meta) {
                         // 'data' di sini mengacu pada ID kategori, bisa digunakan untuk mengisi URL
                         return `
-                            <a href="javascript:void(0)" id="btnUpdate" data-id="${data}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="javascript:void(0)" id="btn-edit-jenis" data-id="${data}" class="btn btn-sm btn-warning">Edit</a>
                             <a href="javascript:void(0)" id="btnDelete" data-id="${data}" class="btn btn-sm btn-danger">Delete</a>
                         `;
                         }
@@ -136,7 +137,7 @@
     $('body').on('click', '#btnDelete', function (e) {
         e.preventDefault(); 
 
-        $('#loading').show();
+        // $('#loading').show();
 
         let jenis_id = $(this).data('id');
         console.log(typeof(jenis_id));
@@ -162,7 +163,7 @@
     });
 
 
-    $('body').on('click', '#btnUpdate', function (e) {
+    $('body').on('click', '#btn-edit-jenis', function (e) {
         
         e.preventDefault(); 
 
@@ -176,6 +177,7 @@
             success:function(response){
                 
                 //fill data to form
+                $('#id_index_jenis').val(response.data.id);
                 $('#idjenisAdd').val(response.data.id_jenis);
                 $('#jenisAdd').val(response.data.jenis);
 
@@ -187,13 +189,14 @@
 
     // Mengupdate kategori saat tombol update diklik
     $('#btn-update-jenis').on('click', function() {
-        console.log("DI KLIK");
+        // console.log("DI KLIK");
         
+        let id_index = $('#id_index_jenis').val();
         let jenisId = $('#idjenisAdd').val();
         let jenisName = $('#jenisAdd').val();
 
         $.ajax({
-            url: `/tes/update/${jenisId}`,
+            url: `/tes/update/${id_index}`,
             type: "PUT",
             data: {
                 "id_jenis": jenisId, 

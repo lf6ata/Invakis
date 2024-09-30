@@ -23,6 +23,7 @@
 
                     <div class="form-group">
                       <label for="idmerekAdd">Id Merek</label>
+                      <input hidden type="number" id="id_index_merek">
                       <input type="Number" class="form-control" id="idmerekAdd" name="id_merek" placeholder="Id Merek">
                                 @error('id_merek')
                                     <span class="alert alert-danger">{{ $message }}</span>
@@ -92,7 +93,7 @@
                 {data: 'id_merek', neme: 'id merek'},
                 {data: 'merek', neme: 'merek'},
                 {
-                    data: 'id_merek',  // Kolom ini bisa diisi dengan ID atau data lain
+                    data: 'id',  // Kolom ini bisa diisi dengan ID atau data lain
                     name: 'action',
                     orderable: false,  // Nonaktifkan sorting untuk kolom action
                     searchable: false, // Nonaktifkan searching untuk kolom action
@@ -162,7 +163,7 @@
     $('body').on('click', '#btnUpdate-merek', function (e) {
         
         e.preventDefault(); 
-        console.log("masuk");
+        // console.log("masuk");
         
 
         let id_merek = $(this).data('id');
@@ -175,6 +176,7 @@
             success:function(response){
                 
                 //fill data to form
+                $('#id_index_merek').val(response.data.id);
                 $('#idmerekAdd').val(response.data.id_merek);
                 $('#merekAdd').val(response.data.merek);
 
@@ -188,11 +190,12 @@
     $('#btn-update-merek').on('click', function() {
         // console.log("DI KLIK");
         
+        let id_index= $('#id_index_merek').val();
         let merekId = $('#idmerekAdd').val();
         let merekName = $('#merekAdd').val();
 
         $.ajax({
-            url: `/invakis/update/${merekId}`,
+            url: `/invakis/update/${id_index}`,
             type: "PUT",
             data: {
                 "id_merek": merekId, 

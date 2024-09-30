@@ -17,7 +17,7 @@
 
                             <div class="form-group">
                               <label for="idcategoriLabel">Id Categori</label>
-                              <input type="Text" class="form-control" id="idcategoriLabel" name="id_categori" placeholder="Id Categori">
+                              <input type="number" class="form-control" id="idcategoriLabel" name="id_categori" placeholder="Id Categori">
                             </div>
                                 @error('id_categori')
                                     <div class="alert alert-danger mt-2">{{ $message }}</div>

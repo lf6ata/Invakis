@@ -20,7 +20,7 @@ class Merek extends Model
     ];
     
     protected $table = 'merek';
-    protected $primaryKey = 'id_merek';
+    // protected $primaryKey = 'id_merek';
     // protected $keyType = 'number';
     //public $timestamps = false;
 }

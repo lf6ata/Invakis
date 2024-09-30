@@ -14,7 +14,10 @@ class Barang extends Model
      * @var array
      */
     protected $fillable = [
+        'no_asset',
+        'id_categori',
         'id_jenis',
+        'id_merek'
     ];
     
     public function tbCategori(){

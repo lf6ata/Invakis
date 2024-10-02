@@ -52,8 +52,14 @@ Route::put('/invakis/update/{id_merek}', [MasterdataController::class,'updateMer
 
 
 Route::post('/upload-image', [MasterdataController::class, 'storeBarang'])->name('image.upload');
-Route::get('/invakis/barang/view_barang', [MasterdataController::class,'getBarang'])->name('page.barang');
-
+//View Halaman Barang
+Route::get('/invakis/barang/view_barang/{orderby}', [MasterdataController::class,'getBarang'])->name('page.barang');
+//View Content Show Data Edit Barang
+Route::get('/invakis/barang/edit_barang/{id}', [MasterdataController::class,'showBarang']);
+//Submit Update Data Barang
+Route::put('/invakis/barang/update_barang/{id}', [MasterdataController::class,'updateBarang']);
+//Delete Data Barang
+Route::delete('/invakis/barang/delete_barang/{id}', [MasterdataController::class,'destroyBarang']);
 
 //View Content Data Barang
 // Route::get('/invakis/barang/input_barang', [MasterdataController::class,'pageBarang'])->name('page.barang');

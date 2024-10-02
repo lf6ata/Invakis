@@ -46,7 +46,7 @@
                                                 <th width="5%">No</th>
                                                 <th>Id Categori</th>
                                                 <th>Categori</th>  
-                                                <th>Opsi</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                        
@@ -57,10 +57,10 @@
                                                 <tr>
                                                     <td align="center">{{ $no+1 }}</td>
                                                     <td>{{ $data->id_categori}}</td>
-                                                    <td>{{ $data->categori }}</td>
+                                                    <td>{{ ucfirst($data->categori) }}</td>
                                                     <td align="center">
-                                                        <a href="javascript:void(0)" id="btn-edit-categori" data-id="{{ $data->id_categori }}" class="btn btn-sm btn-warning">Edit</a>
-                                                        <a href="javascript:void(0)" id="btn-delete-categori" data-id="{{ $data->id_categori }}" class="btn btn-sm btn-danger">Delete</a>
+                                                        <a href="javascript:void(0)" id="btn-edit-categori" data-id="{{ $data->id }}" class="btn btn-sm btn-warning">Edit</a>
+                                                        <a href="javascript:void(0)" id="btn-delete-categori" data-id="{{ $data->id }}" class="btn btn-sm btn-danger">Delete</a>
                                                     </td>
                                                 </tr>
 

@@ -26,7 +26,6 @@
                             
                             @csrf
 
-
                             <div class="form-group">
                                 <label for="categori_id">Categori:</label>
                                 <select name="categori_id" id="categori_id" class="form-control" required>
@@ -55,6 +54,26 @@
                                         <option value="{{ $m->id}} ">{{ $m->merek }}</option>
                                      @endforeach
                                 </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lokasiAdd">Lokasi</label>
+                                <input type="Text" class="form-control" id="lokasiAdd" name="lokasi" placeholder="Lokasi">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="merek_id">Npk:</label>
+                                <select name="merek_id" id="merek_id" class="form-control" required>
+                                    <option value="">-- Pilih Npk --</option>
+                                    @foreach($get_merek as $m)
+                                        <option value="{{ $m->id}} ">{{ $m->merek }}</option>
+                                     @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="karyawanAdd">Karyawan</label>
+                                <input type="Text" class="form-control" id="karyawanAdd" name="karyawan" placeholder="Nama Karyawan" readonly>
                             </div>
 
                             {{-- <div class="form-group">
@@ -113,7 +132,7 @@
             </div>
         </div> 
     <!-- End Add Button -->
-    @yield('fiture')
+    @include('fiture.barang.update_delete_barang')
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
                             <div class="card-header py-3">
@@ -124,21 +143,29 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
+                                                <th width=10%>No</th>
                                                 <th width=20%>No Asset</th> 
                                                 <th>Categori</th> 
                                                 <th>Jenis</th> 
-                                                <th>Merek</th> 
+                                                <th>Merek</th>
+                                                <th>Action</th> 
                                                 
                                             </tr>
                                         </thead>
                                        
                                         <tbody>
                                             @foreach($get_barang as $no=>$b)
-                                                <tr>
-                                                    <td>{{ $b->tbCategori[0]->id_categori }}-{{ strtoupper($b->tbJenis[0]->id_jenis) }}-{{ strtoupper($b->tbMerek[0]->id_merek) }}-{{ $b->id }}</td>
+                                                <tr id="row-{{ $b->id }}">
+                                                    {{-- <td>{{ $b->tbCategori[0]->id_categori }}-{{ strtoupper($b->tbJenis[0]->id_jenis) }}-{{ strtoupper($b->tbMerek[0]->id_merek) }}-{{ $b->id }}</td> --}}
+                                                    <td>{{ $no+1 }}</td>
+                                                    <td>{{ strtoupper($b->no_asset) }}</td>
                                                     <td>{{ $b->tbCategori[0]->categori }}</td>
                                                     <td>{{ $b->tbJenis[0]->jenis }}</td>
                                                     <td>{{ $b->tbMerek[0]->merek  }}</td>
+                                                    <td align="center">
+                                                        <a href="javascript:void(0)" id="btn-edit-barang" data-id="{{ $b->id }}" class="btn btn-sm btn-warning">Edit</a>
+                                                        <a href="javascript:void(0)" id="btn-delete-barang" data-id="{{ $b->id }}" class="btn btn-sm btn-danger">Delete</a>
+                                                    </td>
                                                     {{-- <td>
                                                         @if (!empty($b->tbMerek[0]->merek) )
                                                             {{ $b->tbMerek[0]->merek  }}
@@ -149,16 +176,6 @@
 
                                                 </tr>
                                             @endforeach
-                                            {{-- @foreach($get_jenis as $data_jenis)
-                                                <tr>
-                                                    @foreach($data_jenis->getJenis as $no=>$djenis)
-                                                        
-                                                            <td>{{ $djenis->id_jenis}}</td>
-                                                        
-                                                    @endforeach
-                                                </tr>
-                                            @endforeach --}}
-                                            
                                         </tbody>
                                     </table>
                                 </div>

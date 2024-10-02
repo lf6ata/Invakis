@@ -81,7 +81,7 @@
         var table = $('#dataTable-Jenis').DataTable({
             processing: false,
             serverSide: true,
-            aaSorting:[[0,"desc"]],
+            aaSorting:[[2,"asc"]],
             ajax:{
                 url:"{{ route('jenis.get') }}",
                 type: 'GET'

@@ -17,6 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('id_categori');
             $table->unsignedBigInteger('id_jenis');
             $table->unsignedBigInteger('id_merek');
+            $table->string('lokasi',20)->nullable();
+            $table->unsignedBigInteger('npk');
+            $table->string('nama_kr')->nullable();
             $table->timestamps();
             
             $table->index('id_categori')->key;  

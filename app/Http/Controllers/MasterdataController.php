@@ -82,7 +82,8 @@ class MasterdataController extends Controller
      public function showCategoriEdit($id)
     {
 
-        $post_categori = categori::where('id_categori',$id)->first();
+        // $post_categori = categori::where('id_categori',$id)->first();
+        $post_categori = categori::find($id);
         //return response
         
         return response()->json([
@@ -115,7 +116,7 @@ class MasterdataController extends Controller
 
 
         //create post
-        $post = categori::where('id_categori',$id);
+        $post = categori::where('id',$id);
         $post->update([
             'id_categori'  => $request->id_categori, 
             'categori'   => $request->categori
@@ -133,7 +134,7 @@ class MasterdataController extends Controller
     function destroyCategori($id)
     {
         // Cari kategori berdasarkan ID
-        $categori = categori::where('id_categori',$id)->first();
+        $categori = categori::where('id',$id);
 
         // Jika kategori tidak ditemukan, kembalikan respon 404
         if (!$categori) {
@@ -335,8 +336,9 @@ class MasterdataController extends Controller
     /****** CONROLLER BARANG ********/
     /***************************************/
 
-    public function getBarang(){
-        $get_barang = Barang::all();
+    public function getBarang($orderby){
+        
+        $get_barang = Barang::orderBy($orderby,'desc')->get();
         $get_categori = categori::all();
         $get_jenis = Jenis::all();
         $get_merek = Merek::all();
@@ -354,19 +356,26 @@ class MasterdataController extends Controller
         //     'id_jenis' => 'required',
         //     'id_merek' => 'required'
         // ]);
-
+        $asset_barang   = Barang::latest()->first();
         $asset_categori = categori::find($request->categori_id)->id_categori;
-        $asset_jenis = Jenis::find($request->jenis_id)->id_jenis;
-        $asset_merek = Merek::find($request->merek_id)->id_merek;
+        $asset_jenis    = Jenis::find($request->jenis_id)->id_jenis;
+        $asset_merek    = Merek::find($request->merek_id)->id_merek;
 
+        if(!empty($asset_barang->id)){
+            $no_index = intval(substr($asset_barang->no_asset,9))+1;
+        }
+        else
+        {
+            $no_index = 1;
+        }
         $tb_barang::create([
-            'no_asset' => $asset_categori.'-'.$asset_jenis.'-'.$asset_merek,
+            'no_asset' => $asset_categori.'-'.$asset_jenis.'-'.$asset_merek.'-'.$no_index,
             'id_categori' => $request->categori_id,
             'id_jenis' => $request->jenis_id,
             'id_merek' => $request->merek_id,
         ]);
 
-        return back();
+        return redirect()->route('page.barang','created_at');  
 
         // dd($tes);
        
@@ -389,6 +398,91 @@ class MasterdataController extends Controller
         // return back()->with('error', 'Gagal mengupload gambar!');
 
     }
+
+    public function showBarang($id)
+    {
+        
+        $index_barang = Barang::find($id);
+        $get_categori = categori::all();
+        $get_jenis = Jenis::all();
+        $get_merek = Merek::all();
+        //return response
+        return response()->json([
+            'index_barang' => $index_barang,
+            'get_categori' => $get_categori,
+            'get_jenis' => $get_jenis,
+            'get_merek' => $get_merek
+        ]); 
+
+    }
+
+    /**
+     * update
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
+    public function updateBarang(Request $request, $id)
+    {
+        //define validation rules
+        // $request->validate([
+        //     'id_categori' => 'required',
+        //     // 'id_jenis' => 'required',
+        //     // 'id_merek' => 'required',
+        // ]);
+
+        //check if validation fails
+        // if ($validator->fails()) {
+        //     return response()->json($validator->errors(), 422);
+        // }
+        
+
+        $index_barang = Barang::find($id);
+        
+        if (!empty($index_barang)) {
+
+            $index_barang->update([
+                'id_categori'  => $request->id_categori,
+                'id_jenis' => $request->id_jenis,
+                'id_merek' => $request->id_merek,
+            ]);
+            
+            
+            //return response
+            return response()->json([
+                'message' => 'Data Berhasil Diudapte!', 
+                'data' => $index_barang
+            ]);
+
+            
+        }
+        
+
+        return response()->json([
+            'message' => 'Data Gagal di Update' 
+        ]);
+        
+        
+    }
+
+    function destroyBarang($id)
+    {
+        // Cari kategori berdasarkan ID
+        $barang = Barang::where('id',$id);
+
+        // Jika kategori tidak ditemukan, kembalikan respon 404
+        if (!$barang) {
+            return response()->json(['message' => 'Barang not found'], 404);
+        }
+
+        // Hapus kategori
+        $barang->delete();
+
+        // Kembalikan respon sukses
+        return response()->json(['message' => 'Category deleted successfully'], 200);
+    }
+
 
 
 

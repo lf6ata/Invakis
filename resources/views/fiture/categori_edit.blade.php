@@ -24,6 +24,7 @@
 
                     <div class="form-group">
                       <label for="idcategoriUpdate">Id Categori</label>
+                      <input type="number" id="id_index_categori">
                       <input type="Text" class="form-control" id="idcategoriUpdate" name="id_categori" placeholder="Id Categori">
                     </div>
 
@@ -52,16 +53,17 @@ $(document).ready(function() {
         
         e.preventDefault(); 
 
-        let post_id = $(this).data('id');
+        let id_index = $(this).data('id');
 
         //fetch detail post with ajax
         $.ajax({
-            url: `/invakis/barang/edit_categori/${post_id}`,
+            url: `/invakis/barang/edit_categori/${id_index}`,
             type: "GET",
             cache: false,
             success:function(response){
                 
                 //fill data to form
+                $('#id_index_categori').val(response.data.id);
                 $('#idcategoriUpdate').val(response.data.id_categori);
                 $('#categoriUpdate').val(response.data.categori);
 
@@ -73,11 +75,12 @@ $(document).ready(function() {
 
     // Mengupdate kategori saat tombol update diklik
     $('#categoriUpdateBtn').on('click', function() {
+        let id_index = $('#id_index_categori').val();
         let categoryId = $('#idcategoriUpdate').val();
         let categoryName = $('#categoriUpdate').val();
 
         $.ajax({
-            url: `/invakis/barang/edit_categori/post/${categoryId}`,
+            url: `/invakis/barang/edit_categori/post/${id_index}`,
             type: "PUT",
             data: {
                 "id_categori": categoryId, 
@@ -87,8 +90,7 @@ $(document).ready(function() {
             success: function(response) {
                 alert(response.message);
                 $('#updateCategoryModal').modal('hide');
-                // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
-                location.reload(); // Atau update daftar kategori dengan cara lain
+                location.reload(); // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
             },
             error: function(xhr) {
                 alert(xhr.responseJSON.message);
@@ -97,19 +99,18 @@ $(document).ready(function() {
     });
 
     $(document).on('click', '#btn-delete-categori', function() {
-    let categoryId = $(this).data('id');
-    console.log(typeof(categoryId)+categoryId);
+    let id_index = $(this).data('id');
+    // console.log(typeof(categoryId)+categoryId);
     if (confirm('Are you sure you want to delete this category?')) {
         $.ajax({
-            url: `/invakis/barang/delete/${categoryId}`,
+            url: `/invakis/barang/delete/${id_index}`,
             type: "DELETE",
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
                 alert(response.message);
-                // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
-                location.reload(); // Atau update daftar kategori dengan cara lain
+                location.reload(); // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
             },
             error: function(xhr) {
                 alert(xhr.responseJSON.message);

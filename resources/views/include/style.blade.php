@@ -20,7 +20,41 @@
 
     <!-- Custom styles for this page -->
     <link href={{ asset("template/vendor/datatables/dataTables.bootstrap4.min.css") }} rel="stylesheet">
+    
+    <!-- Library Ajax -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+     <!-- Bootstrap Datepicker CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+    <style>
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        /* Warna default */
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
+        input[type="checkbox"]{
+            width: 1.3em; 
+            height: 1.3em;
+        }
+
+    </style>
+</head>
 
 
 </head>

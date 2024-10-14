@@ -21,19 +21,19 @@
     <div class="card shadow mb-4">
                             <div class="card-header py-3 d-flex flex-row-reverse">
                                         <!-- Add Btn Categori -->
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCategori">
+                                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addCategori">
                                             <i class="fas fa-plus fa-sm"> Categori</i>
                                         </button>
                                         <!-- Add Btn Jenis -->
-                                        <button type="button" class="btn btn-info mr-2" data-toggle="modal" data-target="#addJenis">
+                                        <button type="button" class="btn btn-sm btn-info mr-2" data-toggle="modal" data-target="#addJenis">
                                             <i class="fas fa-plus fa-sm"> Jenis</i>
                                         </button>
                                         <!-- Add Btn Merek -->
-                                        <button type="button" class="btn btn-info mr-2" data-toggle="modal" data-target="#addMerek">
+                                        <button type="button" class="btn btn-sm btn-info mr-2" data-toggle="modal" data-target="#addMerek">
                                             <i class="fas fa-plus fa-sm"> Merek</i> 
                                         </button>
                                         <!-- Add Btn Warna -->
-                                        <button type="button" class="btn btn-info mr-2" data-toggle="modal" data-target="#addWarna">
+                                        <button type="button" class="btn btn-sm btn-info mr-2" data-toggle="modal" data-target="#addWarna">
                                             <i class="fas fa-plus fa-sm"> Warna</i> 
                                         </button>
                             </div>

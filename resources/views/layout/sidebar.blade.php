@@ -65,17 +65,16 @@
                         <a class="collapse-item" href={{ Route('page.categori') }}>Categoris</a>
                         <a class="collapse-item" href={{ Route('page.barang','created_at') }}>Barang</a>
                         <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Cetak:</h6>
-                        <a class="collapse-item" href="404.html">Cetak Data Barang</a>
                     </div>
                 </div>
             </li>
 
             <!-- Nav Item - Pegawai -->
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href={{ Route('page.pegawai','created_at') }}>
                     <i class="fas fa-fw fa-user"></i>
-                    <span>Data Pegawai</span></a>
+                    <span>Data Pegawai</span>
+                </a>
             </li>
 
             <!-- Nav Item - Laporan -->

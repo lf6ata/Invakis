@@ -3,6 +3,7 @@
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MasterdataController;
+use App\Http\Controllers\PegawaiController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -51,19 +52,36 @@ Route::get('/invakis/edit/{id_merek}', [MasterdataController::class,'showMerek']
 Route::put('/invakis/update/{id_merek}', [MasterdataController::class,'updateMerek']);
 
 
+Route::get('/get-karyawan/{id_npk}', [MasterdataController::class,'getKaryawan']);
+//Get View Foto
+Route::get('/invakis/barang/foto/{id_foto}', [MasterdataController::class,'viewFoto']);
+//Upload Form Barang
 Route::post('/upload-image', [MasterdataController::class, 'storeBarang'])->name('image.upload');
 //View Halaman Barang
 Route::get('/invakis/barang/view_barang/{orderby}', [MasterdataController::class,'getBarang'])->name('page.barang');
 //View Content Show Data Edit Barang
 Route::get('/invakis/barang/edit_barang/{id}', [MasterdataController::class,'showBarang']);
 //Submit Update Data Barang
-Route::put('/invakis/barang/update_barang/{id}', [MasterdataController::class,'updateBarang']);
+Route::post('/invakis/barang/update_barang/{id}', [MasterdataController::class,'updateBarang']);
 //Delete Data Barang
 Route::delete('/invakis/barang/delete_barang/{id}', [MasterdataController::class,'destroyBarang']);
+Route::delete('/invakis/barang/delete_all', [MasterdataController::class,'destroyAllBarang']);
 
+//View Halaman Pegawai
+Route::get('/invakis/pegawai/{orderby}', [PegawaiController::class,'getPegawai'])->name('page.pegawai');
+//Upload Form Barang
+Route::post('/Invakis/pegawai/store_karyawan', [PegawaiController::class, 'storeKaryawan'])->name('store.pegawai');
+//View Content Show Data Edit Barang
+Route::get('/invakis/pegawai/edit/{id}', [PegawaiController::class,'editPegawai']);
+//Delete Data Pegawai
+Route::delete('/invakis/pegawai/delete_pegawai/{id}', [PegawaiController::class,'destroyPegawai']);
+//Update Data Pegawai
+Route::put('/invakis/pegawai/update/{id}', [PegawaiController::class,'updatePegawai']);
 //View Content Data Barang
 // Route::get('/invakis/barang/input_barang', [MasterdataController::class,'pageBarang'])->name('page.barang');
 
+Route::post('/export-selected', [MasterdataController::class, 'exportSelected'])->name('export.selected');
 
-Route::get('/barang',[MasterdataController::class, "tampil"])->name("masterdata.tampil");
-Route::post('/tambah_barang',[MasterdataController::class, "tambah"])->name("masterdata.tambah");
+Route::post('/exportpdf.selected', [MasterdataController::class, 'generatePDF'])->name('exportpdf.selected');
+
+Route::get('/qrcode', [MasterdataController::class, 'generatePDF']);

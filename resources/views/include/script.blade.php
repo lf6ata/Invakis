@@ -19,5 +19,15 @@
     <script>
     $(document).ready(function() {
         $('#dataTable-Categori').DataTable();
+
+        // Membuat motif bari table belang belang
+        $('#myTable tbody tr:even').css('background-color', '#f2f2f2'); // Baris genap
+        $('#myTable tbody tr:odd').css('background-color', '#fff');     // Baris ganjil
     });
     </script>
+
+    <!-- PLUGIN DATEPICKER JS UNTUK PEMILIHAN TANGGAL -->
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>

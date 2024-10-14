@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DataExport;
 use App\Models\Barang;
 use App\Models\categori;
-use App\Models\Category;
 use App\Models\Jenis;
+use App\Models\Karyawan;
 use App\Models\Merek;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Faker\Core\File;
+use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage as FacadesStorage;
+use Maatwebsite\Excel\Facades\Excel;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Svg\Tag\Rect;
 use Symfony\Component\Console\Input\Input;
 use Yajra\DataTables\DataTables;
 
@@ -342,25 +350,68 @@ class MasterdataController extends Controller
         $get_categori = categori::all();
         $get_jenis = Jenis::all();
         $get_merek = Merek::all();
+        $get_karyawan = Karyawan::all();
 
-        return view('menu.barang.input_barang', compact('get_barang', 'get_categori', 'get_jenis', 'get_merek'));
+        return view('menu.barang.input_barang', compact('get_barang', 'get_categori', 'get_jenis', 'get_merek', 'get_karyawan'));
+    }
+
+    public function getKaryawan($id_npk){
+        $karyawan = Karyawan::where('id', $id_npk)->first();
+
+        if ($karyawan) {
+            return response()->json([
+                'nama_kr' => $karyawan->nama_kr,
+                'npk' => $karyawan->npk,
+                'divisi' => $karyawan->divisi,
+            ]);
+        } else {
+            return response()->json(['error' => 'Karyawan tidak ditemukan'], 404);
+        }
     }
 
 
     public function storeBarang(Request $request) {
         $tb_barang = new Barang();
-        // Validasi file upload
+        
+        // //Validasi file upload
         // $request->validate([
-        //     // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal 2MB
-        //     'id_categori' => 'required',
-        //     'id_jenis' => 'required',
-        //     'id_merek' => 'required'
+        //     'id_categori'   => 'required',
+        //     'id_jenis'      => 'required',
+        //     'id_merek'      => 'required',
+        //     'lokasi'        => 'required',
+        //     'npk'           => 'required',
+        //     'nama_kr'       => 'required',
+        //     'divisi'        => 'required',
+        //     'image'         => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal 2MB
         // ]);
+
+        //Validasi Image apakah image kosong?
+        if ($request->hasFile('image')) {
+
+            $file = $request->file('image');
+
+            // Buat nama file baru dengan timestamp dan nama asli
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Pindahkan file ke folder storage atau public
+            $path = $file->storeAs('images', $filename, 'public'); // Simpan di folder 'public/images'
+
+            // Mengirimkan response berhasil dengan nama file dan lokasi
+            // return back()->with('success', 'Gambar berhasil diupload!')->with('image', $filename);
+        }
+        else{
+            $path = 'Not Image';
+        }
+        // else{
+        //     return back()->with('error', 'Gagal mengupload gambar!');
+        // }
+
         $asset_barang   = Barang::latest()->first();
         $asset_categori = categori::find($request->categori_id)->id_categori;
         $asset_jenis    = Jenis::find($request->jenis_id)->id_jenis;
         $asset_merek    = Merek::find($request->merek_id)->id_merek;
 
+        //Validasi No Asset
         if(!empty($asset_barang->id)){
             $no_index = intval(substr($asset_barang->no_asset,9))+1;
         }
@@ -368,34 +419,39 @@ class MasterdataController extends Controller
         {
             $no_index = 1;
         }
+        
         $tb_barang::create([
-            'no_asset' => $asset_categori.'-'.$asset_jenis.'-'.$asset_merek.'-'.$no_index,
-            'id_categori' => $request->categori_id,
-            'id_jenis' => $request->jenis_id,
-            'id_merek' => $request->merek_id,
+            'no_asset'      => $asset_categori.'-'.strtoupper($asset_jenis).'-'.$asset_merek.'-'.$no_index,
+            'id_categori'   => $request->categori_id,
+            'id_jenis'      => $request->jenis_id,
+            'id_merek'      => $request->merek_id,
+            'lokasi'        => $request->lokasi_id,
+            'npk'           => $request->npk_id,
+            'nama_kr'       => $request->karyawan_id,
+            'divisi'        => $request->divisi_id,
+            'image'         => $path,
+            'serial_number' => $request->sn_id,
+            'jenis_license' => $request->jlicense_id,
+            'kode_license'  => $request->kdlicense_id,
+            'tanggal_masuk'    => $request->tanggal_masuk,
         ]);
+
+        
 
         return redirect()->route('page.barang','created_at');  
 
-        // dd($tes);
-       
-        // dd($tes);
 
-        // if ($request->hasFile('image')) {
+    }
 
-        //     $file = $request->file('image');
-
-        //     // Buat nama file baru dengan timestamp dan nama asli
-        //     $filename = time() . '_' . $file->getClientOriginalName();
-
-        //     // Pindahkan file ke folder storage atau public
-        //     $path = $file->storeAs('images', $filename, 'public'); // Simpan di folder 'public/images'
-
-        //     // Mengirimkan response berhasil dengan nama file dan lokasi
-        //     return back()->with('success', 'Gambar berhasil diupload!')->with('image', $filename);
-        // }
-
-        // return back()->with('error', 'Gagal mengupload gambar!');
+    public function viewFoto($id)
+    {
+        
+        $find_foto = Barang::find($id);
+        
+        //return response
+        return response()->json([
+            'data' => $find_foto,
+        ]); 
 
     }
 
@@ -406,15 +462,19 @@ class MasterdataController extends Controller
         $get_categori = categori::all();
         $get_jenis = Jenis::all();
         $get_merek = Merek::all();
+        $get_karyawan = Karyawan::all();
+        // $get_karyawan = Karyawan::all();
         //return response
         return response()->json([
             'index_barang' => $index_barang,
             'get_categori' => $get_categori,
             'get_jenis' => $get_jenis,
-            'get_merek' => $get_merek
+            'get_merek' => $get_merek,
+            'get_karyawan' => $get_karyawan
         ]); 
 
     }
+
 
     /**
      * update
@@ -436,23 +496,46 @@ class MasterdataController extends Controller
         // if ($validator->fails()) {
         //     return response()->json($validator->errors(), 422);
         // }
-        
+
+        if ($request->hasFile('imagenew')) {
+            $file = $request->file('imagenew');
+
+            // Buat nama file baru dengan timestamp dan nama asli
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Pindahkan file ke folder storage atau public
+            $path = $file->storeAs('images', $filename, 'public'); // Simpan di folder 'public/images'
+            
+        }
+
+        else{
+            $path = 'Not Image';
+        }
 
         $index_barang = Barang::find($id);
         
         if (!empty($index_barang)) {
 
+            $image_old = $index_barang->image;
+            if(FacadesStorage::disk('public')->exists($image_old))
+            {
+                FacadesStorage::disk('public')->delete($image_old);
+            }
+
             $index_barang->update([
-                'id_categori'  => $request->id_categori,
-                'id_jenis' => $request->id_jenis,
-                'id_merek' => $request->id_merek,
+                'id_categori'   => $request->id_categori,
+                'id_jenis'      => $request->id_jenis,
+                'id_merek'      => $request->id_merek,
+                'lokasi'        => $request->lokasi,
+                'npk'           => $request->npk,
+                'nama_kr'       => $request->nama,
+                'divisi'        => $request->divisi,
+                'image'         => $path
             ]);
-            
             
             //return response
             return response()->json([
                 'message' => 'Data Berhasil Diudapte!', 
-                'data' => $index_barang
             ]);
 
             
@@ -469,41 +552,81 @@ class MasterdataController extends Controller
     function destroyBarang($id)
     {
         // Cari kategori berdasarkan ID
-        $barang = Barang::where('id',$id);
+        $barang = Barang::find($id);
+        
 
         // Jika kategori tidak ditemukan, kembalikan respon 404
         if (!$barang) {
             return response()->json(['message' => 'Barang not found'], 404);
         }
 
+        // Mengahapus file image
+        $path = $barang->image;
+        if(FacadesStorage::disk('public')->exists($path)){
+            FacadesStorage::disk('public')->delete($path);
+        }
+        
         // Hapus kategori
         $barang->delete();
 
         // Kembalikan respon sukses
         return response()->json(['message' => 'Category deleted successfully'], 200);
+        
+        //Check image
+        // return dd(FacadesStorage::disk('public')->exists($path));
+        // return dd(FacadesStorage::disk('public')->delete($path));
     }
 
-
-
-
-    public function pageJenis()  
+    function destroyAllBarang(Request $request)
     {
-        return view('menu.barang.input_jenis');
-    }
+        $ids = $request->input('data'); // Ambil array ID dari request
 
-    public function pageMerek()  
+        // Hapus data berdasarkan ID
+        Barang::destroy($ids);
+
+        return response()->json(['success' => 'Data berhasil dihapus.']);
+    }
+    
+
+
+     // Export data yang dipilih ke Excel
+     public function exportSelected(Request $request)
+     {
+         $selectedIds = $request->selected_ids;
+            
+         if (!$selectedIds) {
+             return back()->with('error', 'No data selected');
+         }
+ 
+         $barang = Barang::whereIn('id', $selectedIds)->get();
+ 
+        //  Export ke Excel
+        return Excel::download(new DataExport($barang),date('Y-m-d').'_inventaris'.date('H.i').'.xlsx');
+        //return dd($barang);
+     }
+
+     public function generatePDF(Request $request)
     {
-        return view('menu.barang.input_merek');
+        $selectedIds = $request->selected_ids;
+            
+        if (!$selectedIds) {
+            return back()->with('error', 'No data selected');
+        }
+
+        // Ambil data yang akan digunakan dalam PDF
+        $barang = Barang::whereIn('id', $selectedIds)->get();
+
+        // Buat file PDF dari view
+        $pdf = PDF::loadView('pdf.qrcode', compact('barang'));
+
+        // Kirimkan PDF sebagai respons ke browser tanpa mendownload
+        return $pdf->stream('barang.pdf');
     }
 
-    public function pageWarna()  
-    {
-        return view('menu.barang.input_warna');
-    }
-
-    // public function pageBarang()  
-    // {
-    //     return view('menu.barang.input_barang');
+    // public function show(){
+    //      return QrCode::generate(
+    //         'Hello, World!',
+    //     );
     // }
 
 }

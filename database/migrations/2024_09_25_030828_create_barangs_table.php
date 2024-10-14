@@ -13,18 +13,25 @@ return new class extends Migration
     {
         Schema::create('barang', function (Blueprint $table) {
             $table->id();
-            $table->string('no_asset',20)->nullable();
-            $table->unsignedBigInteger('id_categori');
-            $table->unsignedBigInteger('id_jenis');
-            $table->unsignedBigInteger('id_merek');
+            $table->string('no_asset',20);
+            $table->unsignedBigInteger('id_categori')->nullable()->default(0);
+            $table->unsignedBigInteger('id_jenis')->nullable()->default(0);
+            $table->unsignedBigInteger('id_merek')->nullable()->default(0);
+            $table->unsignedBigInteger('npk')->nullable()->default(0);
             $table->string('lokasi',20)->nullable();
-            $table->unsignedBigInteger('npk');
             $table->string('nama_kr')->nullable();
+            $table->string('divisi')->nullable();
+            $table->tinyText('image')->nullable();
+            $table->string('serial_number')->nullable();
+            $table->string('jenis_license')->nullable();
+            $table->string('kode_license')->nullable();
+            $table->date('tanggal_masuk')->nullable();
             $table->timestamps();
             
             $table->index('id_categori')->key;  
             $table->index('id_jenis')->key;
             $table->index('id_merek')->key;
+            $table->index('npk')->key;
 
             // $table->unsignedBigInteger('id_categori');
             // $table->unsignedBigInteger('id_jenis');

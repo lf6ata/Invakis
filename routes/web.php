@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MasterdataController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -85,3 +88,37 @@ Route::post('/export-selected', [MasterdataController::class, 'exportSelected'])
 Route::post('/exportpdf.selected', [MasterdataController::class, 'generatePDF'])->name('exportpdf.selected');
 
 Route::get('/qrcode', [MasterdataController::class, 'generatePDF']);
+
+//View Page Login
+Route::get('/login', [AuthController::class, 'authLogin'])->middleware('guest');
+//Prosse login
+Route::post('/login/auth', [AuthController::class, 'store'])->name('auth.login');
+//Prosse logut
+Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.logout');
+
+
+//View Page User
+Route::get('/Invakis/user', [UserController::class, 'index'])->name('page.user');
+//add User
+Route::post('/Invakis/user/add', [UserController::class, 'store'])->name('store.user');
+//Delete User
+Route::delete('/Invakis/user/delete/{id}', [UserController::class, 'destroy'])->name('destroy.user');
+//Edit User
+Route::get('/Invakis/user/edit/{id}', [UserController::class, 'edit']);
+//Update User
+Route::put('/Invakis/user/update/{id}', [UserController::class, 'update']);
+
+
+//View Page Roles
+Route::get('/invakis/role', [RoleController::class, 'index'])->name('page.role');
+//add Roles
+Route::post('/invakis/role/add', [RoleController::class, 'store'])->name('store.roles');
+//Delete Role
+Route::delete('/invakis/delete/role/{id}', [RoleController::class, 'destroy'])->name('destroy.role');
+//Edit Role
+Route::get('/invakis/role/edit/{id}', [RoleController::class, 'edit']);
+//Update Role
+Route::put('/invakis/role/update/{id}', [RoleController::class, 'update']);
+
+
+

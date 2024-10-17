@@ -131,4 +131,8 @@ return [
     //     'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
     // ],
 
+    // 'providers' => [
+    //     Spatie\Permission\PermissionServiceProvider::class,
+    // ]
+
 ];

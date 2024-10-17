@@ -38,8 +38,8 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">User:</h6>
-                        <a class="collapse-item" href="buttons.html">tes</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
+                        <a class="collapse-item" href="{{ route('page.user') }}">User</a>
+                        <a class="collapse-item" href="{{ route('page.role') }}">Role</a>
                     </div>
                 </div>
             </li>
@@ -80,8 +80,8 @@
             <!-- Nav Item - Laporan -->
             <li class="nav-item">
                 <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-file"></i>
-                    <span>Laporan</span></a>
+                    <i class="fas fa-fw fa-box"></i>
+                    <span>STO</span></a>
             </li>
 
 

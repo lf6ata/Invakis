@@ -27,6 +27,9 @@
      <!-- Bootstrap Datepicker CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
+    <!-- CSS Select2 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+    
     <style>
         
         table {
@@ -51,6 +54,31 @@
         input[type="checkbox"]{
             width: 1.3em; 
             height: 1.3em;
+        }
+
+        .select2-container {
+            width: 100% !important; /* Memastikan lebar 100% untuk container */
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__placeholder {
+            color: #f00000; /* Warna placeholder */
+        }
+
+        /* Mengubah warna latar belakang pilihan yang dipilih */
+        /* .select2-container--default .select2-selection--multiple {
+            background-color: #e9ecef; 
+            border: 1px solid #ced4da; 
+        } */
+
+        /* Mengubah warna teks pilihan yang dipilih */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #007bff; /* Warna latar belakang pilihan */
+            color: white; /* Warna teks */
+        }
+
+        /* Mengubah warna untuk ikon hapus pada pilihan */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: white; /* Warna untuk ikon hapus */
         }
 
     </style>

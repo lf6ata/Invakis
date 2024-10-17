@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Faker\Core\File;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage as FacadesStorage;
 use Maatwebsite\Excel\Facades\Excel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;

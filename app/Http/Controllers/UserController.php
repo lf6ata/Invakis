@@ -74,8 +74,8 @@ class UserController extends Controller
         $roles = $user->getRoleNames()->toArray(); // Mengambil role yang ada
 
         // Daftar semua role yang tersedia
-        $allRoles = Role::all();
-
+        $allRoles = Role::all()->toArray();
+        
         $formattedRoles = [];
         foreach ($allRoles as $role) {
             $formattedRoles[] = [
@@ -83,6 +83,8 @@ class UserController extends Controller
                 'isSelected' => in_array($role, $roles)
             ];
         }
+
+        // dd($formattedRoles);
 
         //mengembalikan data role dan user
         return response()->json([

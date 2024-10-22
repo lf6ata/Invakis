@@ -56,7 +56,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
+                    <i class="fas fa-fw fa-box"></i>
                     <span>Master Barang</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
@@ -79,8 +79,8 @@
 
             <!-- Nav Item - Laporan -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-box"></i>
+                <a class="nav-link" href="{{ Route('page.sto') }}">
+                    <i class="fas fa-fw fa-file"></i>
                     <span>STO</span></a>
             </li>
 

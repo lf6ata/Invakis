@@ -16,9 +16,9 @@ class DashboardController extends Controller
     public function pageDashboard()  
     {
    
-        $user = User::find(Auth::user()->id); // Ambil satu user
-        // dd(Auth::user()->roles->getRoleNames());
-        dd($user->getRoleNames());
+        // $user = User::find(Auth::user()->id); // Ambil satu user
+        // // dd(Auth::user()->roles->getRoleNames());
+        // dd($user->getRoleNames());
 
 
         // $user = ne

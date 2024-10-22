@@ -1,4 +1,4 @@
-<!-- resources/views/pdf/users.blade.php -->
+{{-- <!-- resources/views/pdf/users.blade.php -->
 
 <!DOCTYPE html>
 <html>
@@ -45,4 +45,45 @@
         </tbody>
     </table>
 </body>
+</html> --}}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tampilan Teks</title>
+    <style>
+        table {
+            /* width: 100%; Menggunakan lebar penuh */
+            /* width: 50%; */
+            border-collapse: collapse;
+            
+        }
+        td {
+            width: 16.66%; /* 6 kolom */
+            text-align: center;
+            padding: 5px; /* Jarak dalam sel */
+        }
+    </style>
+</head>
+<body>
+    <table >
+        <tr>
+            @foreach($barang as $b)
+            
+                <td>
+                    <div;>
+                        <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(110)->generate( $b->no_asset )) !!} ">
+                        <br>{{ $b->no_asset }}
+                    </div>
+                </td>
+                @if ($loop->iteration % 6 == 0) <tr></tr> @endif
+            @endforeach
+            {{-- @if ($loop->iteration % 6 == 0) </tr><tr> @endif --}}
+        </tr>
+    </table>
+</body>
 </html>
+

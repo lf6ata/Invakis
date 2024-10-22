@@ -5,8 +5,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MasterdataController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StoController;
 use App\Http\Controllers\UserController;
+use App\Models\Barang;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -120,5 +124,31 @@ Route::get('/invakis/role/edit/{id}', [RoleController::class, 'edit']);
 //Update Role
 Route::put('/invakis/role/update/{id}', [RoleController::class, 'update']);
 
+//View Page STO
+Route::get('/invakis/sto', [StoController::class, 'index'])->name('page.sto');
 
+//View Edit STO
+Route::get('/invakis/sto/edit/{id}', [StoController::class, 'edit'])->name('edit.sto');
+
+//View Edit STO
+Route::post('/invakis/sto/scan/', [StoController::class, 'scan']);
+
+//Scan QrCode
+Route::get('/invakis/scan', [QrCodeController::class, 'generate']);
+
+Route::get('/qrcode-scanner', function () {
+    return view('welcome');
+});
+
+
+
+//Menegecek Query wher dengan Eloquent ORM
+// Route::get('query', function () {
+//     return dd(Barang::where('no_asset','=','31-SA-21-1')->get());
+// });
+
+//Menegecek Query wher dengan Eloquent ORM
+// Route::get('tes', function ():View{
+//     return view('welcome');
+// });
 

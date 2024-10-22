@@ -1,6 +1,6 @@
 @extends('index')
 
-@section('title','Input Barang')
+@section('title','Barang')
 @section('content')
 
         <!-- Form Add Barang-->
@@ -135,27 +135,26 @@
     <div class="card shadow mb-4">
         
                             <div class="card-header py-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="p-2 flex-grow-1">
-                                        <h6 class="m-0 font-weight-bold text-primary ">Data Barang</h6>
-                                    </div>
-                                    <div class="p-2">
-                                        <button type="button" id="deleteAll"class="btn btn-sm btn-danger">
+                                <div class="row">
+                                    <div class="col mb-2 ">
+                                        <button type="button" id="deleteAll"class="btn  btn-danger">
                                             <i class="fas fa-trash fa-sm"></i> Delete
                                         </button>
                                     </div>
-                                    <div class="p-2">
-                                        <button type="button" id="exportPdf" class="btn btn-sm  btn-info">
-                                            <i class="fas fa-qrcode fa-sm"></i> Cetak Qr-Code
+                                    <div class="col-md-auto mb-2">
+                                        <button class="btn btn-info dropdown-toggle" type="button"
+                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="true">
+                                            Export
                                         </button>
+                                        <div class="dropdown-menu animated--fade-in"
+                                            aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" id="exportPdf" href="javascript:void(0)"><i class="fas fa-qrcode fa-sm"></i> Cetak Qr-Code</a>
+                                            <a class="dropdown-item" id="exportExcel" href="javascript:void(0)"><i class="fas fa-print fa-sm"></i> Export Excel</a>
+                                        </div>
                                     </div>
-                                    <div class="p-2">
-                                        <button type="button" id="exportExcel" class="btn btn-sm  btn-info">
-                                            <i class="fas fa-upload fa-sm"></i> Export Excel
-                                        </button>
-                                    </div>
-                                    <div class="p-2">
-                                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addBarang">
+                                    <div class="col col-lg-2">
+                                        <button type="button" class="btn  btn-primary" data-toggle="modal" data-target="#addBarang">
                                             <i class="fas fa-plus fa-sm"></i> Add Barang
                                         </button>
                                     </div>
@@ -256,7 +255,6 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-                                    <button type="submit" id="exportBtn">Export Selected to Excel</button>
                                 </form>
                                 </div>
                             </div>
@@ -270,6 +268,7 @@ $(document).ready(function() {
         var isChecked = $(this).prop('checked');
         $('.dataCheckbox').prop('checked', isChecked);
     });
+    
 
     // Export PDF QR-CODE
     $('#exportPdf').on('click', function(e) {

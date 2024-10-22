@@ -34,7 +34,7 @@
                         <div class="form-group">
                             <label for="role">Role:</label>
                             <select name="role_edit_id" id="role_edit_id" class="form-control" required>
-                              
+                              <option value="">--- Pilih Role ---</option>
                             </select>
                         </div>
                         
@@ -97,10 +97,13 @@ $(document).ready(function() {
 
                  // Mengisi select dengan role
                 const roleSelect = $('#role_edit_id');
-                roleSelect.append('');
+                roleSelect.empty().append('<option value="">-- Pilih Role --</option>'); //mengosongkan dan menginisialisasikan form select utama
                 response.roles.forEach(role => {
+
                         roleSelect.append(`<option value="${role.name.name}" ${role.isSelected ? 'selected' : ''}>${role.name.name}</option>`);
+                        
                 });
+                
 
                 $('#nama_edit').val(response.index_user.name);
                 $('#email_edit').val(response.index_user.email);

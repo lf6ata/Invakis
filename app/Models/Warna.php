@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Sto extends Model
+class Warna extends Model
 {
     /**
      * fillable
@@ -12,14 +12,11 @@ class Sto extends Model
      * @var array
      */
     protected $fillable = [
-        'tgl_sto',
-        'no_asset',
-        'status',
-        'user',
-        'tgl_save_sto'
+        'id_warna',
+        'warna',
 
     ];
     
-    protected $table = 'sto';
-
+    protected $table = 'warna';
+    
 }

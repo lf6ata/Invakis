@@ -21,15 +21,14 @@
                 <form id="categoriUpdate">
 
                     @csrf
-
+                    <input type="number" id="id_index_categori" hidden>
                     <div class="form-group">
-                      <label for="idcategoriUpdate">Id Categori</label>
-                      <input type="number" id="id_index_categori">
+                      <label for="idcategoriUpdate">Id Kategori</label>
                       <input type="Text" class="form-control" id="idcategoriUpdate" name="id_categori" placeholder="Id Categori">
                     </div>
 
                     <div class="form-group">
-                      <label for="categoriUpdate">Categori</label>
+                      <label for="categoriUpdate">Kategori</label>
                       <input type="Text" class="form-control" id="categoriUpdate" name="categori" placeholder="Categori">
                     </div>
                 
@@ -38,7 +37,7 @@
 
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary" type="button" id="categoriUpdateBtn">Save</a>
+                <button class="btn btn-primary" type="button" id="categoriUpdateBtn">Update</a>
             </div>
         </div>
     </div>
@@ -78,7 +77,15 @@ $(document).ready(function() {
         let id_index = $('#id_index_categori').val();
         let categoryId = $('#idcategoriUpdate').val();
         let categoryName = $('#categoriUpdate').val();
-
+        
+        Swal.fire({
+                    title: 'Mengupdate...',
+                    text: 'Silakan tunggu...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+        });
         $.ajax({
             url: `/invakis/barang/edit_categori/post/${id_index}`,
             type: "PUT",
@@ -88,9 +95,18 @@ $(document).ready(function() {
                 "_token": $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                alert(response.message);
-                $('#updateCategoryModal').modal('hide');
-                location.reload(); // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
+            setTimeout(() => {
+                Swal.fire(
+                            'Diupdate!',
+                            response.message,
+                            'success'
+                        );
+                // alert(response.message);
+                setTimeout(() => {
+                    $('#updateCategoryModal').modal('hide');
+                    location.reload(); // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
+                }, 1500); // Jeda 1,5 detik (1500 ms)
+            }, 1500); // Jeda 1,5 detik (1500 ms)
             },
             error: function(xhr) {
                 alert(xhr.responseJSON.message);
@@ -100,23 +116,72 @@ $(document).ready(function() {
 
     $(document).on('click', '#btn-delete-categori', function() {
     let id_index = $(this).data('id');
-    // console.log(typeof(categoryId)+categoryId);
-    if (confirm('Are you sure you want to delete this category?')) {
-        $.ajax({
-            url: `/invakis/barang/delete/${id_index}`,
+    
+    // if (confirm('Are you sure you want to delete this category?')) {
+    //     $.ajax({
+    //         url: `/invakis/barang/delete/${id_index}`,
+    //         type: "DELETE",
+    //         data: {
+    //             _token: $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         success: function(response) {
+    //             alert(response.message);
+    //             location.reload(); // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
+    //         },
+    //         error: function(xhr) {
+    //             alert(xhr.responseJSON.message);
+    //         }
+    //     });
+    // }
+
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Anda tidak akan dapat mengembalikan data ini!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Tampilkan loading
+            Swal.fire({
+                    title: 'Menghapus...',
+                    text: 'Silakan tunggu...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+            });
+            $.ajax({
+                url: `/invakis/barang/delete/${id_index}`,
             type: "DELETE",
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                alert(response.message);
-                location.reload(); // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
+                setTimeout(() => {
+                    Swal.fire(
+                            'Dihapus!',
+                            'Data Anda telah dihapus.',
+                            'success'
+                        );
+                    setTimeout(function() {
+                        location.reload(); // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
+                    }, 1500); // Jeda 1,5 detik (1500 ms)
+                }, 1500); // Jeda 1,5 detik (1500 ms)
+                
             },
             error: function(xhr) {
-                alert(xhr.responseJSON.message);
+                Swal.fire(
+                        'Gagal!',
+                        'Terjadi kesalahan saat menghapus data.',
+                        'error'
+                );
             }
-        });
-    }
+            });
+        }
+    });
 });
 });
       

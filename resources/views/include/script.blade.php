@@ -36,3 +36,14 @@
 
     <!-- JS Select2 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+
+    {{-- <script>
+        // Tampilkan spinner
+        document.getElementById('loading-spinner').style.display = 'flex';
+
+        // Menunggu 500ms sebelum melakukan redirect untuk memberikan waktu pada spinner
+        setTimeout(() => {
+            document.getElementById('loading-spinner').style.display = 'none';
+        }, 1500);
+    </script> --}}
+    

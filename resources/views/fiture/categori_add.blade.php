@@ -5,7 +5,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addLabel">Add Categori</h5>
+                        <h5 class="modal-title" id="addLabel">Add Kategori</h5>
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
@@ -16,22 +16,22 @@
                             @csrf
 
                             <div class="form-group">
-                              <label for="idcategoriLabel">Id Categori</label>
-                              <input type="number" class="form-control" id="idcategoriLabel" name="id_categori" placeholder="Id Categori">
+                              <label for="idcategoriLabel">Id Kategori</label>
+                              <input type="number" class="form-control" id="idcategoriLabel" name="id_categori" placeholder="Id Kategori">
                             </div>
                                 @error('id_categori')
                                     <div class="alert alert-danger mt-2">{{ $message }}</div>
                                 @enderror
 
                             <div class="form-group">
-                              <label for="categoriLabel">Categori</label>
-                              <input type="Text" class="form-control" id="categoriLabel" name="categori" placeholder="Categori">
+                              <label for="categoriLabel">Kategori</label>
+                              <input type="Text" class="form-control" id="categoriLabel" name="categori" placeholder="Kategori">
                             </div>
 
                             {{-- Button add  --}}
                             <div class="modal-footer">
                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                <button class="btn btn-primary" type="submit">Save</a>
+                                <button class="btn btn-primary" type="submit">Add</a>
                             </div>
 
                         </form>

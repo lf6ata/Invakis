@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Invakis</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="alif">
+    <meta name="author" content="alif">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <link rel="icon" href="{{ url('favicon/kiosbank.png') }}" type="image/x-icon">
+    <title>INVAKIS</title>
     <!-- Custom fonts for this template-->
     <link href={{ asset("template/vendor/fontawesome-free/css/all.min.css") }} rel="stylesheet" type="text/css">
     <link
@@ -105,30 +110,56 @@
                         <input type="Text" class="form-control" id="kode_license"  value="{{ $b->kode_license }}" readonly>
                     </div> --}}
             </div>
-            <div class="card modal-footer">
-                <div class="row">
-                <div class="form-group col-md-6">
-                    <label for="status">Status</label>
-                    <input type="Text" class="form-control" id="status"  value="">
+            <form action="{{ route('store.sto') }}" method="POST">
+                @csrf
+                <div class="card modal-footer">
+                    <div class="row">
+                        <input type="text" name="no_asset_id" value="{{ $b->no_asset }}" hidden>
+                        <div class="form-group col-md-6">
+                            <label for="tanggal">Tanggal Terakhir Sto</label>
+                            <input type="text" class="form-control" id="datepicker2"  value="{{ $tgl_sto_old }}"  name="tgl_end_sto" placeholder="Pilih tanggal" >
+                        </div>
+                        
+                        <div class="form-group col-md-6">
+                            <label for="status_id">Status:</label>
+                            <select name="status_id" id="status_id" class="form-control" required>
+                                <option value="">-- Pilih Status --</option>\
+                                @if ($status_old != '')
+                                    <option value="" selected>{{ $status_old }}</option>    
+                                @endif
+                                @foreach($enum as $n)
+                                    <option value="{{ $n}} ">{{ $n }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div> 
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="window.history.back()" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Save</button>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="jenis_license">Tanggal Terakhir Sto</label>
-                    <input type="Text" class="form-control" id="jenis_license"  value="{{ $b->jenis_license }}" >
-                </div>
-                </div>
-            </div>        
+            </form>       
             @endforeach
             
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="window.history.back()" type="button" data-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary" type="submit">Save</button>
-            </div>
             </div>
             
         </div>
     </div>
 </div> 
 <!-- End Add Button -->
-    @include('include.script')
+
+
+<script>
+$(document).ready(function() {
+    // Inisialisasi Datepicker
+    $('#datepicker2').datepicker({
+        format: 'yyyy-mm-dd',  // Format tanggal yang dihasilkan
+        autoclose: true,
+        todayHighlight: true
+    });
+});
+</script>
+{{-- All Plugin --}}
+@include('include.script')
 </body>
 </html>

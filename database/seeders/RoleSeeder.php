@@ -34,8 +34,9 @@ class RoleSeeder extends Seeder
             
             $permission1 = Permission::updateOrCreate(
                 [
-                    'name' => 'view_barang'
-                ],['name' => 'view_barang']
+                    'name' => 'view'
+                ],['name' => 'view']
+               
             );
         
 
@@ -58,13 +59,11 @@ class RoleSeeder extends Seeder
         );
 
         $adminRole->givePermissionTo([$permission1]);
-        // $Roleuser->givePermissionTo([$permission[1]]);
+        $userRole->givePermissionTo(['view']);
 
         // $tes = User::find(9);
         // $permission1->assignRole($adminRole);
-        $user = User::find(11);
-        $user->assignRole('Admin'); // Menambahkan role
-        $user->givePermissionTo('view_barang'); // Menambahkan permission
+        // $user->givePermissionTo('view_barang'); // Menambahkan permission
         
 
         

@@ -18,6 +18,7 @@ class Barang extends Model
         'id_categori',
         'id_jenis',
         'id_merek',
+        'id_warna',
         'lokasi',
         'npk',
         'nama_kr',
@@ -26,7 +27,8 @@ class Barang extends Model
         'serial_number',
         'jenis_license',
         'kode_license',
-        'tanggal_masuk'
+        'tgl_masuk',
+        'tgl_terakhir_sto'
     ];
     
     public function tbCategori(){
@@ -40,7 +42,9 @@ class Barang extends Model
     public function tbMerek(){
         return $this->hasMany(Merek::class,'id','id_merek','merek');
     }
-
+    public function tbWarna(){
+        return $this->hasMany(Warna::class,'id','id_warna','warna');
+    }
     public function tbKaryawan(){
         return $this->hasMany(Karyawan::class,'id','npk','nama_kr');
     }

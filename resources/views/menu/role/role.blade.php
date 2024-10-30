@@ -39,8 +39,7 @@
                                 <button class="btn btn-primary" type="submit">Add</button>
                             </div>
                         </form>
-                    </div>
-                    
+                    </div>    
                 </div>
             </div>
         </div> 
@@ -84,7 +83,6 @@
                                                     <td>{{ $no+1 }}</td>
                                                     <td>{{ $r->name }}</td>
                                                     <td align="center">
-                                                        <a href="javascript:void(0)" id="btn-permission-role" data-id="{{ $r->id }}" class="btn btn-sm btn-info">Permission</a>
                                                         <a href="javascript:void(0)" id="btn-edit-role" data-id="{{ $r->id }}" class="btn btn-sm btn-warning">Edit</a>
                                                         <a href="javascript:void(0)" id="btn-delete-role" data-id="{{ $r->id }}" class="btn btn-sm btn-danger">Delete</a>
                                                     </td>

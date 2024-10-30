@@ -25,7 +25,10 @@
                       <label for="idjenisAdd">Id Jenis</label>
                       <input hidden type="text" id="id_index_jenis">
                       <input type="Text" class="form-control" id="idjenisAdd" name="id_jenis" placeholder="Id Jenis">
-                        <span style="color: red; font-size:13px;">form value harus di isi dengan 2 charcter, contoh : AA</span>
+                        @error('id_jenis')
+                            <span style="color: red; font-size:13px;">{{ $message }}</span>
+                        @enderror
+                        
                     </div>
 
                     <div class="form-group">
@@ -98,12 +101,20 @@
                     render: function(data, type, row, meta) {
                         // 'data' di sini mengacu pada ID kategori, bisa digunakan untuk mengisi URL
                         return `
-                            <a href="javascript:void(0)" id="btn-edit-jenis" data-id="${data}" class="btn btn-sm btn-warning">Edit</a>
-                            <a href="javascript:void(0)" id="btnDelete" data-id="${data}" class="btn btn-sm btn-danger">Delete</a>
+                            <a href="javascript:void(0)" id="btn-edit-jenis" data-id="${data}" class="btn btn-sm btn-primary"><i class="fas fa-edit"> </i></a>
+                            <a href="javascript:void(0)" id="btnDelete" data-id="${data}" class="btn btn-sm btn-danger"><i class="fas fa-trash"> </i></a>
                         `;
                         }
                     }
-                ]
+                ],
+                createdRow: function(row, data) {
+                // menambahkan atribut ke <td> tertentu
+                $(row).find('td:eq(3)').attr('width', '20%'); // Menambahkan atribut width
+                $(row).find('td:eq(3)').attr('align', 'center'); // Menambahkan atribut align
+
+                $(row).find('td:eq(0)').attr('align', 'center'); // Menambahkan atribut align
+                
+        }
         });
     });
 
@@ -137,29 +148,53 @@
     $('body').on('click', '#btnDelete', function (e) {
         e.preventDefault(); 
 
-        // $('#loading').show();
-
         let jenis_id = $(this).data('id');
         console.log(typeof(jenis_id));
-        // console.log("Fungsi deleteCategory dipanggil untuk id: "+ jenis_id);
-        if (confirm('Apakah Anda yakin ingin menghapus kategori ini?')) {
-            $.ajax({
-                url: `/tes/delete/${jenis_id}`,  // URL untuk menghapus data
-                type: 'DELETE',
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content')  // Laravel CSRF token
-                },
-                success: function(response) {
-                    
-                    alert('Kategori berhasil dihapus.');
-                    $('#dataTable-Jenis').DataTable().ajax.reload();  // Reload tabel setelah delete
-                    $('#loading').hide();
-                },
-                error: function(xhr) {
-                    alert(xhr.responseJSON.message);
-                }
+
+        Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Anda tidak akan dapat mengembalikan data ini!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Tampilkan loading
+                Swal.fire({
+                    title: 'Menghapus...',
+                    text: 'Silakan tunggu...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                $.ajax({
+                    url: `/tes/delete/${jenis_id}`,  // URL untuk menghapus data
+                    type: 'DELETE',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')  // Laravel CSRF token
+                    },
+                    success: function(response) {
+                        setTimeout(() => {
+                            Swal.fire(
+                            'Dihapus!',
+                            'Data Anda telah dihapus.',
+                            'success'
+                        );
+
+                            $('#dataTable-Jenis').DataTable().ajax.reload();  // Reload tabel setelah delete
+                            $('#loading').hide();
+                        }, 1500); // Jeda 1,5 detik (1500 ms)
+                        
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.message);
+                    }
                 });
             }
+        });
     });
 
 

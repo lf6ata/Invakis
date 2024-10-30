@@ -124,26 +124,50 @@ $(document).ready(function() {
     });
 
     $(document).on('click', '#btn-delete-pegawai', function() {
-    let pegawaiId = $(this).data('id');
+        let pegawaiId = $(this).data('id');
 
-    if (confirm('Are you sure you want to delete this pegawai?')) {
-        $.ajax({
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda tidak akan dapat mengembalikan data ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!'
+        }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
                 url: `/invakis/pegawai/delete_pegawai/${pegawaiId}`,
                 type: "DELETE",
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-                    alert(response.message);
+                    Swal.fire(
+                        'Dihapus!',
+                        'Data Anda telah dihapus.',
+                        'success'
+                    );
+                    setTimeout(function() {
+
+                        location.reload(); // Refresh daftar pegawai atau lakukan pembaruan tampilan jika perlu
+                        
+                    }, 3000); // Jeda 1,5 detik (1500 ms)
                     
-                    location.reload(); // Refresh daftar pegawai atau lakukan pembaruan tampilan jika perlu
                 },
                 error: function(xhr) {
-                    alert(xhr.responseJSON.message);
+                    Swal.fire(
+                        'Gagal!',
+                        'Terjadi kesalahan saat menghapus data.',
+                        'error'
+                    );
                 }
             });
         }
+        });
     });
+        
+
 });
 </script>
     

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('karyawan', function (Blueprint $table) {
             $table->id();
-            $table->string('npk');
+            $table->string('npk')->unique();
             $table->string('nama_kr')->nullable();
             $table->string('divisi')->nullable();
             $table->timestamps();

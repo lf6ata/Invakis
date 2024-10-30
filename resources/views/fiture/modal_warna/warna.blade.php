@@ -1,65 +1,65 @@
 
-    <!-- Form Add Jenis-->
-    <div class="modal fade" id="addMerek" tabindex="-1" role="dialog" aria-labelledby="addLabel"
+    <!-- Form Warna-->
+    <div class="modal fade" id="addWarna" tabindex="-1" role="dialog" aria-labelledby="addLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
 
-            <div id="merekAddError" class="alert alert-danger d-none" role="alert"></div>
+            <div id="warnaAddError" class="alert alert-danger d-none" role="alert"></div>
 
-            <div id="merekaddSuccess" class="alert alert-success d-none" role="alert"></div>
+            <div id="warnaaddSuccess" class="alert alert-success d-none" role="alert"></div>
 
             <div class="modal-header">
-                <h5 class="modal-title" id="addLabel">Add Merek</h5>
+                <h5 class="modal-title" id="addLabel">Add Warna</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
             <div class="modal-body ">
 
-                <form id="inputMerek">
+                <form id="inputWarna">
 
                     @csrf
 
+                    <input hidden type="number" id="id_index_warna">
                     <div class="form-group">
-                      <label for="idmerekAdd">Id Merek</label>
-                      <input hidden type="number" id="id_index_merek">
-                      <input type="Number" class="form-control" id="idmerekAdd" name="id_merek" placeholder="Id Merek">
-                                @error('id_merek')
+                      <label for="id_warna">Id Warna</label>
+                      <input type="text" class="form-control" id="idwarnaAdd" name="id_warna" placeholder="Id Warna">
+                                @error('id_warna')
                                     <span class="alert alert-danger">{{ $message }}</span>
                                 @enderror
                     </div>
 
                     <div class="form-group">
-                      <label for="merekAdd">Jenis</label>
-                      <input type="Text" class="form-control" id="merekAdd" name="merek" placeholder="Merek">
+                      <label for="warnaAdd">Jenis</label>
+                      <input type="Text" class="form-control" id="warnaAdd" name="warna" placeholder="Warna">
                     </div>
                     
                     {{-- Message Error --}}
                     <div id="error-message" class="text-danger"></div>
 
-                    {{-- Button Add Jenis --}}
+                    {{-- Button Warna --}}
                     <div class="d-flex flex-row-reverse">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-plus fa-sm" id="btn-add-merek"> Add</i>
+                            <i class="fas fa-plus fa-sm" id="btn-add-warna"> Add</i>
                         </button>
                         <button type="button" class="btn btn-warning mr-2 ">
-                            <i class="fas fa-sm" id="btn-update-merek"> Update</i>
+                            <i class="fas fa-edit" id="btn-update-warna"> Update</i>
                         </button>
                     </div>
 
                 </form>
             </div>
 
-            <div class="modal-footer" id="TableMerek">
+            <div class="modal-footer" id="TableWarna">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable-Merek" width="100%" cellspacing="0">
+                        <table class="table table-bordered" id="dataTable-Warna" width="100%" cellspacing="0">
                             <thead align="center">
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th>Id Merek</th>
-                                    <th>Merek</th>  
+                                    <th>Id Warna</th>
+                                    <th>Warna</th>  
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -74,91 +74,74 @@
     </div>
 </div> 
 
-
-
 <script>
-    // swalInstance = Swal.fire({
-    //                 title: 'Loading...',
-    //                 text: 'Silakan tunggu...',
-    //                 allowOutsideClick: false,
-    //                 didOpen: () => {
-    //                     Swal.showLoading();
-    //                 }
-    //             });
     $(document).ready(function(){
         
-        // setTimeout(() => {
-        //     swalInstance.close();            
-        // }, 1500); // Jeda 1,5 detik (1500 ms)
         //Menampilkan Data Tables;
-        var table = $('#dataTable-Merek').DataTable({
+        var table = $('#dataTable-Warna').DataTable({
             processing: false,
             serverSide: true,
             aaSorting:[[0,"desc"]],
             ajax:{
-                url:"{{ route('merek.get') }}",
+                url:"{{ route('page.warna') }}",
                 type: 'GET'
             },
             columns: [
                 {data: 'DT_RowIndex', neme: 'DT_RowIndex', orderable: false, searchable: false},
-                {data: 'id_merek', neme: 'id merek'},
-                {data: 'merek', neme: 'merek'},
+                {data: 'id_warna', neme: 'id_warna'},
+                {data: 'warna', neme: 'warna'},
                 {
                     data: 'id',  // Kolom ini bisa diisi dengan ID atau data lain
                     name: 'action',
                     orderable: false,  // Nonaktifkan sorting untuk kolom action
                     searchable: false, // Nonaktifkan searching untuk kolom action
                     render: function(data, type, row, meta) {
-                        // 'data' di sini mengacu pada ID kategori, bisa digunakan untuk mengisi URL
+                        // 'data' di sini mengacu pada ID warna, bisa digunakan untuk mengisi URL
                         return `
-                            <a href="javascript:void(0)" id="btnUpdate-merek" data-id="${data}" class="btn btn-sm btn-primary"><i class="fas fa-edit"> </i></a>
-                            <a href="javascript:void(0)" id="btnDelete-merek" data-id="${data}" class="btn btn-sm btn-danger"><i class="fas fa-trash"> </i></a>
+                            <a href="javascript:void(0)" id="btnUpdate-warna" data-id="${data}" class="btn btn-sm btn-primary"><i class="fas fa-edit"> </i></a>
+                            <a href="javascript:void(0)" id="btnDelete-warna" data-id="${data}" class="btn btn-sm btn-danger"><i class="fas fa-trash"> </i></a>
                         `;
                         }
-                }
+                    }
                 ],
                 createdRow: function(row, data) {
-                    // menambahkan atribut ke <td> tertentu
-                    $(row).find('td:eq(3)').attr('width', '20%'); // Menambahkan atribut data-info
-                    $(row).find('td:eq(3)').attr('align', 'center'); // Menambahkan atribut data-info
+                    //  menambahkan atribut ke <td> tertentu
+                    $(row).find('td:eq(3)').attr('width', '20%'); // Menambahkan atribut width
+                    $(row).find('td:eq(3)').attr('align', 'center'); // Menambahkan atribut align
 
                     $(row).find('td:eq(0)').attr('align', 'center'); // Menambahkan atribut align
                 }
         });
     });
 
-    $('#inputMerek').on('submit', function(e) {
+    $('#inputWarna').on('submit', function(e) {
       e.preventDefault();  // Mencegah form dikirim secara tradisional
       //console.log($(this).serialize());
-      
+
       // Reset error message
       $('#error-message').text('');
 
       $.ajax({
         type: 'POST',
-        url: '{{ route("store.merek") }}',  // Route di Laravel
+        url: '{{ route("store.warna") }}',  // Route di Laravel
         data: $(this).serialize(),
         success: function(response) {
           if(response.success) {
             alert('Data berhasil disimpan!');
-            $('#dataTable-Merek').DataTable().ajax.reload();  // Reload tabel setelah di input
-            //$('#addJenis').modal('hide');  // Tutup modal
+            $('#dataTable-Warna').DataTable().ajax.reload();  // Reload tabel setelah di input
           }
         },
         error: function(xhr) {
-          // Menampilkan pesan error dari server (validasi gagal)
-          $('#error-message').text("Ada kesalahan");
+          $('#error-message').text("Ada kesalahan"); // Menampilkan pesan error dari server (validasi gagal)
         }
       });
     });
 
 
-    $('#dataTable-Merek').on('click', '#btnDelete-merek', function (e) {
+    $('#dataTable-Warna').on('click', '#btnDelete-warna', function (e) {
         e.preventDefault(); 
 
-        let merek_id = $(this).data('id');
-        // console.log(typeof(jenis_id));
-        // console.log("Fungsi deleteCategory dipanggil untuk id: "+ jenis_id);
+        let warna_id = $(this).data('id');
     
         Swal.fire({
         title: 'Apakah Anda yakin?',
@@ -171,16 +154,16 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 // Tampilkan loading
-                Swal.fire({
-                    title: 'Menghapus...',
-                    text: 'Silakan tunggu...',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+            Swal.fire({
+                title: 'Menghapus...',
+                text: 'Silakan tunggu...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
                 $.ajax({
-                url: `/invakis/delete/merek/${merek_id}`,  // URL untuk menghapus data
+                url: `/invakis/delete_warna/${warna_id})`,  // URL untuk menghapus data
                 type: 'DELETE',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content')  // Laravel CSRF token
@@ -195,7 +178,7 @@
                     );
 
                     // setTimeout(function() {
-                        $('#dataTable-Merek').DataTable().ajax.reload();  // Reload tabel setelah delete
+                        $('#dataTable-Warna').DataTable().ajax.reload();  // Reload tabel setelah delete
                     // }, 1500); // Jeda 1,5 detik (1500 ms)
                 }, 1500); // Jeda 1,5 detik (1500 ms)
                     
@@ -212,59 +195,54 @@
         });
     });
 
-    $('body').on('click', '#btnUpdate-merek', function (e) {
+    $('body').on('click', '#btnUpdate-warna', function (e) {
         
         e.preventDefault(); 
         // console.log("masuk");
-        
 
-        let id_merek = $(this).data('id');
+        let id_warna = $(this).data('id');
 
         //fetch detail post with ajax
         $.ajax({
-            url: `/invakis/edit/${id_merek}`,
+            url: `/invakis/edit_warna/${id_warna}`,
             type: "GET",
             cache: false,
             success:function(response){
                 
                 //fill data to form
-                $('#id_index_merek').val(response.data.id);
-                $('#idmerekAdd').val(response.data.id_merek);
-                $('#merekAdd').val(response.data.merek);
-
-                // //open modal
-                // $('#updateCategoriModal').modal('show');
+                $('#id_index_warna').val(response.data.id);
+                $('#idwarnaAdd').val(response.data.id_warna);
+                $('#warnaAdd').val(response.data.warna);
             }
         });
     });
 
-    // Mengupdate kategori saat tombol update diklik
-    $('#btn-update-merek').on('click', function() {
-        // console.log("DI KLIK");
+    // Mengupdate warna saat tombol update diklik
+    $('#btn-update-warna').on('click', function() {
         
-        let id_index= $('#id_index_merek').val();
-        let merekId = $('#idmerekAdd').val();
-        let merekName = $('#merekAdd').val();
+        let id_index= $('#id_index_warna').val();
+        let warnaId = $('#idwarnaAdd').val();
+        let warnaName = $('#warnaAdd').val();
 
         $.ajax({
-            url: `/invakis/update/${id_index}`,
+            url: `/invakis/update_warna/${id_index}`,
             type: "PUT",
             data: {
-                "id_merek": merekId, 
-                "merek": merekName,
+                "id_warna": warnaId, 
+                "warna": warnaName,
                 "_token": $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
                 alert(response.message);
-                $('#dataTable-Merek').DataTable().ajax.reload();  // Reload tabel setelah update
+                $('#dataTable-Warna').DataTable().ajax.reload();  // Reload tabel setelah update
             },
             error: function(xhr) {
                 alert(xhr.responseJSON.message);
             }
         });
     });
- 
+
 </script>
 
 
-<!-- End Add Merek -->
+<!-- End Add Warna -->

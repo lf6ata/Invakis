@@ -65,7 +65,7 @@
                                     Activity Log
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <a id="logOut" class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -76,3 +76,90 @@
 
                 </nav>
                 <!-- End of Topbar -->
+
+<script>
+
+$(document).ready(function(){
+   
+    $('body').on('click','#logOut',function (e){
+        console.log('logout');
+        
+        Swal.fire({
+        title: 'Konfirmasi',
+        text: "Anda ingin mengakhiri sesi?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+                $.ajax({
+                    url: "{{ route('auth.logout') }}",  // URL untuk menghapus data
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')  // Laravel CSRF token
+                    },
+                    success: function(response) {
+                        setTimeout(() => {
+                            window.location.href ='/login';
+                        }, 500);
+                        
+                        
+                        
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.message);
+                    }
+                });
+            }
+        });
+    });
+});
+    // Swal.fire({
+    //     title: 'Apakah Anda yakin?',
+    //     text: "Anda tidak akan dapat mengembalikan data ini!",
+    //     icon: 'warning',
+    //     showCancelButton: true,
+    //     confirmButtonColor: '#3085d6',
+    //     cancelButtonColor: '#d33',
+    //     confirmButtonText: 'Ya, hapus!'
+    //     }).then((result) => {
+    //         if (result.isConfirmed) {
+    //             // Tampilkan loading
+    //             Swal.fire({
+    //                 title: 'Menghapus...',
+    //                 text: 'Silakan tunggu...',
+    //                 allowOutsideClick: false,
+    //                 didOpen: () => {
+    //                     Swal.showLoading();
+    //                 }
+    //             });
+    //             $.ajax({
+    //                 url: `/tes/delete/${jenis_id}`,  // URL untuk menghapus data
+    //                 type: 'DELETE',
+    //                 data: {
+    //                     _token: $('meta[name="csrf-token"]').attr('content')  // Laravel CSRF token
+    //                 },
+    //                 success: function(response) {
+    //                     setTimeout(() => {
+    //                         Swal.fire(
+    //                         'Dihapus!',
+    //                         'Data Anda telah dihapus.',
+    //                         'success'
+    //                     );
+
+    //                         $('#dataTable-Jenis').DataTable().ajax.reload();  // Reload tabel setelah delete
+    //                         $('#loading').hide();
+    //                     }, 1500); // Jeda 1,5 detik (1500 ms)
+                        
+    //                 },
+    //                 error: function(xhr) {
+    //                     alert(xhr.responseJSON.message);
+    //                 }
+    //             });
+    //         }
+    //     });
+</script>

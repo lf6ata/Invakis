@@ -18,7 +18,7 @@ class Merek extends Model
         'merek',
 
     ];
-    
+
     protected $table = 'merek';
     // protected $primaryKey = 'id_merek';
     // protected $keyType = 'number';

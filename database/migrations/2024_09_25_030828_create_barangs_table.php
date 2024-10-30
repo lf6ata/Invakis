@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_categori')->nullable()->default(0);
             $table->unsignedBigInteger('id_jenis')->nullable()->default(0);
             $table->unsignedBigInteger('id_merek')->nullable()->default(0);
+            $table->unsignedBigInteger('id_warna')->nullable()->default(0);
             $table->unsignedBigInteger('npk')->nullable()->default(0);
             $table->string('lokasi',20)->nullable();
             $table->string('nama_kr')->nullable();
@@ -25,7 +26,8 @@ return new class extends Migration
             $table->string('serial_number')->nullable();
             $table->string('jenis_license')->nullable();
             $table->string('kode_license')->nullable();
-            $table->date('tanggal_masuk')->nullable();
+            $table->date('tgl_masuk')->nullable();
+            $table->date('tgl_terakhir_sto')->nullable();
             $table->timestamps();
             
             $table->index('id_categori')->key;  

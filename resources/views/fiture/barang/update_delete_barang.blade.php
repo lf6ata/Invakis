@@ -5,9 +5,6 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
 
-            <div id="barangUpdateError" class="alert alert-danger d-none" role="alert"></div>
-
-            <div id="barangUpdateSuccess" class="alert alert-success d-none" role="alert"></div>
 
             <div class="modal-header">
                 <h5 class="modal-title" id="editLabel">Edit Barang</h5>
@@ -23,9 +20,8 @@
                         @method('POST')
 
                         <div class="form-group">
-                            
-                            <label for="categori_id">Categori:</label>
-                            <input id="id_index_barang_edit" type="number">
+                            <input id="id_index_barang_edit" type="number" hidden>
+                            <label for="categori_id">Kategori:</label>
                             <select name="categori_id" id="categori_edit_id" class="form-control" required>
                                {{-- Select akan di isi oleh ajax --}}
                             </select>
@@ -41,6 +37,13 @@
                         <div class="form-group">
                             <label for="merek_id">Merek:</label>
                             <select name="merek_id" id="merek_edit_id" class="form-control" required>
+                              
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="warna_id">Warna:</label>
+                            <select name="warna_id" id="warna_edit_id" class="form-control" required>
                               
                             </select>
                         </div>
@@ -72,14 +75,34 @@
                             <input type="file" class="form-control" name="image" id="image_edit" accept="image/*" capture="camera">
                         </div>
 
-                           {{--@if (session('success'))
+                        <div class="form-group">
+                            <label for="sn_edit_id">Serial Number</label>
+                            <input type="Text" class="form-control @error('sn_edit_id') invalid-border @enderror"  id="sn_edit_id" name="sn_edit_id" placeholder="Serial Number">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="jlicense_edit_id">Jenis License</label>
+                            <input type="Text" class="form-control @error('jlicense_edit_id') invalid-border @enderror" id="jlicense_edit_id" name="jlicense_edit_id" placeholder="Jenis License">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="kdlicense_edit_id">Kode License</label>
+                            <input type="Text" class="form-control @error('kdlicense_edit_id') invalid-border @enderror" id="kdlicense_edit_id" name="kdlicense_edit_id" placeholder="Kode License">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tanggal_edit_masuk">Tangggal Masuk:</label>
+                            <input type="text" class="form-control @error('tanggal_edit_masuk') invalid-border @enderror" id="datepicker_edit" name="tanggal_edit_masuk" placeholder="Pilih tanggal" required>
+                        </div>
+
+                           {{-- @if (session('success'))
                                 <div class="alert alert-success">
                                     {{ session('success') }}
                                 </div>
                                 <img src="{{ asset('storage/images/' . session('image')) }}" alt="Uploaded Image" style="max-width: 200px;">
-                            @endif
+                            @endif --}}
                 
-                            @if ($errors->any())
+                            {{-- @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
                                     @foreach ($errors->all() as $error)
@@ -103,6 +126,12 @@
 
 $(document).ready(function() {
 
+    $('#datepicker_edit').datepicker({
+        format: 'yyyy-mm-dd',  // Format tanggal yang dihasilkan
+        autoclose: true,
+        todayHighlight: true
+    });
+    
     $('#npk_edit_id').change(function() {
             var id_npk = $(this).val(); // Ambil nilai NPK yang dipilih
             // console.log(id_npk);
@@ -128,6 +157,7 @@ $(document).ready(function() {
             } else {
                 // Kosongkan input nama karyawan jika tidak ada NPK yang dipilih
                 $('#nama_edit_karyawan').val('');
+                $('#divisi_edit_id').val(''); // Kosongkan field nama karyawan
             }
         });
 
@@ -145,9 +175,6 @@ $(document).ready(function() {
             cache: false,
             success:function(response){
 
-                // console.log(response);
-
-                // console.log(response.data.no_asset);
                 $('#id_index_barang_edit').val(response.index_barang.id); // inisialisasi id_index form select
 
                 $('#categori_edit_id').empty().append('<option value="">-- Pilih Kategori --</option>'); //mengosongkan dan menginisialisasikan form select utama
@@ -182,6 +209,16 @@ $(document).ready(function() {
                     $('#merek_edit_id').append('<option value="' + mereks.id + '" ' + selected + '>' + mereks.merek + '</option>');
                 });
 
+                $('#warna_edit_id').empty().append('<option value="">-- Pilih Warna --</option>'); //mengosongkan dan menginisialisasikan form select utama
+
+                // Loop dan masukkan opsi merek yang ada
+                $.each(response.get_warna, function(key, warna) {
+
+                    // Jika data barang sudah ada, pilih kategori yang sesuai
+                    let selected = (response.index_barang.id_warna == warna.id) ? 'selected' : '';
+                    $('#warna_edit_id').append('<option value="' + warna.id + '" ' + selected + '>' + warna.warna + '</option>');
+                });
+
                 $('#lokasi_edit_id').val(response.index_barang.lokasi);
 
                 $('#npk_edit_id').empty().append('<option value="">-- Pilih NPK --</option>'); //mengosongkan dan menginisialisasikan form select utama
@@ -198,6 +235,14 @@ $(document).ready(function() {
 
                 $('#divisi_edit_id').val(response.index_barang.divisi);
                 
+                $('#sn_edit_id').val(response.index_barang.serial_number);
+
+                $('#jlicense_edit_id').val(response.index_barang.jenis_license);
+
+                $('#kdlicense_edit_id').val(response.index_barang.kode_license);
+
+                $('#datepicker_edit').val(response.index_barang.tgl_masuk);
+                
                 //open modal
                 $('#updateBarangModal').modal('show');
             },
@@ -212,18 +257,27 @@ $(document).ready(function() {
 
     // Mengupdate barang saat tombol update diklik
     $('#updateBaragBtn').on('click', function() {
-        console.log("klik");
+        // console.log("klik");
         let id_index_barang = $('#id_index_barang_edit').val();
         let categoryId      = $('#categori_edit_id').val();
         let jenisId         = $('#jenis_edit_id').val();
         let merekId         = $('#merek_edit_id').val();
+        let warnaId         = $('#warna_edit_id').val();
         let lokasi          = $('#lokasi_edit_id').val();
         let npk             = $('#npk_edit_id').val();
         let nama            = $('#karyawan_edit_id').val();
         let divisi          = $('#divisi_edit_id').val();
-        let image           = $('#image_edit')[0].files[0];
-        // console.log(image);
-        // console.log(typeof(image));
+        image               = $('#image_edit')[0].files[0];
+        if (image == undefined) {
+            image = ''; // console.log(image);
+        }
+        let sn              = $('#sn_edit_id').val();
+        let jlicense        = $('#jlicense_edit_id').val();
+        let kdlicense       = $('#kdlicense_edit_id').val();
+        let datein          = $('#datepicker_edit').val();
+      
+        
+        
          
         var formData = new FormData();
         formData.append('_token',$('meta[name="csrf-token"]').attr('content'));
@@ -231,13 +285,27 @@ $(document).ready(function() {
         formData.append('id_categori',categoryId);
         formData.append('id_jenis',jenisId);
         formData.append('id_merek',merekId);
+        formData.append('id_warna',warnaId);
         formData.append('lokasi',lokasi);
         formData.append('npk',npk);
         formData.append('nama',nama);
         formData.append('divisi',divisi);
         formData.append('imagenew',image);
+        formData.append('sn',sn);
+        formData.append('jlicense',jlicense);
+        formData.append('kdlicense',kdlicense);
+        formData.append('datein',datein);
         
-        console.log(formData);
+        // console.log(formData);
+
+        Swal.fire({
+                    title: 'Mengupdate...',
+                    text: 'Silakan tunggu...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+        });
         
         $.ajax({
             url: `/invakis/barang/update_barang/${id_index_barang}`,
@@ -246,50 +314,86 @@ $(document).ready(function() {
             processData: false,  // Harus false untuk `FormData`
             data: 
             formData,
-            // {
-            //     "id_categori"   : categoryId, 
-            //     "id_jenis"      : jenisId,
-            //     "id_merek"      : merekId,
-            //     "lokasi"        : lokasi,
-            //     "npk"           : npk,
-            //     "nama"          : nama,
-            //     "divisi"        : divisi,
-            //     // "imagenew"      : image
-            //     "_token"        : $('meta[name="csrf-token"]').attr('content'),
-                
-            // },
             success: function(response) {
-                alert(response.message);
-                
-                $('#updateBarangModall').modal('hide');
-                window.location.href = "/invakis/barang/view_barang/updated_at"; //lakukan pembaruan tampilan updated
+                setTimeout(function() {
+                    Swal.fire(
+                        'Update!',
+                        response.message,
+                        'success'
+                    );
+                    setTimeout(function() {
+                        $('#updateBarangModall').modal('hide');
+                        window.location.href = "/invakis/barang/view_barang/updated_at"; //lakukan pembaruan tampilan updated
+                    }, 1500); 
+                }, 1500); // Jeda 1,5 detik (1500 ms)
             },
             error: function(xhr, status, error) {
-            console.log(xhr.responseText);
-        }
+                    Swal.close();
+                    if (xhr.status === 422) { // 422 adalah status error validasi
+                        let errors = xhr.responseJSON.errors;
+                        // console.log(value);
+                        let erroMessages = "";
+                            
+                            $.each(errors, function(key, value) {
+                                for (let index = 0; index < value.length; index++) {
+                                    erroMessages += `<li>${value[index]}</li>`;
+                                }
+                                
+                                Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                html: `<div align='left' class="alert alert-danger">
+                                            <ul >${erroMessages}</ul></div>`,
+                                });
+                                
+                            });
+                            
+                    }
+            }
         });
     });
 
 $(document).on('click', '#btn-delete-barang', function() {
     let categoryId = $(this).data('id');
-    console.log(typeof(categoryId)+categoryId);
-    if (confirm('Are you sure you want to delete this category?')) {
-        $.ajax({
-            url: `/invakis/barang/delete_barang/${categoryId}`,
-            type: "DELETE",
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                alert(response.message);
-                // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
-                location.reload(); // Atau update daftar kategori dengan cara lain
-            },
-            error: function(xhr) {
-                alert(xhr.responseJSON.message);
-            }
-        });
-    }
+    // console.log(typeof(categoryId)+categoryId);
+
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Anda tidak akan dapat mengembalikan data ini!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/invakis/barang/delete_barang/${categoryId}`,
+                type: "DELETE",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    Swal.fire(
+                        'Dihapus!',
+                        'Data Anda telah dihapus.',
+                        'success'
+                    );
+                    setTimeout(function() {
+                        location.reload(); // Atau update daftar kategori dengan cara lain
+                    }, 1500); // Jeda 1,5 detik (1500 ms)
+                    
+                },
+                error: function(xhr) {
+                    Swal.fire(
+                        'Gagal!',
+                        'Terjadi kesalahan saat menghapus data.',
+                        'error'
+                    );
+                }
+            });
+        }
+    });
 });
 
 

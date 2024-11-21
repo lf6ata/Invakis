@@ -24,7 +24,7 @@
                     <input type="number" id="id_index_categori" hidden>
                     <div class="form-group">
                       <label for="idcategoriUpdate">Id Kategori</label>
-                      <input type="Text" class="form-control" id="idcategoriUpdate" name="id_categori" placeholder="Id Categori">
+                      <input type="number" class="form-control" id="idcategoriUpdate" name="id_categori" placeholder="Id Categori" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==2) return false;">
                     </div>
 
                     <div class="form-group">
@@ -60,10 +60,10 @@ $(document).ready(function() {
             type: "GET",
             cache: false,
             success:function(response){
-                
+                let idCategori = response.data.id_categori < 10 ? '0'+response.data.id_categori : response.data.id_categori;
                 //fill data to form
                 $('#id_index_categori').val(response.data.id);
-                $('#idcategoriUpdate').val(response.data.id_categori);
+                $('#idcategoriUpdate').val(idCategori);
                 $('#categoriUpdate').val(response.data.categori);
 
                 //open modal

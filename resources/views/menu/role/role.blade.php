@@ -20,13 +20,13 @@
                             @csrf
 
                             <div class="form-group">
-                                <label for="nama_roles">Nama Permission</label>
+                                <label for="nama_roles">Nama Role</label>
                                 <input type="text" class="form-control" id="nama_roles" name="nama_roles" placeholder="Nama Roles">
                                     <p id="check_length" class="text-danger"></p>
                             </div>          
                             
                             <div class="form-group">
-                                <label for="roles">Pilih Role:</label>
+                                <label for="roles">Pilih Permission:</label>
                                 <select class="form-control" id="roles" name="roles[]" multiple>
                                     @foreach ($tb_permission as $p)
                                         <option value="{{ $p->name }}">{{ $p->name }}</option>

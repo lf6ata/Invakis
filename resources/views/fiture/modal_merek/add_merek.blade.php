@@ -24,7 +24,7 @@
                     <div class="form-group">
                       <label for="idmerekAdd">Id Merek</label>
                       <input hidden type="number" id="id_index_merek">
-                      <input type="Number" class="form-control" id="idmerekAdd" name="id_merek" placeholder="Id Merek">
+                      <input type="Number" class="form-control" id="idmerekAdd" name="id_merek" placeholder="Id Merek" maxlength="2" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==this.maxLength) return false;">
                                 @error('id_merek')
                                     <span class="alert alert-danger">{{ $message }}</span>
                                 @enderror
@@ -226,10 +226,10 @@
             type: "GET",
             cache: false,
             success:function(response){
-                
+                let idMerek = response.data.id_merek < 10 ? '0'+response.data.id_merek : response.data.id_merek;
                 //fill data to form
                 $('#id_index_merek').val(response.data.id);
-                $('#idmerekAdd').val(response.data.id_merek);
+                $('#idmerekAdd').val(idMerek);
                 $('#merekAdd').val(response.data.merek);
 
                 // //open modal

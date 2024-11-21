@@ -22,6 +22,9 @@
     <title>INVAKIS</title>
     <!-- Library Ajax -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!--sweetalert-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     {{-- container HTML untuk scanner QR Code --}}
@@ -71,12 +74,18 @@
                 success:function(response){
                     if (response.status == 200) {
                         window.location.href = `/invakis/sto/edit/${id_qrcode}`;
-                        // alert(id_qrcode);
-                    } else {
+                    } 
+                    else {
+             
+                        Swal.fire(
+                        'Scan',
+                        'Data Tidak Ditemukan',
+                        'error'
+                        );
                         
-                        alert("Data tidak ditemukan");
-                        location.reload();
-                        
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);   
                     }
                     
                 }

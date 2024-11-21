@@ -24,7 +24,7 @@
                     <input hidden type="number" id="id_index_warna">
                     <div class="form-group">
                       <label for="id_warna">Id Warna</label>
-                      <input type="text" class="form-control" id="idwarnaAdd" name="id_warna" placeholder="Id Warna">
+                      <input type="text" class="form-control" id="idwarnaAdd" name="id_warna" placeholder="Id Warna" maxlength="2">
                                 @error('id_warna')
                                     <span class="alert alert-danger">{{ $message }}</span>
                                 @enderror

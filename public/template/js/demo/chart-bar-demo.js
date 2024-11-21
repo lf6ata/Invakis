@@ -29,6 +29,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 
 // Bar Chart Example
 var ctx = document.getElementById("myBarChart");
+
 var myBarChart = new Chart(ctx, {
   type: 'bar',
   data: {
@@ -38,7 +39,7 @@ var myBarChart = new Chart(ctx, {
       backgroundColor: "#4e73df",
       hoverBackgroundColor: "#2e59d9",
       borderColor: "#4e73df",
-      data: [20, 50, 52, 67],
+      data: [nameItems.sangat, nameItems.cukup, nameItems.layak, nameItems.rusak],
     }],
   },
   options: {

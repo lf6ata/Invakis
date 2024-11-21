@@ -24,7 +24,7 @@
                     <div class="form-group">
                       <label for="idjenisAdd">Id Jenis</label>
                       <input hidden type="text" id="id_index_jenis">
-                      <input type="Text" class="form-control" id="idjenisAdd" name="id_jenis" placeholder="Id Jenis">
+                      <input type="Text" class="form-control" id="idjenisAdd" name="id_jenis" placeholder="Id Jenis" maxlength="2">
                         @error('id_jenis')
                             <span style="color: red; font-size:13px;">{{ $message }}</span>
                         @enderror

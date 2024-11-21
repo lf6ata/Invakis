@@ -17,7 +17,7 @@
 
                             <div class="form-group">
                               <label for="idcategoriLabel">Id Kategori</label>
-                              <input type="number" class="form-control" id="idcategoriLabel" name="id_categori" placeholder="Id Kategori">
+                              <input type="number" class="form-control" id="idcategoriLabel" name="id_categori" placeholder="Id Kategori" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==2) return false;">
                             </div>
                                 @error('id_categori')
                                     <div class="alert alert-danger mt-2">{{ $message }}</div>

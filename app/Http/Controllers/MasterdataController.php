@@ -79,7 +79,7 @@ class MasterdataController extends Controller
     function categoriEdit(Request $request, string $id)
     {
         $data = $request->validate([
-            'id_categori' => 'required|max:2',
+            'id_categori' => 'required|digits_between:1,2|numeric|unique:categori,id_categori',
             'categori' =>  'required'
         ]);
 
@@ -178,13 +178,17 @@ class MasterdataController extends Controller
     {
         // Validasi input data
         $validatedData = $request->validate([
-            'id_jenis' => 'required|max:2|alpha',
-            'jenis' => 'required',
+            'id_jenis' => 'required|max:2|alpha|unique:jenis,id_jenis',
+            'jenis' => 'required|unique:jenis,jenis',
         ]);
 
         // Simpan data ke database atau lakukan tindakan lain
         // Misalnya:
-        Jenis::create($validatedData);
+
+        Jenis::create([
+            'id_jenis'  => strtoupper($request->id_jenis),
+            'jenis'     => $request->jenis,
+        ]); // Simpan data ke database atau lakukan tindakan lain
 
         // Mengirim respons sukses
         return response()->json(['success' => true]);
@@ -245,7 +249,7 @@ class MasterdataController extends Controller
         //define validation rules
         $request->validate([
             'id_jenis' => 'required|max:2',
-            'jenis' =>  'required'
+            'jenis' =>  'required | unique:jenis,jenis'
         ]);
 
         //check if validation fails
@@ -257,7 +261,7 @@ class MasterdataController extends Controller
         //create post
         $id_Jenis = Jenis::find($id);
         $id_Jenis->update([
-            'id_jenis'  => $request->id_jenis,
+            'id_jenis'  => strtoupper($request->id_jenis),
             'jenis'   => $request->jenis
         ]);
 
@@ -347,7 +351,7 @@ class MasterdataController extends Controller
         //create post
         $merek_id = Merek::find($id);
         $merek_id->update([
-            'id_merek'  => $request->id_merek,
+            'id_merek'  => strtoupper($request->id_merek),
             'merek'   => $request->merek
         ]);
 
@@ -386,7 +390,10 @@ class MasterdataController extends Controller
             'warna'     => 'required|unique:warna,warna',
         ]);
 
-        Warna::create($validatedData); // Simpan data ke database atau lakukan tindakan lain
+        Warna::create([
+            'id_warna'  => strtoupper($request->id_warna),
+            'warna'     => $request->warna,
+        ]); // Simpan data ke database atau lakukan tindakan lain
 
         return response()->json(['success' => true]); // Mengirim respons sukses
     }
@@ -423,7 +430,7 @@ class MasterdataController extends Controller
 
         $warna_id = Warna::find($id); //update
         $warna_id->update([
-            'id_warna'  => $request->id_warna,
+            'id_warna'  => strtoupper($request->id_warna),
             'warna'   => $request->warna
         ]);
 

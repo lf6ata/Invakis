@@ -92,12 +92,22 @@
                 <canvas id="myBarChart"></canvas>
             </div>
             <hr>
-            <code><a href="#" class="nav-link">View Detail</a></code>
+            <code><a href={{ route('page.sto') }} class="nav-link">View Detail</a></code>
         </div>
     </div>
 </div>
 <!-- End Page Content -->
+<script>
+    let nameItems = {
+        'sangat': {{ $count_sangat }},
+        'cukup' : {{ $count_cukup }},
+        'layak' : {{ $count_layak }} ,
+        'rusak' : {{ $count_rusak }},
+    };
 
+    console.log(nameItems.layak);
+    
+</script>
 <!-- Page level plugins -->
 <script src="{{ asset('') }}template/vendor/chart.js/Chart.min.js"></script>
 <!-- Page level custom scripts -->

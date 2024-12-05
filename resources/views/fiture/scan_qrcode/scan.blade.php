@@ -59,8 +59,10 @@
             // window.location.href = decodedResult.decodedText;
             // $('#valueqr').val(decodedText);
             // console.log(`Code Match = ${decodedText}`, decodedResult);
+            
 
             let id_qrcode = decodedText;
+            const id_session_sto = '{{ $id_session_sto }}';
 
             //fetch detail get with ajax
             $.ajax({
@@ -73,7 +75,7 @@
                 },
                 success:function(response){
                     if (response.status == 200) {
-                        window.location.href = `/invakis/sto/edit/${id_qrcode}`;
+                        window.location.href = `/invakis/sto_edit/${id_qrcode}/${id_session_sto}`;
                     } 
                     else {
              

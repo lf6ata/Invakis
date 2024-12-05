@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Sto extends Model
+class SessionSto extends Model
 {
     /**
      * fillable
@@ -13,13 +13,11 @@ class Sto extends Model
      */
     protected $fillable = [
         'session_sto',
+        'progress',
+        'durasi',
         'tgl_sto',
-        'no_asset',
-        'status',
-        'user',
-        'tgl_save_sto'
-
+        'save_sto',
     ];
 
-    protected $table = 'sto';
+    protected $table = 'session_sto';
 }

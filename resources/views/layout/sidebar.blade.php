@@ -62,7 +62,7 @@
                 class="nav-item {{ Route::currentRouteName() == 'page.categori' || Route::currentRouteName() == 'page.barang' ? 'active' : '' }}">
                 <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse"
                     data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-box"></i>
+                    <i class="bi fa-fw bi-box-seam-fill"></i>
                     <span>Master Barang</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
@@ -88,7 +88,7 @@
 
             <!-- Nav Item - Laporan -->
             <li class="nav-item {{ Route::currentRouteName() == 'page.sto' ? 'active' : '' }}">
-                <a class="nav-link nav-dst" href="{{ Route('page.sto') }}">
+                <a class="nav-link nav-dst" href="{{ url('/invakis/sto/STO02/false ')}}">
                     <i class="fas fa-fw fa-file"></i>
                     <span>STO</span></a>
             </li>

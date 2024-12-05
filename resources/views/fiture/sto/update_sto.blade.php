@@ -37,8 +37,6 @@
     </style>
 </head>
 <body id="page-top" style="background:#4e73df;">
-
-
     <!-- Form Stock Opname-->
     <div class="body">
     <div class="modal-dialog modal-lg" role="document">
@@ -114,6 +112,8 @@
                 @csrf
                 <div class="card modal-footer">
                     <div class="row">
+                        <input type="number" name="id_session" value="{{ $id_session }}" hidden>
+                        <input type="text" name="session_sto" value="{{ $no_sto }}" hidden>
                         <input type="text" name="no_asset_id" value="{{ $b->no_asset }}" hidden>
                         <div class="form-group col-md-6">
                             <label for="tanggal">Tanggal Terakhir Sto</label>

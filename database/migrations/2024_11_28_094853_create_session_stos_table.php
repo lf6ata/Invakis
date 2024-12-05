@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sto', function (Blueprint $table) {
+        Schema::create('session_sto', function (Blueprint $table) {
             $table->id();
-            $table->date("tgl_sto");
-            $table->text('no_asset');
-            $table->enum('status', ['Sangat Layak', 'Cukup Layak', 'Layak Pakai', 'Rusak'])->nullable();
-            $table->text('user');
-            $table->date('tgl_save_sto')->nullable();
+            $table->string('session_sto')->unique();
+            $table->tinyInteger('progress');
+            $table->time('durasi')->nullable();
+            $table->timestamp('tgl_sto');
+            $table->timestamp('save_sto')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sto');
+        Schema::dropIfExists('session_sto');
     }
 };

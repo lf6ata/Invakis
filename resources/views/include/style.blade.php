@@ -36,6 +36,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 
     <style>
         /* body{
@@ -137,5 +139,6 @@
             box-shadow: 0 0 5px red;
             border: 2px solid red; /* Atur border sesuai kebutuhan */
         }
+
     </style>
 </head>

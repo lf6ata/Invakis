@@ -10,8 +10,10 @@ use Endroid\QrCode\Writer\PngWriter;
 class QrCodeController extends Controller
 {
 
-    public function index(){
-        return view('fiture.scan_qrcode.scan');
+    public function index($id)
+    {
+        $id_session_sto = $id;
+        return view('fiture.scan_qrcode.scan', compact('id_session_sto'));
     }
 
     // public function generate()

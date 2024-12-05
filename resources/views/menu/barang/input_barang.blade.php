@@ -189,172 +189,174 @@
     @include('fiture.zoom.zoom_images')
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
-        
-                            <div class="card-header py-3">
-                                <div class="row">
-                                    <div class="col mb-2 ">
-                                        <button type="button" id="deleteAll"class="btn  btn-danger">
-                                            <i class="fas fa-trash fa-sm"></i> Delete
-                                        </button>
-                                    </div>
-                                    <div class="col-md-auto mb-2">
-                                        <button class="btn btn-info dropdown-toggle" type="button"
-                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="true">
-                                            Export
-                                        </button>
-                                        <div class="dropdown-menu animated--fade-in"
-                                            aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" id="exportPdf" href="javascript:void(0)"><i class="fas fa-qrcode fa-sm"></i> Cetak Qr-Code</a>
-                                            <a class="dropdown-item" id="exportExcel" href="javascript:void(0)"><i class="fas fa-print fa-sm"></i> Export Excel</a>
-                                        </div>
-                                    </div>
-                                    <div class="col col-lg-2">
-                                        <button type="button" class="btn  btn-primary" data-toggle="modal" data-target="#addBarang">
-                                            <i class="fas fa-plus fa-sm"></i> Add Barang
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                <form id="exportForm" action="{{ route('export.selected') }}" method="POST">
-                                    
-                                    @csrf
+        <div class="card-header py-3">
+            <div class="row">
+                <div class="col mb-2 ">
+                    <button type="button" id="deleteAll"class="btn  btn-danger">
+                        <i class="fas fa-trash fa-sm"></i> Delete
+                    </button>
+                </div>
+                <div class="d-flex flex-row-reverse">
+                    <div>
+                        <button type="button" class="btn  btn-primary" data-toggle="modal" data-target="#addBarang">
+                            <i class="fas fa-plus fa-sm"></i> Add Barang
+                        </button>
+                    </div>
+                    <div class="mx-2">
+                        <button class="btn btn-info dropdown-toggle" type="button"
+                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="true">
+                            Export
+                        </button>
+                        <div class="dropdown-menu animated--fade-in"
+                            aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" id="exportPdf" href="javascript:void(0)"><i class="fas fa-qrcode fa-sm"></i> Cetak Qr-Code</a>
+                            <a class="dropdown-item" id="exportExcel" href="javascript:void(0)"><i class="fas fa-print fa-sm"></i> Export Excel</a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+            <form id="exportForm" action="{{ route('export.selected') }}" method="POST">
+                
+                @csrf
 
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th width=5%>No</th>
-                                                <th><input type="checkbox" id="selectAll"></th>
-                                                <th width=10%>No Asset</th> 
-                                                <th>Kategori</th> 
-                                                <th>Jenis</th> 
-                                                <th>Merek</th>
-                                                <th>Warna</th>
-                                                <th>Lokasi</th>
-                                                <th>Npk</th>
-                                                <th>Karyawan</th>
-                                                <th>Divisi</th>
-                                                <th>Foto</th>
-                                                <th>S/N</th>
-                                                <th>Jenis License</th>
-                                                <th>Kode License</th>
-                                                <th>Tanggal Masuk</th>
-                                                <th>Action</th> 
-                                                
-                                            </tr>
-                                        </thead>
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th width=5%>No</th>
+                            <th><input type="checkbox" id="selectAll"></th>
+                            <th width=10%>No Asset</th> 
+                            <th>Kategori</th> 
+                            <th>Jenis</th> 
+                            <th>Merek</th>
+                            <th>Warna</th>
+                            <th>Lokasi</th>
+                            <th>Npk</th>
+                            <th>Karyawan</th>
+                            <th>Divisi</th>
+                            <th>Foto</th>
+                            <th>S/N</th>
+                            <th>Jenis License</th>
+                            <th>Kode License</th>
+                            <th>Tanggal Masuk</th>
+                            <th>Action</th> 
+                            
+                        </tr>
+                    </thead>
 
-                                        <tbody>
-                                            @foreach($get_barang as $no=>$b)
-                                                <tr id="row-{{ $b->id }}">
-                                                    <td align="center">{{ $no+1 }}</td>
-                                                    <td><input type="checkbox" class="dataCheckbox" name="selected_ids[]" value="{{ $b->id }}"></td>
-                                                    <td>{{ strtoupper($b->no_asset) }}</td>
-                                                    <td>
-                                                    @if (!empty($b->tbCategori[0]->categori))
-                                                        {{ $b->tbCategori[0]->categori }}
-                                                    @else
-                                                        <span class="btn btn-sm btn-outline-warning">empty</span>
-                                                    @endif
-                                                    </td>
-                                                    <td>
-                                                    @if (!empty($b->tbJenis[0]->jenis))
-                                                        {{ $b->tbJenis[0]->jenis }}
-                                                    @else
-                                                        <span class="btn btn-sm btn-outline-warning">empty</span>
-                                                    @endif
-                                                    </td>
-                                                    <td>
-                                                    @if ( !empty($b->tbMerek[0]->merek) )
-                                                        {{ $b->tbMerek[0]->merek  }}</td>    
-                                                    @else
-                                                        <span class="btn btn-sm btn-outline-warning">empty</span>
-                                                    @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ( !empty($b->tbWarna[0]->warna) )
-                                                            {{ $b->tbWarna[0]->warna  }}</td>    
-                                                        @else
-                                                            <span class="btn btn-sm btn-outline-warning">empty</span>
-                                                        @endif
-                                                        </td>
-                                                    <td>
-                                                    @if (!empty($b->lokasi))
-                                                        {{ $b->lokasi }}
-                                                    @else
-                                                        <span class="btn btn-sm btn-outline-warning">empty</span>
-                                                    @endif
-                                                    </td>
-                                                    <td>
-                                                    @if (!empty($b->tbKaryawan[0]->npk))
-                                                        {{ $b->tbKaryawan[0]->npk }}
-                                                    @else
-                                                        <span class="btn btn-sm btn-outline-warning">remove</span>
-                                                    @endif
-                                                    </td>
-                                                    <td>{{ $b->nama_kr  }}</td>
-                                                    <td>{{ $b->divisi }}</td>
-                                                    <td>
-                                                        @if ($b->image == 'Not Image')
-                                                            Not Image
-                                                        @else
-                                                            <img id="fotoAsset" data-id="{{ $b->id }}" style="max-width: 50px; cursor: cell;" src="{{ asset('storage/'.$b->image) }}" alt="Foto Asset">    
-                                                        @endif
-                                                            
-                                                    </td>
+                    <tbody>
+                        @foreach($get_barang as $no=>$b)
+                            <tr id="row-{{ $b->id }}">
+                                <td align="center">{{ $no+1 }}</td>
+                                <td><input type="checkbox" class="dataCheckbox" name="selected_ids[]" value="{{ $b->id }}"></td>
+                                <td>{{ strtoupper($b->no_asset) }}</td>
+                                <td>
+                                @if (!empty($b->tbCategori[0]->categori))
+                                    {{ $b->tbCategori[0]->categori }}
+                                @else
+                                    <span class="btn btn-sm btn-outline-warning">empty</span>
+                                @endif
+                                </td>
+                                <td>
+                                @if (!empty($b->tbJenis[0]->jenis))
+                                    {{ $b->tbJenis[0]->jenis }}
+                                @else
+                                    <span class="btn btn-sm btn-outline-warning">empty</span>
+                                @endif
+                                </td>
+                                <td>
+                                @if ( !empty($b->tbMerek[0]->merek) )
+                                    {{ $b->tbMerek[0]->merek  }}</td>    
+                                @else
+                                    <span class="btn btn-sm btn-outline-warning">empty</span>
+                                @endif
+                                </td>
+                                <td>
+                                    @if ( !empty($b->tbWarna[0]->warna) )
+                                        {{ $b->tbWarna[0]->warna  }}</td>    
+                                    @else
+                                        <span class="btn btn-sm btn-outline-warning">empty</span>
+                                    @endif
+                                    </td>
+                                <td>
+                                @if (!empty($b->lokasi))
+                                    {{ $b->lokasi }}
+                                @else
+                                    <span class="btn btn-sm btn-outline-warning">empty</span>
+                                @endif
+                                </td>
+                                <td>
+                                @if (!empty($b->tbKaryawan[0]->npk))
+                                    {{ $b->tbKaryawan[0]->npk }}
+                                @else
+                                    <span class="btn btn-sm btn-outline-warning">remove</span>
+                                @endif
+                                </td>
+                                <td>{{ $b->nama_kr  }}</td>
+                                <td>{{ $b->divisi }}</td>
+                                <td>
+                                    @if ($b->image == 'Not Image')
+                                        Not Image
+                                    @else
+                                        <img id="fotoAsset" data-id="{{ $b->id }}" style="max-width: 50px; cursor: cell;" src="{{ asset('storage/'.$b->image) }}" alt="Foto Asset">    
+                                    @endif
+                                        
+                                </td>
 
-                                                    @if (!empty($b->serial_number))
-                                                        <td>
-                                                            {{ $b->serial_number }}
-                                                        </td>
-                                                    @else
-                                                        <td class="bg-secondary">
-                                                            <span>empty</span>
-                                                        </td>
-                                                    @endif
-                                                    
-                                                    @if (!empty($b->jenis_license))
-                                                    <td>
-                                                        {{ $b->jenis_license }}
-                                                    </td>
-                                                    @else
-                                                        <td class="bg-secondary">
-                                                            <span>empty</span>
-                                                        </td>
-                                                    @endif
+                                @if (!empty($b->serial_number))
+                                    <td>
+                                        {{ $b->serial_number }}
+                                    </td>
+                                @else
+                                    <td class="bg-secondary">
+                                        <span>empty</span>
+                                    </td>
+                                @endif
+                                
+                                @if (!empty($b->jenis_license))
+                                <td>
+                                    {{ $b->jenis_license }}
+                                </td>
+                                @else
+                                    <td class="bg-secondary">
+                                        <span>empty</span>
+                                    </td>
+                                @endif
 
-                                                    @if (!empty($b->kode_license))
-                                                        <td>
-                                                            {{ $b->kode_license }}
-                                                        </td>
-                                                    @else
-                                                        <td class="bg-secondary">
-                                                            <span>empty</span>
-                                                        </td>
-                                                    @endif
-                                                    
-                                                    <td>{{ $b->tgl_masuk }}</td>
-                                                    <td align="center">
-                                                        <a href="javascript:void(0)" id="btn-edit-barang" data-id="{{ $b->id }}" class="btn btn-sm btn-primary">Edit</a>
-                                                        <a href="javascript:void(0)" id="btn-delete-barang" data-id="{{ $b->id }}" class="btn btn-sm btn-danger">Delete</a>
-                                                    </td>
-                                                    {{-- <td>
-                                                        @if (!empty($b->tbMerek[0]->merek) )
-                                                            {{ $b->tbMerek[0]->merek  }}
-                                                        @else
-                                                            <span class="btn btn-secondary">dihapus</span>
-                                                        @endif
-                                                    </td> --}}
+                                @if (!empty($b->kode_license))
+                                    <td>
+                                        {{ $b->kode_license }}
+                                    </td>
+                                @else
+                                    <td class="bg-secondary">
+                                        <span>empty</span>
+                                    </td>
+                                @endif
+                                
+                                <td>{{ $b->tgl_masuk }}</td>
+                                <td align="center">
+                                    <a href="javascript:void(0)" id="btn-edit-barang" data-id="{{ $b->id }}" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="javascript:void(0)" id="btn-delete-barang" data-id="{{ $b->id }}" class="btn btn-sm btn-danger">Delete</a>
+                                </td>
+                                {{-- <td>
+                                    @if (!empty($b->tbMerek[0]->merek) )
+                                        {{ $b->tbMerek[0]->merek  }}
+                                    @else
+                                        <span class="btn btn-secondary">dihapus</span>
+                                    @endif
+                                </td> --}}
 
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </form>
-                                </div>
-                            </div>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </form>
+            </div>
+        </div>
     </div>
 
 <script>

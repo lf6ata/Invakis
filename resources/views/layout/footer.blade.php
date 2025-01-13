@@ -2,7 +2,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; KIOSBANK 2024</span>
+                        <span>Copyright &copy; KIOSBANK {{ date('Y') }}</span>
                     </div>
                 </div>
             </footer>

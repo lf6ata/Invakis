@@ -109,7 +109,11 @@ $(document).ready(function() {
             }, 1500); // Jeda 1,5 detik (1500 ms)
             },
             error: function(xhr) {
-                alert(xhr.responseJSON.message);
+                Swal.fire(
+                        'Gagal!',
+                        xhr.responseJSON.message,
+                        'error'
+                );
             }
         });
     });

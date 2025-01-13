@@ -99,9 +99,9 @@ $(document).ready(function() {
                 const roleSelect = $('#role_edit_id');
                 roleSelect.empty().append('<option value="">-- Pilih Role --</option>'); //mengosongkan dan menginisialisasikan form select utama
                 response.roles.forEach(role => {
-
-                        roleSelect.append(`<option value="${role.name.name}" ${role.isSelected ? 'selected' : ''}>${role.name.name}</option>`);
-                        
+                    console.log(role.isSelected);
+                    
+                    roleSelect.append(`<option value="${role.name.name}" ${role.isSelected ? 'selected' : ''}>${role.name.name}</option>`);  
                 });
                 
 

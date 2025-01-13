@@ -17,12 +17,11 @@ class categori extends Model
         'id_categori',
         'categori',
     ];
-    
+
     // protected $primaryKey = 'id_categori';
     // public $incrementing = false;
     // protected $keyType = 'char';
 
     protected $table = 'categori';
     // public $timestamps = false;
-    
 }

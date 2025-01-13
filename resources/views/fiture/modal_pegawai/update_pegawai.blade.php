@@ -29,16 +29,22 @@
                                 <p id="check_edit_length" class="text-danger"></p>
                         </div>
 
-
                         <div class="form-group">
                             <label for="karyawan_edit_id">Karyawan</label>
                             <input type="Text" class="form-control" id="karyawan_edit_id" name="karyawan_id" placeholder="Nama Karyawan">
                         </div>
-                        
+
                         <div class="form-group">
+                            <label for="divisi_edit_id">Divisi:</label>
+                            <select name="divisi_id" id="divisi_edit_id" class="form-control" required>
+                               {{-- Select akan di isi oleh ajax --}}
+                            </select>
+                        </div>
+                        
+                        {{-- <div class="form-group">
                             <label for="divisi_edit_id">Divisi</label>
                             <input type="Text" class="form-control" id="divisi_edit_id" name="divisi_id" placeholder="Divisi">
-                        </div>
+                        </div> --}}
                     </form>
             </div>
             <div class="modal-footer">
@@ -82,11 +88,11 @@ $(document).ready(function() {
 
    //button view modal edit pegawai and view data
    $('body').on('click', '#btn-edit-pegawai', function (e) {
-        console.log("tes");
         
         e.preventDefault(); 
 
         let id_index_pegawai = $(this).data('id');
+        // let divisi_old = $(this).data('divisi');
 
         //fetch detail get with ajax
         $.ajax({
@@ -98,7 +104,15 @@ $(document).ready(function() {
                 $('#index_id_pegawai').text(response.index_karyawan.id);
                 $('#npk_edit_id').val(response.index_karyawan.npk);
                 $('#karyawan_edit_id').val(response.index_karyawan.nama_kr);
-                $('#divisi_edit_id').val(response.index_karyawan.divisi);
+
+                $('#divisi_edit_id').empty().append('<option value="">-- Pilih Divisi --</option>'); //mengosongkan dan menginisialisasikan form select utama
+                // Loop dan masukkan opsi kategori yang ada
+                $.each(response.get_divisi, function(key, divisi) {
+                    
+                    // Jika data divisi sudah ada, pilih kategori yang sesuai
+                    let selected = (response.index_karyawan.divisi == divisi.divisi) ? 'selected' : '';
+                    $('#divisi_edit_id').append('<option value="' + divisi.divisi + '" ' + selected + '>' + divisi.divisi + '</option>');
+                });
                 
                 //open modal
                 $('#updatePegawaiModal').modal('show');
@@ -119,6 +133,15 @@ $(document).ready(function() {
             let nama = $('#karyawan_edit_id').val();
             let divisi = $('#divisi_edit_id').val();
 
+            Swal.fire({
+                        title: 'Mengupdate...',
+                        text: 'Silakan tunggu...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+            });
+
             $.ajax({
                 url: `/invakis/pegawai/update/${id_pegawai}`,
                 type: "PUT",
@@ -129,13 +152,24 @@ $(document).ready(function() {
                     "_token": $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-                    alert(response.message);
-
-                    $('#updateBarangModall').modal('hide');
-                    window.location.href = "/invakis/pegawai/updated_at"; //lakukan pembaruan tampilan updated
+                    setTimeout(() => {
+                    Swal.fire(
+                                'Diupdate!',
+                                response.message,
+                                'success'
+                            );
+                    setTimeout(() => {
+                        $('#updateBarangModall').modal('hide');
+                        location.reload(); // Refresh daftar kategori atau lakukan pembaruan tampilan jika perlu
+                    }, 1000); // Jeda 1 detik (1000 ms)
+                }, 1000); // Jeda 1 detik (1000 ms)
                 },
                 error: function(xhr) {
-                    alert(xhr.responseJSON.message);
+                    Swal.fire(
+                            'Gagal!',
+                            xhr.responseJSON.message,
+                            'error'
+                    );
                 }
         });
     });

@@ -48,9 +48,16 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="lokasiAdd">Lokasi</label>
                             <input type="Text" class="form-control" id="lokasi_edit_id" name="lokasi_id" placeholder="Lokasi">
+                        </div> --}}
+
+                        <div class="form-group">
+                            <label for="lokasi_edit_id">Lokasi:</label>
+                            <select name="lokasi_edit_id" id="lokasi_edit_id" class="form-control" required>
+                               
+                            </select>
                         </div>
 
                         <div class="form-group">
@@ -181,7 +188,8 @@ $(document).ready(function() {
 
                 // Loop dan masukkan opsi kategori yang ada
                 $.each(response.get_categori, function(key, categori) {
-
+                    console.log(categori.id);
+                    
                     // Jika data barang sudah ada, pilih kategori yang sesuai
                     let selected = (response.index_barang.id_categori == categori.id) ? 'selected' : '';
                     $('#categori_edit_id').append('<option value="' + categori.id + '" ' + selected + '>' + categori.categori + '</option>');
@@ -219,7 +227,16 @@ $(document).ready(function() {
                     $('#warna_edit_id').append('<option value="' + warna.id + '" ' + selected + '>' + warna.warna + '</option>');
                 });
 
-                $('#lokasi_edit_id').val(response.index_barang.lokasi);
+                // $('#lokasi_edit_id').val(response.index_barang.lokasi);
+                $('#lokasi_edit_id').empty().append('<option value="">-- Pilih Lokasi --</option>'); //mengosongkan dan menginisialisasikan form select utama
+
+                // Loop dan masukkan opsi karyawan yang ada
+                $.each(response.get_zona, function(key, zona) {
+
+                    // Jika data barang sudah ada, pilih kategori yang sesuai
+                    let selected = (response.index_barang.lokasi == zona.id) ? 'selected' : '';
+                    $('#lokasi_edit_id').append('<option value="' + zona.id + '" ' + selected + '>' + zona.lokasi + '</option>');
+                });
 
                 $('#npk_edit_id').empty().append('<option value="">-- Pilih NPK --</option>'); //mengosongkan dan menginisialisasikan form select utama
 
@@ -381,7 +398,7 @@ $(document).on('click', '#btn-delete-barang', function() {
                     );
                     setTimeout(function() {
                         location.reload(); // Atau update daftar kategori dengan cara lain
-                    }, 1500); // Jeda 1,5 detik (1500 ms)
+                    }, 600); // Jeda 0.6 detik (600 ms)
                     
                 },
                 error: function(xhr) {

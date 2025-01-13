@@ -6,9 +6,11 @@ use App\Models\Barang;
 use App\Models\SessionSto;
 use App\Models\Sto;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Termwind\Components\Raw;
 
 class DashboardController extends Controller
 {
@@ -23,18 +25,26 @@ class DashboardController extends Controller
     {
 
         $tb_session_sto = new SessionSto();
+        $reset_status_sto = Barang::select('status_sto');
         $flag = $tb_session_sto::select('session_sto', 'save_sto')->latest()->first();
+
+        $reset_status_sto->update([
+            'status_sto' => 0
+        ]);
 
         //Check no urut session sto
         if (!empty($flag)) {
 
             if ($flag->save_sto == '' || $flag->save_sto === null) {
-                return dd('kosong');
+                return back()->with('message', 'Selesaikan session sebelumnya dahulu');
             } else {
-                $not_yet_sto = Barang::select('*')->where('tgl_masuk', '<', date('Y-m-d'))->whereNull('tgl_terakhir_sto')->orderBy('created_at', 'asc')->get();
-
-                if (empty($not_yet_sto[0]->no_asset)) {
-                    return back()->with('message', 'Tidak ada item yg akan di sto');
+                // $not_yet_sto = Barang::select('*')->where('tgl_masuk', '<', date('Y-m-d'))->whereNull('tgl_terakhir_sto')->orderBy('created_at', 'asc')->get();
+                // $not_yet_sto = Barang::select('*')->where('tgl_masuk', '<', date('Y-m-d'))->whereNull('tgl_terakhir_sto')->orWhereMonth('tgl_terakhir_sto', '<', date('m'))->orwhereYear('tgl_terakhir_sto', '<', date('Y'))->orderBy('created_at', 'asc')->get();
+                $not_yet_sto = Barang::select('status_sto')->where('status_sto', 0)->get();
+                // dd(empty($not_yet_sto[0]));
+                // if (empty($not_yet_sto[0]->no_asset)) {
+                if (empty($not_yet_sto[0])) {
+                    return back()->with('message', 'Belum ada barang yang dapat di sto');
                 } else {
                     $no_index = intval(substr($flag->session_sto, 3)) + 1;
                     $tb_session_sto::create([
@@ -68,14 +78,206 @@ class DashboardController extends Controller
                 ->on('Sto.updated_at', '=', 'latest_assets.max_updated');
         })->where('Sto.status', $status)->count();
     }
+
+    function  getBulan($bln)
+    {
+        switch ($bln) {
+            case  1:
+                return  "Januari";
+                break;
+            case  2:
+                return  "Februari";
+                break;
+            case  3:
+                return  "Maret";
+                break;
+            case  4:
+                return  "April";
+                break;
+            case  5:
+                return  "Mei";
+                break;
+            case  6:
+                return  "Juni";
+                break;
+            case  7:
+                return  "Juli";
+                break;
+            case  8:
+                return  "Agustus";
+                break;
+            case  9:
+                return  "September";
+                break;
+            case  10:
+                return  "Oktober";
+                break;
+            case  11:
+                return  "November";
+                break;
+            case  12:
+                return  "Desember";
+                break;
+        }
+    }
+
+    function getChartData()
+    {
+        $currentYear = Carbon::now()->year;
+
+        // Ambil data status dan tgl_sto dari tabel
+        $data = Sto::select(DB::raw('MONTH(created_at) as month, status, count(*) as count'))
+            ->whereYear('created_at', $currentYear)  // Filter berdasarkan tahun sekarang
+            ->groupBy('month', 'status') // Kelompokkan berdasarkan bulan dan status
+            ->orderBy('month') // Urutkan berdasarkan bulan
+            ->get();
+
+        // dd($data[1]->status);
+
+
+        // Inisialisasi array bulan (Januari sampai Desember)
+        // Nama bulan dalam bahasa Indonesia
+        $months = [
+            'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember',
+        ];
+
+        // Inisialisasi array untuk status
+        $statusLabels = ['Sangat Layak', 'Cukup Layak', 'Layak Pakai', 'Rusak'];
+        $statusCounts = [];
+
+        // Inisialisasi data kosong untuk setiap status
+        foreach ($statusLabels as $status) {
+            $statusCounts[$status] = array_fill(0, 12, 0);  // 12 bulan
+        }
+
+        // Loop untuk mengisi data jumlah berdasarkan bulan dan status
+        foreach ($data as $row) {
+            // Bulan dimulai dari 1 (Januari) hingga 12 (Desember)
+            $monthIndex = array_search($this->getBulan($row->month), $months);
+            $statusCounts[$row->status][$monthIndex] = $row->count;
+        }
+
+        return response()->json([
+            'months' => $months,
+            'statusCounts' => $statusCounts,
+            'currentYear' => $currentYear
+        ]);
+    }
+
     public function pageDashboard()
     {
 
         // $user = User::find(Auth::user()->id); // Ambil satu user
         // // dd(Auth::user()->roles->getRoleNames());
         // dd($user->getRoleNames());
+        // $decode_json = json_decode($this->getChartData()->content(), true);
+
+        // $months = $decode_json['months'];
+        // $statusCounts = $decode_json['statusCounts'];
+        // $currentYear = $decode_json['currentYear'];
+
+        // dd($statusCounts);
+
+        // $dates = $data->pluck('date')->unique()->toArray(); // Tanggal unik
+        // $statusLabels = ['Sangat Layak', 'Cukup Layak', 'Layak Pakai', 'Rusak']; // Status
+        // $statusCounts = [];
+
+        // // Inisialisasi array kosong untuk setiap status
+        // foreach ($statusLabels as $status) {
+        //     $statusCounts[$status] = array_fill(0, count($dates), 0);
+        // }
+
+        // // Loop untuk mengisi data jumlah berdasarkan status dan tanggal
+        // foreach ($data as $row) {
+        //     $index = array_search($row->date, $dates);
+        //     $statusCounts[$row->status][$index] = $row->count;
+        // }
+
+        $count_status = DB::table('sto')
+            ->select('status', DB::raw('COALESCE(COUNT(*),0) as total_count'))
+            ->join(
+                DB::raw('(SELECT no_asset, MAX(created_at) as created_at FROM sto GROUP BY no_asset) as latest'),
+                'sto.no_asset',
+                '=',
+                'latest.no_asset'
+            )
+            ->whereIn('sto.status', ['Sangat Layak', 'Cukup Layak', 'Layak Pakai', 'Rusak'])
+            ->whereColumn('sto.created_at', '=', 'latest.created_at')
+            ->groupBy('sto.status')
+            ->orderByDesc('total_count')
+            ->get();
+
+        // dd($count_status);
+
+        // $data = DB::table(DB::raw('(SELECT 
+        //                         no_asset, 
+        //                         status, 
+        //                         created_at,
+        //                         ROW_NUMBER() OVER (PARTITION BY no_asset ORDER BY created_at DESC) AS rn
+        //                     FROM sto) as LatestData'))
+        //     // Menyaring data yang memiliki rn = 1 (data terbaru untuk setiap no_asset)
+        //     ->where('rn', 1)
+        //     ->select('status', DB::raw('IFNULL(COUNT(*), 0) AS total_count'))
+        //     ->whereIn('status', ['Sangat Layak', 'Cukup Layak', 'Layak Pakai', 'Rusak'])
+        //     ->groupBy('status')
+
+        //     // UNION ALL for categories that do not exist
+        //     ->unionAll(
+        //         DB::table(DB::raw('(SELECT no_asset, status FROM sto WHERE status = "Sangat Layak" LIMIT 1) as check_status'))
+        //             ->selectRaw("'Sangat Layak' as status")
+        //             ->whereNotExists(function ($query) {
+        //                 $query->from('sto')
+        //                     ->where('status', 'Sangat Layak');
+        //             })
+        //             ->selectRaw('0 as total_count')
+        //     )
+        //     ->unionAll(
+        //         DB::table(DB::raw('(SELECT no_asset, status FROM sto WHERE status = "Cukup Layak" LIMIT 1) as check_status'))
+        //             ->selectRaw("'Cukup Layak' as status")
+        //             ->whereNotExists(function ($query) {
+        //                 $query->from('sto')
+        //                     ->where('status', 'Cukup Layak');
+        //             })
+        //             ->selectRaw('0 as total_count')
+        //     )
+        //     ->unionAll(
+        //         DB::table(DB::raw('(SELECT no_asset, status FROM sto WHERE status = "Layak Pakai" LIMIT 1) as check_status'))
+        //             ->selectRaw("'Layak Pakai' as status")
+        //             ->whereNotExists(function ($query) {
+        //                 $query->from('sto')
+        //                     ->where('status', 'Layak Pakai');
+        //             })
+        //             ->selectRaw('0 as total_count')
+        //     )
+        //     ->unionAll(
+        //         DB::table(DB::raw('(SELECT no_asset, status FROM sto WHERE status = "Rusak" LIMIT 1) as check_status'))
+        //             ->selectRaw("'Rusak' as status")
+        //             ->whereNotExists(function ($query) {
+        //                 $query->from('sto')
+        //                     ->where('status', 'Rusak');
+        //             })
+        //             ->selectRaw('0 as total_count')
+        //     )
+        //     ->orderBy('total_count', 'desc')
+        //     ->get();
+
+
+        $countStatusSto = json_decode($this->getChartData()->content(), true);
 
         $session_sto = SessionSto::select('session_sto', 'progress', 'durasi', 'tgl_sto', 'save_sto')->orderBy('session_sto', 'desc')->get();
+
+        // $barang = Barang::where('id_categori', 1)->count();
 
         $count_user = User::count();
         if (empty($count_user)) {
@@ -83,6 +285,8 @@ class DashboardController extends Controller
         } else {
             $count_user;
         }
+
+        $count_session = empty($session_sto->where('progress', '>', '0')->count()) ? 0 : $session_sto->where('progress', '>', '0')->count();
 
         $count_barang = Barang::count();
         // dd($count_barang);
@@ -92,18 +296,25 @@ class DashboardController extends Controller
             $count_barang;
         }
 
-
-
-
         $count_sangat = $this->countSto('Sangat Layak');
         $count_cukup = $this->countSto('Cukup Layak');
         $count_layak = $this->countSto('Layak Pakai');
         $count_rusak = $this->countSto('Rusak');
 
 
+        return view('menu.dashboard.dashboard', compact('count_user', 'count_barang', 'count_rusak', 'count_layak', 'count_cukup', 'count_sangat', 'count_session', 'count_status', 'session_sto'));
+    }
 
+    public function getProgress()
+    {
+        $total_barang = Barang::count();
+        // $done_sto = Barang::select('tgl_terakhir_sto')->where(DB::raw('year(tgl_terakhir_sto)'), '=', date('Y'))->where(DB::raw('month(tgl_terakhir_sto)'), '=', date('m'))->whereNotNull('tgl_terakhir_sto')->count();
+        $done_sto = Barang::select('tgl_terakhir_sto')->where('status_sto', '=', 1)->count();
 
+        $percentage = ($total_barang > 0) ? intval(ceil($done_sto / $total_barang * 100)) : 0;
 
-        return view('menu.dashboard.dashboard', compact('count_user', 'count_barang', 'count_rusak', 'count_layak', 'count_cukup', 'count_sangat', 'session_sto'));
+        return response()->json([
+            'percentage'    => $percentage
+        ]);
     }
 }

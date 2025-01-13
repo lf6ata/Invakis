@@ -94,11 +94,12 @@
         var table = $('#dataTable-Merek').DataTable({
             processing: false,
             serverSide: true,
-            aaSorting:[[0,"desc"]],
+            aaSorting:[[1,"desc"]],
             ajax:{
                 url:"{{ route('merek.get') }}",
                 type: 'GET'
             },
+            lengthMenu: [5,10,50,100],
             columns: [
                 {data: 'DT_RowIndex', neme: 'DT_RowIndex', orderable: false, searchable: false},
                 {data: 'id_merek', neme: 'id merek'},

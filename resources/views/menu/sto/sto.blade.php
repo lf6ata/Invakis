@@ -3,21 +3,29 @@
 @section('title','Stock Opname')
 @section('content')
 
+
  <div class="d-flex flex-row-reverse mb-3">
         <div class="p-2">
 
-                <a href="{{ route('page.dashboard') }}" class="btn btn-primary">
+                <a href="{{ route('page.dashboard') }}" class="btn btn-primary mr-2">
                     <i class="fas fa-arrow-left fa-sm"></i> Kembali
                 </a>
+                
                 @if ($status === 'false')
+                    <a href="{{ route('save_timer',$id) }}" class="btn btn-success">
+                        <i class="bi bi-floppy2-fill fa-sm fa-sm"></i> Save
+                    </a>
+
                     <div class="btn">
-                        <form action="{{ route('save_timer',$id) }}">
+                        <form action="{{ route('save_sto',$id) }}">
                             @csrf
-                            <button id="saveSto" type="submit" class="ml-2 btn btn-info">
-                                <i class="bi bi-floppy2-fill fa-sm"></i> Simpan STO
+                            <button id="saveSto" type="submit" class="btn btn-info">
+                                <i class="bi bi-floppy2-fill fa-sm"></i> Finish Sto
                             </button>
                         </form>   
                     </div>
+
+
                 @endif
             
         </div>
@@ -25,7 +33,7 @@
 
 <!-- Content Row -->
 <div class="row">
-    <!-- Persentase STO -->
+    {{-- <!-- Persentase STO -->
     <div class="col-xl-3 col-md-6 mb-4">
     <div class="card border-left-danger shadow h-100 py-2">
         <div class="card-body">
@@ -41,7 +49,52 @@
             </div>
         </div>
     </div>
+    </div> --}}
+
+    @if ($status === 'false')
+       <!-- Progress Card -->
+       <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Progress</div>
+                            <h7 class="left">Progress : <span id="persen"></span></h7><br>
+                            <progress id="progressBar" value="0" max="100"></progress>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-check2-circle fa-2x text-gray-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        function getProgress() {
+            $.ajax({
+                url: "{{ route('get.progress') }}",
+                method: "GET",
+                success: function(data) {
+                    const percentage = data.percentage;
+                    $('#persen').text(percentage + '%');
+                    $('#progressBar').val(percentage);
+
+                    // Set timeout to update progress every 10 seconds
+                    // setTimeout(getProgress, 100000);
+                    // console.log(percentage);
+                }
+            });
+        }
+
+        // Start the real-time progress update when the page is loaded
+        $(document).ready(function() {
+            getProgress();
+        });
+    </script>
+
+    @endif
 
    <!-- Timer Card -->
     <div  class="col-xl-3 col-md-6 mb-4">
@@ -87,9 +140,16 @@
         </div>
     @endif
 
+ 
+
 </div>
 <!-- End Row -->
 
+@if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>  
+@endif
 <!-- DataTales Sudah STO -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -106,12 +166,14 @@
                 <thead>
                     <tr>
                         <th width=5%>No</th>
-                        <th width=10%>Tgl Sto</th> 
+                        {{-- <th width=10%>Tgl Sto</th>  --}}
                         <th>No Asset</th> 
                         <th>Status</th> 
                         <th>Tgl Save Sto</th>
                         <th>User</th> 
-                        <th>Action</th>
+                        @if ($status === 'false')
+                            <th>Action</th>
+                        @endif
                     </tr>
                 </thead>
                 
@@ -120,7 +182,7 @@
                     @foreach ($finish_sto as $no=>$s)
                         <tr>
                             <td>{{ $no+1 }}</td>
-                            <td>{{ $s->tgl_sto }}</td>
+                            {{-- <td>{{ $s->tgl_sto }}</td> --}}
                             <td>{{ $s->no_asset }}</td>
                             <td> 
                                 <span @if ($s->status == "Sangat Layak")
@@ -131,24 +193,26 @@
                                     class="badge badge-warning"
                                 @elseif ($s->status == "Rusak")
                                     class="badge badge-danger"
+                                @elseif ($s->status == "Hilang")
+                                    class="badge badge-info"
                                 @endif >
                                     {{ $s->status }}
                                 </span>
                             </td>
                             <td>{{ $s->tgl_save_sto }}</td>
                             <td>{{ $s->user }}</td>
-                            <td align="center">
-                                @if ($status === 'false')
-                                    <form method="GET" action="{{ route('edit.sto',[$s->no_asset,$session_sto,$id_session_sto]) }}">
+                            @if ($status === 'false')
+                                <td align="center">
+                                    <form method="GET" action="{{ route('edit.sto',[$s->no_asset,$session_sto,$id_session_sto.'_edit']) }}">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-warning " >Edit</button>
                                     </form>
-                                @endif
-                                <form method="GET" action="{{ route('edit.sto',[$s->no_asset,$session_sto,$id_session_sto]) }}">
+                                {{-- <form method="GET" action="{{ route('edit.sto',[$s->no_asset,$session_sto,$id_session_sto]) }}">
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-primary " >View</button>
-                                </form>
-                            </td>
+                                </form> --}}
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                     {{-- @endforeach --}}
@@ -183,6 +247,7 @@
                             <th>Karyawan</th>
                             <th>Divisi</th>
                             <th>Tanggal Input</th>
+                            <th>Tanggal Sto</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -196,8 +261,9 @@
                                 <td>{{ $n_sto->tbKaryawan[0]->nama_kr }}</td>
                                 <td>{{ $n_sto->divisi }}</td>
                                 <td>{{ $n_sto->tgl_masuk }}</td>
+                                <td>{{ $n_sto->tgl_terakhir_sto }}</td>
                                 <td align="center">
-                                    <form method="GET" action="{{ route('edit.sto',[$n_sto->no_asset,$session_sto,$id_session_sto]) }}">
+                                    <form method="GET" action="{{ route('edit.sto',[$n_sto->no_asset,$session_sto,$id_session_sto.'_post']) }}">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-info px-4" >Sto</button>
                                     </form>
@@ -217,7 +283,7 @@
     const status = '{{ $status }}';
     const total_durasi = '{{ $total_durasi[0]->durasi }}';
     let timerDisplay = document.getElementById('timer');
-    console.log(total_durasi);
+    // console.log(total_durasi);
 
     let serverTime = 0; // Waktu awal dari server
     let intervalId;

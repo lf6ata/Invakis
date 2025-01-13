@@ -108,35 +108,60 @@
                         <input type="Text" class="form-control" id="kode_license"  value="{{ $b->kode_license }}" readonly>
                     </div> --}}
             </div>
-            <form action="{{ route('store.sto') }}" method="POST">
+
+            @if ($endpoint == 'edit')
+                <form action="{{ route('update.sto') }}" method="POST">   
+                    @method('PUT') 
+            @else
+                <form action="{{ route('store.sto') }}" method="POST">    
+            @endif
+            
                 @csrf
                 <div class="card modal-footer">
                     <div class="row">
-                        <input type="number" name="id_session" value="{{ $id_session }}" hidden>
+                        <input type="number" name="id_session" value="{{ substr($id_session , 0, strlen($id_session ) - 5)}}" hidden>
                         <input type="text" name="session_sto" value="{{ $no_sto }}" hidden>
                         <input type="text" name="no_asset_id" value="{{ $b->no_asset }}" hidden>
-                        <div class="form-group col-md-6">
+                      
+                        {{-- <div class="form-group col-md-6">
                             <label for="tanggal">Tanggal Terakhir Sto</label>
                             <input type="text" class="form-control" id="datepicker2"  value="{{ $tgl_sto_old }}"  name="tgl_end_sto" placeholder="Pilih tanggal" >
-                        </div>
+                        </div> --}}
                         
-                        <div class="form-group col-md-6">
+                        <div class="form-group ">
                             <label for="status_id">Status:</label>
                             <select name="status_id" id="status_id" class="form-control" required>
-                                <option value="">-- Pilih Status --</option>\
-                                @if ($status_old != '')
-                                    <option value="" selected>{{ $status_old }}</option>    
-                                @endif
-                                @foreach($enum as $n)
-                                    <option value="{{ $n}} ">{{ $n }}</option>
-                                @endforeach
+                                <option value="">-- Pilih Status --</option>
+
+                                    @foreach($enum as $n)
+                                        <option class="
+                                        {{ $n == "Sangat Layak" ? "text-primary" : "" }}
+                                        {{ $n == "Cukup Layak" ? "text-success" : "" }}
+                                        {{ $n == "Layak Pakai" ? "text-warning" : "" }}
+                                        {{ $n == "Rusak" ? "text-danger" : "" }}
+                                        {{ $n == "Hilang" ? "text-info" : "" }}
+                                        " value="{{ $n}}" {{ $n == $status_old ? "selected" : "" }}>
+                                            {{ $n == "Sangat Layak" ? "Sangat Layak (90%)" : "" }}
+                                            {{ $n == "Cukup Layak" ? "Cukup Layak (75%)" : "" }}
+                                            {{ $n == "Layak Pakai" ? "Layak_Pakai (50%)" : "" }}
+                                            {{ $n == "Rusak" ? "Rusak" : "" }}
+                                            {{ $n == "Hilang" ? "Hilang" : "" }}
+                                        </option>
+                                    @endforeach    
+
                             </select>
                         </div>
                     </div>
                 </div> 
                 <div class="modal-footer">
                     <button class="btn btn-secondary" onclick="window.history.back()" type="button" data-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary" type="submit">Save</button>
+                    <button class="{{ $endpoint == 'edit' ? 'btn btn-warning' : 'btn btn-primary' }}" type="submit">
+                        @if ($endpoint == 'edit')
+                            Update
+                        @else
+                            Save
+                        @endif
+                    </button>
                 </div>
             </form>       
             @endforeach

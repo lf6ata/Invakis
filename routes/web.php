@@ -26,6 +26,12 @@ Route::get('/timer', [StoController::class, 'timer']);
 
 Route::get('/save_timer/{id}', [StoController::class, 'saveTimer'])->name('save_timer');
 
+Route::get('/save_sto/{id}', [StoController::class, 'saveSto'])->name('save_sto');
+
+Route::get('/percentage', [DashboardController::class, 'getProgress'])->name('get.progress');
+
+Route::get('/chart-data', [DashboardController::class, 'getChartData']);
+
 //View Page Login
 Route::get('/login', [AuthController::class, 'authLogin'])->name('login')->middleware(['preventloggedin']);
 //Prosse login
@@ -87,40 +93,96 @@ Route::middleware(['auth'])->group(function () {
     //Delete Data Categori
     Route::delete('/invakis/barang/delete/{post_id}', [MasterdataController::class, 'destroyCategori']);
 
-    //Input Data Jenis
-    Route::post('/invakis/barang/create_jenis', [MasterdataController::class, 'createJenis'])->name('create.jenis');
-    //View Content Show Edit Categori
-    Route::get('/invakis/barang/tampil_jenis', [MasterdataController::class, 'DataJenis'])->name('halaman.jenis');
-    //TES TAMPIL DATA AJA
-    Route::get('/tes', [MasterdataController::class, 'getJenis'])->name('jenis.get');
-    //TES DELETE DATA AJA
-    Route::delete('/tes/delete/{id_jenis}', [MasterdataController::class, 'destroyJenis'])->name('jenis.delete');
-    //TES VIEW DATA EDIT AJA
-    Route::get('/tes/edit/{id_jenis}', [MasterdataController::class, 'showJenis']);
-    //TES UPDATE DATA  AJA
-    Route::put('/tes/update/{id_jenis}', [MasterdataController::class, 'updateJenis']);
+    //View Content Data Jenis
+    Route::get('/Invakis/item/jenis', [MasterdataController::class, 'pageJenis'])->name('page.jenis');
+    //View Page Create Jenis
+    Route::post('/Invakis/item/create_jenis', [MasterdataController::class, 'jenisCreate'])->name('create.jenis');
+    //View Content Show Edit Jenis
+    Route::get('/Invakis/item/edit_jenis/{id}', [MasterdataController::class, 'viewEdit'])->name('page.edit');
+    //Update Data Jenis
+    Route::put('/Invakis/item/update_jenis/{id}', [MasterdataController::class, 'updateJenis']);
+    //Delete Data Jenis
+    Route::delete('/Invakis/item/delete_jenis/{id}', [MasterdataController::class, 'destroyJenis']);
 
-    //TAMPIL DATA MEREK
-    Route::get('/invakis/barang/get-merek', [MasterdataController::class, 'getMerek'])->name('merek.get');
-    //Input Data Merek
-    Route::post('/invakis/barang/store_merek', [MasterdataController::class, 'storeMerek'])->name('store.merek');
-    //DELETE DATA MEREK
-    Route::delete('/invakis/delete/merek/{id_merek}', [MasterdataController::class, 'destroyMerek'])->name('destroy.merek');
-    //TES VIEW DATA EDIT AJA
-    Route::get('/invakis/edit/{id_merek}', [MasterdataController::class, 'showMerek']);
-    //TES UPDATE DATA  AJA
-    Route::put('/invakis/update/{id_merek}', [MasterdataController::class, 'updateMerek']);
+    //View Content Data Merek
+    Route::get('/Invakis/item/merek', [MasterdataController::class, 'pageMerek'])->name('page.merek');
+    //View Page Create Merek
+    Route::post('/Invakis/item/create_merek', [MasterdataController::class, 'merekCreate'])->name('create.merek');
+    //View Content Show Edit Merek
+    Route::get('/Invakis/item/edit_merek/{id}', [MasterdataController::class, 'viewEditMerek'])->name('page.edit');
+    //Update Data Merek
+    Route::put('/Invakis/item/update_merek/{id}', [MasterdataController::class, 'updateMerek']);
+    //Delete Data Merek
+    Route::delete('/Invakis/item/delete_merek/{id}', [MasterdataController::class, 'destroyMerek']);
 
-    //TAMPIL DATA WARNA
-    Route::get('/invakis/get-warna', [MasterdataController::class, 'getWarna'])->name('page.warna');
-    //Input Data WARNA
-    Route::post('/invakis/store_warna', [MasterdataController::class, 'storeWarna'])->name('store.warna');
-    //DELETE DATA WARNA
-    Route::delete('/invakis/delete_warna/{id}', [MasterdataController::class, 'destroyWarna']);
-    //VIEW DATA EDIT
-    Route::get('/invakis/edit_warna/{id}', [MasterdataController::class, 'showWarna']);
-    //UPDATE DATA 
-    Route::put('/invakis/update_warna/{id}', [MasterdataController::class, 'updateWarna']);
+    //View Content Data Warna
+    Route::get('/Invakis/item/warna', [MasterdataController::class, 'pageWarna'])->name('page.warna');
+    //View Page Create Warna
+    Route::post('/Invakis/item/create_warna', [MasterdataController::class, 'warnaCreate'])->name('create.warna');
+    //View Content Show Edit Warna
+    Route::get('/Invakis/item/edit_warna/{id}', [MasterdataController::class, 'viewEditWarna'])->name('page.edit');
+    //Update Data Warna
+    Route::put('/Invakis/item/update_warna/{id}', [MasterdataController::class, 'updateWarna']);
+    //Delete Data Warna
+    Route::delete('/Invakis/item/delete_warna/{id}', [MasterdataController::class, 'destroyWarna']);
+
+    //View Content Data Lokasi
+    Route::get('/Invakis/item/lokasi', [MasterdataController::class, 'pageLokasi'])->name('page.lokasi');
+    //View Page Create Lokasi
+    Route::post('/Invakis/item/create_lokasi', [MasterdataController::class, 'lokasiCreate'])->name('create.lokasi');
+    //View Content Show Edit Lokasi
+    Route::get('/Invakis/item/edit_lokasi/{id}', [MasterdataController::class, 'viewEditLokasi'])->name('page.edit');
+    //Update Data Lokasi
+    Route::put('/Invakis/item/update_lokasi/{id}', [MasterdataController::class, 'updateLokasi']);
+    //Delete Data Lokasi
+    Route::delete('/Invakis/item/delete_lokasi/{id}', [MasterdataController::class, 'destroyLokasi']);
+
+    //View Content Data Divisi
+    Route::get('/Invakis/item/divisi', [MasterdataController::class, 'pageDivisi'])->name('page.divisi');
+    //View Page Create Divisi
+    Route::post('/Invakis/item/create_divisi', [MasterdataController::class, 'divisiCreate'])->name('create.divisi');
+    //View Content Show Edit Divisi
+    Route::get('/Invakis/item/edit_divisi/{id}', [MasterdataController::class, 'viewEditDivisi'])->name('page.edit');
+    //Update Data Divisi
+    Route::put('/Invakis/item/update_divisi/{id}', [MasterdataController::class, 'updateDivisi']);
+    //Delete Data Divisi
+    Route::delete('/Invakis/item/delete_divisi/{id}', [MasterdataController::class, 'destroyDivisi']);
+
+
+    // //Input Data Jenis
+    // Route::post('/invakis/barang/create_jenis', [MasterdataController::class, 'createJenis'])->name('create.jenis');
+    // //View Content Show Edit Categori
+    // Route::get('/invakis/barang/tampil_jenis', [MasterdataController::class, 'DataJenis'])->name('halaman.jenis');
+    // //TES TAMPIL DATA AJA
+    // Route::get('/tes', [MasterdataController::class, 'getJenis'])->name('jenis.get');
+    // //TES DELETE DATA AJA
+    // Route::delete('/tes/delete/{id_jenis}', [MasterdataController::class, 'destroyJenis'])->name('jenis.delete');
+    // //TES VIEW DATA EDIT AJA
+    // Route::get('/tes/edit/{id_jenis}', [MasterdataController::class, 'showJenis']);
+    // //TES UPDATE DATA  AJA
+    // Route::put('/tes/update/{id_jenis}', [MasterdataController::class, 'updateJenis']);
+
+    // //TAMPIL DATA MEREK
+    // Route::get('/invakis/barang/get-merek', [MasterdataController::class, 'getMerek'])->name('merek.get');
+    // //Input Data Merek
+    // Route::post('/invakis/barang/store_merek', [MasterdataController::class, 'storeMerek'])->name('store.merek');
+    // //DELETE DATA MEREK
+    // Route::delete('/invakis/delete/merek/{id_merek}', [MasterdataController::class, 'destroyMerek'])->name('destroy.merek');
+    // //TES VIEW DATA EDIT AJA
+    // Route::get('/invakis/edit/{id_merek}', [MasterdataController::class, 'showMerek']);
+    // //TES UPDATE DATA  AJA
+    // Route::put('/invakis/update/{id_merek}', [MasterdataController::class, 'updateMerek']);
+
+    // //TAMPIL DATA WARNA
+    // Route::get('/invakis/get-warna', [MasterdataController::class, 'getWarna'])->name('page.warna');
+    // //Input Data WARNA
+    // Route::post('/invakis/store_warna', [MasterdataController::class, 'storeWarna'])->name('store.warna');
+    // //DELETE DATA WARNA
+    // Route::delete('/invakis/delete_warna/{id}', [MasterdataController::class, 'destroyWarna']);
+    // //VIEW DATA EDIT
+    // Route::get('/invakis/edit_warna/{id}', [MasterdataController::class, 'showWarna']);
+    // //UPDATE DATA 
+    // Route::put('/invakis/update_warna/{id}', [MasterdataController::class, 'updateWarna']);
 
 
     Route::get('/get-karyawan/{id_npk}', [MasterdataController::class, 'getKaryawan']);
@@ -152,6 +214,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/invakis/sto_edit/{id}/{no_session}/{id_session}', [StoController::class, 'edit'])->name('edit.sto');
     //POST STO
     Route::post('/invakis/sto_post', [StoController::class, 'store'])->name('store.sto');
+    Route::put('/invakis/sto_update', [StoController::class, 'update'])->name('update.sto');
 
     //View Scan QrCode
     Route::get('/invakis/index/scan/{id}', [QrCodeController::class, 'index'])->name('page.scan');
@@ -161,6 +224,7 @@ Route::middleware(['auth'])->group(function () {
 // Route::get('/dashboard', [DashboardController::class,'pageDashboard']
 // )->middleware(['auth'])->name('page.dashboard');
 
+//Update STO
 
 
 //View Content Data Barang

@@ -1,6 +1,6 @@
 @extends('index')
 
-@section('title','Pegawai')
+@section('title','Karyawan')
 @section('content')
 
         <!-- Form Add Pegawai-->
@@ -21,7 +21,7 @@
 
                             <div class="form-group">
                                 <label for="npkAdd">Npk Pegawai</label>
-                                <input type="text" class="form-control" id="npk_id" name="npk_id" placeholder="Npk Pegawai">
+                                <input type="text" class="form-control" id="npk_id" name="npk_id" placeholder="Npk Pegawai" minlength="0" maxlength="7">
                                     <p id="check_length" class="text-danger"></p>
                             </div>
 
@@ -30,10 +30,15 @@
                                 <label for="karyawan_id">Karyawan</label>
                                 <input type="Text" class="form-control" id="karyawan_id" name="karyawan_id" placeholder="Nama Karyawan">
                             </div>
-                            
+
                             <div class="form-group">
                                 <label for="divisi_id">Divisi</label>
-                                <input type="Text" class="form-control" id="divisi_id" name="divisi_id" placeholder="Divisi">
+                                <select name="divisi_id" id="divisi_id" class="form-control @error('divisi') invalid-border @enderror" required>
+                                    <option value="">-- Pilih Kategori --</option>
+                                    @foreach($get_divisi as $divisi)
+                                        <option value="{{ $divisi->divisi }}" {{ old('divisi') == $divisi->divisi ? 'selected' : '' }}>{{ $divisi->divisi }}</option>
+                                     @endforeach
+                                </select>
                             </div>
 
 
@@ -48,13 +53,13 @@
             </div>
         </div> 
     <!-- End Add Button -->
-    
+
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <div class="d-flex align-items-center">
                                     <div class="p-2 flex-grow-1">
-                                        <h6 class="m-0 font-weight-bold text-primary ">Data Pegawai</h6>
+                                        <h6 class="m-0 font-weight-bold text-primary ">DATA PEGAWAI</h6>
                                     </div>
                                     <div class="p-2">
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPegawai">
@@ -84,7 +89,7 @@
                                                     <td>{{ $p->nama_kr  }}</td>
                                                     <td>{{ $p->divisi  }}</td>
                                                     <td align="center">
-                                                        <a href="javascript:void(0)" id="btn-edit-pegawai" data-id="{{ $p->id }}" class="btn btn-sm btn-warning">Edit</a>
+                                                        <a href="javascript:void(0)" id="btn-edit-pegawai" data-id="{{ $p->id }}" data-divisi="{{ $p->divisi  }}" class="btn btn-sm btn-warning">Edit</a>
                                                         <a href="javascript:void(0)" id="btn-delete-pegawai" data-id="{{ $p->id }}" class="btn btn-sm btn-danger">Delete</a>
                                                     </td>
                                                 </tr>
@@ -96,8 +101,28 @@
     </div>
 
 @include('fiture.modal_pegawai.update_pegawai')
+
+<?php if (session('success')){ ?>
+    <script>
+        setTimeout(function() {
+            Swal.fire({
+                icon: "success",
+                title: "Menambahkan Data !",
+                text: "{{ (session('success')) }}",
+                confirmButtonColor: '#4e73df',
+            }); 
+        }, 1000); // Jeda 1,5 detik (1500 ms)
+    </script>
+<?php }?>
+
+
 <script>
 $(document).ready(function() {
+
+    $('#dataTable').DataTable({
+        lengthMenu: [5,10,50,100]
+    });
+    
     $('#npk_id').change(function() {
         let id_npk = $(this).val(); // Ambil nilai NPK yang dipilih
      
@@ -152,7 +177,7 @@ $(document).ready(function() {
 
                         location.reload(); // Refresh daftar pegawai atau lakukan pembaruan tampilan jika perlu
                         
-                    }, 3000); // Jeda 1,5 detik (1500 ms)
+                    }, 600); // Jeda 0.6 detik (600 ms)
                     
                 },
                 error: function(xhr) {

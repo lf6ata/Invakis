@@ -81,11 +81,12 @@
         var table = $('#dataTable-Warna').DataTable({
             processing: false,
             serverSide: true,
-            aaSorting:[[0,"desc"]],
+            aaSorting:[[1,"desc"]],
             ajax:{
                 url:"{{ route('page.warna') }}",
                 type: 'GET'
             },
+            lengthMenu: [5,10,50,100],
             columns: [
                 {data: 'DT_RowIndex', neme: 'DT_RowIndex', orderable: false, searchable: false},
                 {data: 'id_warna', neme: 'id_warna'},

@@ -19,6 +19,11 @@
     <script>
     $(document).ready(function() {
         $('#dataTable-Categori').DataTable();
+        $('#dataTable-Jenis').DataTable();
+        $('#dataTable-Merek').DataTable();
+        $('#dataTable-Warna').DataTable();
+        $('#dataTable-Lokasi').DataTable();
+        $('#dataTable-Divisi').DataTable();
 
         // Membuat motif bari table belang belang
         $('#myTable tbody tr:even').css('background-color', '#f2f2f2'); // Baris genap

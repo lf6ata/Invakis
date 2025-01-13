@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
         // Menutup spinner
         document.getElementById('loading-spinner').style.display = 'none';
-        }, 1500);
+        }, 1000);
         // e.preventDefault(); // Mencegah aksi default tautan
     });                
 });

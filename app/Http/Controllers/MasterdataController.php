@@ -5,16 +5,19 @@ namespace App\Http\Controllers;
 use App\Exports\DataExport;
 use App\Models\Barang;
 use App\Models\categori;
+use App\Models\Divisi;
 use App\Models\Jenis;
 use App\Models\Karyawan;
 use App\Models\Merek;
 use App\Models\Warna;
+use App\Models\Zona;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Faker\Core\File;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage as FacadesStorage;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Svg\Tag\Rect;
@@ -42,9 +45,9 @@ class MasterdataController extends Controller
     function pageCategori()
     {
         //$Categori = categori::latest()->get();
-        $Categori = categori::get();
+        $Categori = categori::orderBy('id_categori', 'desc')->get();
         // dd($Categori);
-        return view('menu.barang.input_categori', compact('Categori'));
+        return view('menu.master_item.input_categori', compact('Categori'));
     }
 
     /**
@@ -121,7 +124,11 @@ class MasterdataController extends Controller
     {
         //define validation rules
         $request->validate([
-            'id_categori' => 'required|max:2',
+            'id_categori' => [
+                'required',
+                'min:2',
+                Rule::unique('categori')->ignore($id)
+            ],
             'categori' =>  'required'
         ]);
 
@@ -147,7 +154,7 @@ class MasterdataController extends Controller
     }
 
 
-    function destroyCategori($id)
+    public function destroyCategori($id)
     {
         // Cari kategori berdasarkan ID
         $categori = categori::where('id', $id);
@@ -170,276 +177,742 @@ class MasterdataController extends Controller
     /***************************************/
 
 
+    public function pageJenis()
+    {
+        $Jenis = Jenis::orderBy('id_jenis', 'desc')->get();
+
+        return view('menu.master_item.input_jenis', compact('Jenis'));
+    }
+
     /**
      * @param  mixed $request
      */
 
-    function createJenis(Request $request)
+    public function jenisCreate(Request $request)
     {
-        // Validasi input data
-        $validatedData = $request->validate([
-            'id_jenis' => 'required|max:2|alpha|unique:jenis,id_jenis',
-            'jenis' => 'required|unique:jenis,jenis',
-        ]);
-
-        // Simpan data ke database atau lakukan tindakan lain
-        // Misalnya:
-
-        Jenis::create([
-            'id_jenis'  => strtoupper($request->id_jenis),
-            'jenis'     => $request->jenis,
-        ]); // Simpan data ke database atau lakukan tindakan lain
-
-        // Mengirim respons sukses
-        return response()->json(['success' => true]);
-    }
-
-    function DataJenis()
-    {
-        // Ambil data dari database
-        $data = Jenis::latest()->get();
-
-        // Kirim response sebagai JSON
-        return response()->json($data);
-    }
+        $validator = $request->validate(
+            [
+                'id_jenis' => 'required|min:2|alpha|unique:jenis,id_jenis',
+                'jenis' =>  'required',
+            ]
+        );
 
 
-    public function getJenis(Request $request)
-    {
-        if ($request->ajax()) {
-            //Ambil Data
-            $jenis = Jenis::all();
+        if ($validator) {
+            jenis::create([
+                'id_jenis'  => strtoupper($request->id_jenis),
+                'jenis'     => $request->jenis,
+            ]);
 
-            // Format id_jenis menggunakan sprintf
-            $jenis = $jenis->map(function ($item) {
-                $item->id_jenis = strtoupper($item->id_jenis); // Memformat id_jenis
-                return $item;
-            });
-            return DataTables::of($jenis)->addIndexColumn()->make(true);
+            // Menggunakan flash message
+            session()->flash('success', 'Jenis berhasil di tambah.');
+            return redirect()->route('page.jenis');
+        } else {
+            session()->flash('unsuccess', 'Gagal di tambah.');
+            return redirect()->route('page.jenis');
         }
     }
 
     public function destroyJenis($id)
     {
-        $jenis_tes = Jenis::find($id);
-        // Cari kategori berdasarkan ID dan hapus
-        // dd($jenis_tes);
+        // Cari jenis berdasarkan ID
+        $jenis = Jenis::where('id', $id);
+        $nama_jenis = $jenis->get();
 
-        $jenis_tes->delete();
+        // Jika kategori tidak ditemukan, kembalikan respon 404
+        if (!$jenis) {
+            return response()->json(['message' => 'Jenis not found'], 404);
+        }
 
-        // Kembalikan response sukses
-        return response()->json(['success' => 'Kategori berhasil dihapus']);
+        // Hapus jenis
+        $jenis->delete();
+
+        // Kembalikan respon sukses
+        return response()->json(['message' => 'Jenis ' . $nama_jenis[0]->jenis . ' telah dihapus'], 200);
     }
 
-    public function showJenis($id)
+    public function viewEdit($id)
     {
 
-        $id_jenis = Jenis::find($id);
-        //return response
+        $post_jenis = Jenis::find($id);
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Berhasil di update',
-            'data'    => $id_jenis
+            'message' => 'Detail Data Post',
+            'data'    => $post_jenis
         ]);
     }
 
     public function updateJenis(Request $request, $id)
     {
+
+        // dd($request->jenis);
+        $post = Jenis::where('id', $id);
+
         //define validation rules
         $request->validate([
-            'id_jenis' => 'required|max:2',
-            'jenis' =>  'required | unique:jenis,jenis'
+            'id_jenis' => [
+                'required',
+                'alpha',
+                'min:2',
+                Rule::unique('jenis')->ignore($id)
+            ],
+            'jenis' =>  'required'
         ]);
 
-        //check if validation fails
-        // if ($validator->fails()) {
-        //     return response()->json($validator->errors(), 422);
-        // }
-
-
-        //create post
-        $id_Jenis = Jenis::find($id);
-        $id_Jenis->update([
+        //update jenis
+        $post->update([
             'id_jenis'  => strtoupper($request->id_jenis),
-            'jenis'   => $request->jenis
+            'jenis'     => $request->jenis
         ]);
 
         //return response
         return response()->json([
             'success' => true,
-            'message' => 'Data Berhasil Diudapte!'
+            'message' => 'Data Berhasil Diudapte!',
         ]);
     }
+
+    // function createJenis(Request $request)
+    // {
+    //     // Validasi input data
+    //     $validatedData = $request->validate([
+    //         'id_jenis' => 'required|max:2|alpha|unique:jenis,id_jenis',
+    //         'jenis' => 'required|unique:jenis,jenis',
+    //     ]);
+
+    //     // Simpan data ke database atau lakukan tindakan lain
+    //     // Misalnya:
+
+    //     Jenis::create([
+    //         'id_jenis'  => strtoupper($request->id_jenis),
+    //         'jenis'     => $request->jenis,
+    //     ]); // Simpan data ke database atau lakukan tindakan lain
+
+    //     // Mengirim respons sukses
+    //     return response()->json(['success' => true]);
+    // }
+
+    // function DataJenis()
+    // {
+    //     // Ambil data dari database
+    //     $data = Jenis::latest()->get();
+
+    //     // Kirim response sebagai JSON
+    //     return response()->json($data);
+    // }
+
+
+    // public function getJenis(Request $request)
+    // {
+    //     if ($request->ajax()) {
+    //         //Ambil Data
+    //         $jenis = Jenis::all();
+
+    //         // Format id_jenis menggunakan sprintf
+    //         $jenis = $jenis->map(function ($item) {
+    //             $item->id_jenis = strtoupper($item->id_jenis); // Memformat id_jenis
+    //             return $item;
+    //         });
+    //         return DataTables::of($jenis)->addIndexColumn()->make(true);
+    //     }
+    // }
+
+    // public function destroyJenis($id)
+    // {
+    //     $jenis_tes = Jenis::find($id);
+    //     // Cari kategori berdasarkan ID dan hapus
+    //     // dd($jenis_tes);
+
+    //     $jenis_tes->delete();
+
+    //     // Kembalikan response sukses
+    //     return response()->json(['success' => 'Kategori berhasil dihapus']);
+    // }
+
+    // public function showJenis($id)
+    // {
+
+    //     $id_jenis = Jenis::find($id);
+    //     //return response
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Data Berhasil di update',
+    //         'data'    => $id_jenis
+    //     ]);
+    // }
+
+    // public function updateJenis(Request $request, $id)
+    // {
+    //     //define validation rules
+    //     $request->validate([
+    //         'id_jenis' => 'required|max:2',
+    //         'jenis' =>  'required | unique:jenis,jenis'
+    //     ]);
+
+    //     //check if validation fails
+    //     // if ($validator->fails()) {
+    //     //     return response()->json($validator->errors(), 422);
+    //     // }
+
+
+    //     //create post
+    //     $id_Jenis = Jenis::find($id);
+    //     $id_Jenis->update([
+    //         'id_jenis'  => strtoupper($request->id_jenis),
+    //         'jenis'   => $request->jenis
+    //     ]);
+
+    //     //return response
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Data Berhasil Diudapte!'
+    //     ]);
+    // }
 
     /***************************************/
     /****** CONROLLER SUB FORM MEREK ********/
     /***************************************/
 
-
-    public function getMerek(Request $request)
+    public function pageMerek()
     {
-        if ($request->ajax()) {
-            //Ambil Data
-            $merek = Merek::all();
+        $Merek = Merek::orderBy('id_merek', 'desc')->get();
 
-            // Format id_merek menggunakan sprintf
-            $merek = $merek->map(function ($item) {
-                $item->id_merek = sprintf('%02d', $item->id_merek); // Memformat id_merek
-                return $item;
-            });
-
-            return DataTables::of($merek)->addIndexColumn()->make(true);
-        }
+        return view('menu.master_item.input_merek', compact('Merek'));
     }
 
-    public function storeMerek(Request $request)
+    /**
+     * @param  mixed $request
+     */
+
+    public function merekCreate(Request $request)
     {
-        // Validasi input data
-        $validatedData = $request->validate([
-            'id_merek' => 'required|max:2|unique:merek,id_merek',
-            'merek' => 'required|unique:merek,merek',
-        ]);
+        $validator = $request->validate(
+            [
+                'id_merek' => 'required|digits_between:1,2|numeric|unique:merek,id_merek',
+                'merek' =>  'required',
+            ]
+        );
 
-        // Simpan data ke database atau lakukan tindakan lain
-        // Misalnya:
-        Merek::create($validatedData);
 
-        // Mengirim respons sukses
-        return response()->json(['success' => true]);
+        if ($validator) {
+            merek::create([
+                'id_merek'  => $request->id_merek,
+                'merek'     => ucwords($request->merek),
+            ]);
+
+            // Menggunakan flash message
+            session()->flash('success', 'Merek berhasil di tambah.');
+            return redirect()->route('page.merek');
+        } else {
+            session()->flash('unsuccess', 'Gagal di tambah.');
+            return redirect()->route('page.merek');
+        }
     }
 
     public function destroyMerek($id)
     {
-        $merek_id = Merek::find($id);
-        // Cari kategori berdasarkan ID dan hapus
-        // dd($jenis_tes);
+        // Cari jenis berdasarkan ID
+        $merek = Merek::where('id', $id);
+        $nama_merek = $merek->get();
 
-        $merek_id->delete();
+        // Jika kategori tidak ditemukan, kembalikan respon 404
+        if (!$merek) {
+            return response()->json(['message' => 'Merek not found'], 404);
+        }
 
-        // Kembalikan response sukses
-        return response()->json(['success' => 'Kategori berhasil dihapus']);
+        // Hapus merek
+        $merek->delete();
+
+        // Kembalikan respon sukses
+        return response()->json(['message' => 'Merek ' . $nama_merek[0]->merek . ' telah dihapus'], 200);
     }
 
-    public function showMerek($id)
+    public function viewEditMerek($id)
     {
 
-        $merek_id = Merek::find($id);
-        //return response
+        $post_merek = Merek::find($id);
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Berhasil di update',
-            'data'    => $merek_id
+            'message' => 'Detail Data Post',
+            'data'    => $post_merek
         ]);
     }
 
     public function updateMerek(Request $request, $id)
     {
+
+        $post = Merek::where('id', $id);
+
         //define validation rules
         $request->validate([
-            'id_merek' => 'required|max:2',
+            'id_merek' => [
+                'required',
+                'digits_between:1,2',
+                'numeric',
+                Rule::unique('merek')->ignore($id)
+            ],
+
             'merek' =>  'required'
         ]);
 
-        //check if validation fails
-        // if ($validator->fails()) {
-        //     return response()->json($validator->errors(), 422);
-        // }
-
-
-        //create post
-        $merek_id = Merek::find($id);
-        $merek_id->update([
-            'id_merek'  => strtoupper($request->id_merek),
-            'merek'   => $request->merek
+        //update merek
+        $post->update([
+            'id_merek'  => $request->id_merek,
+            'merek'     => ucwords($request->merek)
         ]);
 
         //return response
         return response()->json([
             'success' => true,
-            'message' => 'Data Berhasil Diudapte!'
+            'message' => 'Data Berhasil Diudapte!',
         ]);
     }
+
+    // public function getMerek(Request $request)
+    // {
+    //     if ($request->ajax()) {
+    //         //Ambil Data
+    //         $merek = Merek::all();
+
+    //         // Format id_merek menggunakan sprintf
+    //         $merek = $merek->map(function ($item) {
+    //             $item->id_merek = sprintf('%02d', $item->id_merek); // Memformat id_merek
+    //             return $item;
+    //         });
+
+    //         return DataTables::of($merek)->addIndexColumn()->make(true);
+    //     }
+    // }
+
+    // public function storeMerek(Request $request)
+    // {
+    //     // Validasi input data
+    //     $validatedData = $request->validate([
+    //         'id_merek' => 'required|max:2|unique:merek,id_merek',
+    //         'merek' => 'required|unique:merek,merek',
+    //     ]);
+
+    //     // Simpan data ke database atau lakukan tindakan lain
+    //     // Misalnya:
+    //     Merek::create($validatedData);
+
+    //     // Mengirim respons sukses
+    //     return response()->json(['success' => true]);
+    // }
+
+    // public function destroyMerek($id)
+    // {
+    //     $merek_id = Merek::find($id);
+    //     // Cari kategori berdasarkan ID dan hapus
+    //     // dd($jenis_tes);
+
+    //     $merek_id->delete();
+
+    //     // Kembalikan response sukses
+    //     return response()->json(['success' => 'Kategori berhasil dihapus']);
+    // }
+
+    // public function showMerek($id)
+    // {
+
+    //     $merek_id = Merek::find($id);
+    //     //return response
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Data Berhasil di update',
+    //         'data'    => $merek_id
+    //     ]);
+    // }
+
+    // public function updateMerek(Request $request, $id)
+    // {
+    //     //define validation rules
+    //     $request->validate([
+    //         'id_merek' => 'required|max:2',
+    //         'merek' =>  'required'
+    //     ]);
+
+    //     //check if validation fails
+    //     // if ($validator->fails()) {
+    //     //     return response()->json($validator->errors(), 422);
+    //     // }
+
+
+    //     //create post
+    //     $merek_id = Merek::find($id);
+    //     $merek_id->update([
+    //         'id_merek'  => strtoupper($request->id_merek),
+    //         'merek'   => $request->merek
+    //     ]);
+
+    //     //return response
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Data Berhasil Diudapte!'
+    //     ]);
+    // }
 
     /***************************************/
     /****** CONROLLER SUB FORM WARNA ********/
     /***************************************/
 
-
-    public function getWarna(Request $request)
+    public function pageWarna()
     {
-        if ($request->ajax()) {
-            $warna = Warna::all(); //Ambil Data
+        $Warna = Warna::orderBy('id_warna', 'desc')->get();
 
-            // Format id_warna menggunakan strtoupper
-            $warna = $warna->map(function ($item) {
-                $item->id_warna = strtoupper($item->id_warna); // Memformat id_jenis
-                return $item;
-            });
-
-            return DataTables::of($warna)->addIndexColumn()->make(true);
-        }
+        return view('menu.master_item.input_warna', compact('Warna'));
     }
 
-    public function storeWarna(Request $request)
+    /**
+     * @param  mixed $request
+     */
+
+    public function warnaCreate(Request $request)
     {
-        // Validasi input data
-        $validatedData = $request->validate([
-            'id_warna'  => 'required|max:2|unique:warna,id_warna',
-            'warna'     => 'required|unique:warna,warna',
-        ]);
+        $validator = $request->validate(
+            [
+                'id_warna' => 'required|min:2|alpha|unique:warna,id_warna',
+                'warna' =>  'required',
+            ]
+        );
 
-        Warna::create([
-            'id_warna'  => strtoupper($request->id_warna),
-            'warna'     => $request->warna,
-        ]); // Simpan data ke database atau lakukan tindakan lain
 
-        return response()->json(['success' => true]); // Mengirim respons sukses
+        if ($validator) {
+            warna::create([
+                'id_warna'  => strtoupper($request->id_warna),
+                'warna'     => $request->warna,
+            ]);
+
+            // Menggunakan flash message
+            session()->flash('success', 'Jenis berhasil di tambah.');
+            return redirect()->route('page.warna');
+        } else {
+            session()->flash('unsuccess', 'Gagal di tambah.');
+            return redirect()->route('page.warna');
+        }
     }
 
     public function destroyWarna($id)
     {
-        $warna_id = Warna::find($id);
+        // Cari warna berdasarkan ID
+        $warna = Warna::where('id', $id);
+        $nama_warna = $warna->get();
 
-        $warna_id->delete();
+        // Jika kategori tidak ditemukan, kembalikan respon 404
+        if (!$warna) {
+            return response()->json(['message' => 'Warna not found'], 404);
+        }
 
-        return response()->json(['success' => 'Kategori berhasil dihapus']); // Kembalikan response sukses
+        // Hapus warna
+        $warna->delete();
+
+        // Kembalikan respon sukses
+        return response()->json(['message' => 'Warna ' . $nama_warna[0]->warna . ' telah dihapus'], 200);
     }
 
-    public function showWarna($id)
+    public function viewEditWarna($id)
     {
 
-        $warna_id = Warna::find($id);
+        $post_warna = Warna::find($id);
 
-        //return response
         return response()->json([
             'success' => true,
-            'message' => 'Data Berhasil di update',
-            'data'    => $warna_id
+            'message' => 'Detail Data Post',
+            'data'    => $post_warna
         ]);
     }
 
     public function updateWarna(Request $request, $id)
     {
+
+        $post = Warna::where('id', $id);
+
         //define validation rules
         $request->validate([
-            'id_warna' => 'required|max:2',
+            'id_warna' => [
+                'required',
+                'alpha',
+                'min:2',
+                Rule::unique('warna')->ignore($id)
+            ],
             'warna' =>  'required'
         ]);
 
-        $warna_id = Warna::find($id); //update
-        $warna_id->update([
+        //update warna
+        $post->update([
             'id_warna'  => strtoupper($request->id_warna),
-            'warna'   => $request->warna
+            'warna'     => $request->warna
         ]);
 
         //return response
         return response()->json([
             'success' => true,
-            'message' => 'Data Berhasil Diudapte!'
+            'message' => 'Data Berhasil Diudapte!',
         ]);
     }
+
+
+    /***************************************/
+    /****** CONROLLER SUB FORM LOKASI ********/
+    /***************************************/
+
+    public function pageLokasi()
+    {
+        $Lokasi = Zona::orderBy('id', 'desc')->get();
+
+        return view('menu.master_item.input_lokasi', compact('Lokasi'));
+    }
+
+    /**
+     * @param  mixed $request
+     */
+
+    public function lokasiCreate(Request $request)
+    {
+        $validator = $request->validate(
+            [
+                'lokasi' =>  ['required', 'unique:zona,lokasi']
+            ]
+        );
+
+
+        if ($validator) {
+            Zona::create([
+                'lokasi'     => strtoupper($request->lokasi)
+            ]);
+
+            // Menggunakan flash message
+            session()->flash('success', 'Lokasi berhasil di tambah.');
+            return redirect()->route('page.lokasi');
+        } else {
+            session()->flash('unsuccess', 'Gagal di tambah.');
+            return redirect()->route('page.lokasi');
+        }
+    }
+
+    public function destroyLokasi($id)
+    {
+        // Cari jenis berdasarkan ID
+        $lokasi = Zona::where('id', $id);
+        $nama_lokasi = $lokasi->get();
+
+        // Jika kategori tidak ditemukan, kembalikan respon 404
+        if (!$lokasi) {
+            return response()->json(['message' => 'Lokasi not found'], 404);
+        }
+
+        // Hapus lokasi
+        $lokasi->delete();
+
+        // Kembalikan respon sukses
+        return response()->json(['message' => 'Lokasi ' . $nama_lokasi[0]->lokasi . ' telah dihapus'], 200);
+    }
+
+    public function viewEditLokasi($id)
+    {
+
+        $post_lokasi = Zona::find($id);
+
+        return response()->json([
+            'success' => true,
+            'data'    => $post_lokasi
+        ]);
+    }
+
+    public function updateLokasi(Request $request, $id)
+    {
+
+        $post = Zona::where('id', $id);
+
+        //define validation rules
+        $request->validate([
+            'lokasi' => [
+                'required',
+                Rule::unique('zona')->ignore($id)
+            ]
+        ]);
+
+        //update lokasi
+        $post->update([
+            'lokasi'     => $request->lokasi
+        ]);
+
+        //return response
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil Diudapte!',
+        ]);
+    }
+
+    /***************************************/
+    /****** CONROLLER SUB FORM DIVISI ********/
+    /***************************************/
+
+    public function pageDivisi()
+    {
+        $Divisi = Divisi::orderBy('id', 'desc')->get();
+
+        return view('menu.master_item.input_divisi', compact('Divisi'));
+    }
+
+    /**
+     * @param  mixed $request
+     */
+
+    public function divisiCreate(Request $request)
+    {
+        $validator = $request->validate(
+            [
+                'divisi' =>  ['required', 'unique:divisi,divisi']
+            ]
+        );
+
+
+        if ($validator) {
+            Divisi::create([
+                'divisi'     => ucwords($request->divisi)
+            ]);
+
+            // Menggunakan flash message
+            session()->flash('success', 'Divisi berhasil di tambah.');
+            return redirect()->route('page.divisi');
+        } else {
+            session()->flash('unsuccess', 'Gagal di tambah.');
+            return redirect()->route('page.divisi');
+        }
+    }
+
+    public function destroyDivisi($id)
+    {
+        // Cari jenis berdasarkan ID
+        $divisi = Divisi::where('id', $id);
+        $nama_divisi = $divisi->get();
+
+        // Jika kategori tidak ditemukan, kembalikan respon 404
+        if (!$divisi) {
+            return response()->json(['message' => 'Divisi not found'], 404);
+        }
+
+        // Hapus divisi
+        $divisi->delete();
+
+        // Kembalikan respon sukses
+        return response()->json(['message' => 'Divisi ' . $nama_divisi[0]->divisi . ' telah dihapus'], 200);
+    }
+
+    public function viewEditDivisi($id)
+    {
+
+        $post_divisi = Divisi::find($id);
+
+        return response()->json([
+            'success' => true,
+            'data'    => $post_divisi
+        ]);
+    }
+
+    public function updateDivisi(Request $request, $id)
+    {
+
+        $post = Divisi::where('id', $id);
+
+        //define validation rules
+        $request->validate([
+            'divisi' => [
+                'required',
+                Rule::unique('divisi')->ignore($id)
+            ]
+        ]);
+
+        //update divisi
+        $post->update([
+            'divisi'     => ucwords($request->divisi)
+        ]);
+
+        //return response
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil Diudapte!',
+        ]);
+    }
+
+    // public function getWarna(Request $request)
+    // {
+    //     if ($request->ajax()) {
+    //         $warna = Warna::all(); //Ambil Data
+
+    //         // Format id_warna menggunakan strtoupper
+    //         $warna = $warna->map(function ($item) {
+    //             $item->id_warna = strtoupper($item->id_warna); // Memformat id_jenis
+    //             return $item;
+    //         });
+
+    //         return DataTables::of($warna)->addIndexColumn()->make(true);
+    //     }
+    // }
+
+    // public function storeWarna(Request $request)
+    // {
+    //     // Validasi input data
+    //     $validatedData = $request->validate([
+    //         'id_warna'  => 'required|max:2|unique:warna,id_warna',
+    //         'warna'     => 'required|unique:warna,warna',
+    //     ]);
+
+    //     Warna::create([
+    //         'id_warna'  => strtoupper($request->id_warna),
+    //         'warna'     => $request->warna,
+    //     ]); // Simpan data ke database atau lakukan tindakan lain
+
+    //     return response()->json(['success' => true]); // Mengirim respons sukses
+    // }
+
+    // public function destroyWarna($id)
+    // {
+    //     $warna_id = Warna::find($id);
+
+    //     $warna_id->delete();
+
+    //     return response()->json(['success' => 'Kategori berhasil dihapus']); // Kembalikan response sukses
+    // }
+
+    // public function showWarna($id)
+    // {
+
+    //     $warna_id = Warna::find($id);
+
+    //     //return response
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Data Berhasil di update',
+    //         'data'    => $warna_id
+    //     ]);
+    // }
+
+    // public function updateWarna(Request $request, $id)
+    // {
+    //     //define validation rules
+    //     $request->validate([
+    //         'id_warna' => 'required|max:2',
+    //         'warna' =>  'required'
+    //     ]);
+
+    //     $warna_id = Warna::find($id); //update
+    //     $warna_id->update([
+    //         'id_warna'  => strtoupper($request->id_warna),
+    //         'warna'   => $request->warna
+    //     ]);
+
+    //     //return response
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Data Berhasil Diudapte!'
+    //     ]);
+    // }
 
 
 
@@ -456,9 +929,10 @@ class MasterdataController extends Controller
         $get_merek = Merek::all();
         $get_warna = Warna::select('id', 'id_warna', 'warna')->get();
         $get_karyawan = Karyawan::all();
+        $get_zona = Zona::all();
 
 
-        return view('menu.barang.input_barang', compact('get_barang', 'get_categori', 'get_jenis', 'get_merek', 'get_warna', 'get_karyawan'));
+        return view('menu.barang.input_barang', compact('get_barang', 'get_categori', 'get_jenis', 'get_merek', 'get_warna', 'get_karyawan', 'get_zona'));
     }
 
     public function getKaryawan($id_npk)
@@ -609,6 +1083,7 @@ class MasterdataController extends Controller
         $get_merek = Merek::all();
         $get_warna = Warna::select('id', 'id_warna', 'warna')->get();
         $get_karyawan = Karyawan::all();
+        $get_zona = Zona::all();
         // $get_karyawan = Karyawan::all();
         //return response
         return response()->json([
@@ -617,7 +1092,8 @@ class MasterdataController extends Controller
             'get_jenis'     => $get_jenis,
             'get_merek'     => $get_merek,
             'get_warna'     => $get_warna,
-            'get_karyawan'  => $get_karyawan
+            'get_karyawan'  => $get_karyawan,
+            'get_zona'      => $get_zona
         ]);
     }
 

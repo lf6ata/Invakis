@@ -12,19 +12,54 @@ use Illuminate\Support\Facades\DB;
 class StoController extends Controller
 {
 
+    protected $progress;
+
+    // Melakukan dependency injection UserController
+    public function __construct(DashboardController $progress)
+    {
+        $this->progress = $progress;
+    }
+
     function saveTimer($id)
+    {
+
+        $id_session_sto   = SessionSto::where('session_sto', $id);
+
+        $progress = json_decode($this->progress->getProgress()->content(), true);
+
+        if ($progress['percentage'] > 0) {
+            $id_session_sto->update([
+                'progress' => $progress['percentage'],
+            ]);
+            return redirect()->route('page.dashboard');
+        }
+
+        session()->flash('error', 'Belum ada item yang di sto.');
+        return redirect()->route('page.sto', [$id, 'false']);
+    }
+
+    function saveSto($id)
     {
 
         $id_session_sto   = SessionSto::where('session_sto', $id);
 
         //untuk mengurai string JSON tersebut menjadi array atau objek
         $total_durasi = json_decode($this->timer()->content(), true);
-        // dd(now());
-        $id_session_sto->update([
-            'durasi'  => $total_durasi['result_time'],
-            'save_sto' => now()
-        ]);
-        return redirect()->route('page.dashboard');
+
+        $progress = json_decode($this->progress->getProgress()->content(), true);
+        // dd($progress['percentage'] == 100);
+        if ($progress['percentage'] == 100) {
+
+            $id_session_sto->update([
+                'progress' => $progress['percentage'],
+                'durasi'  => $total_durasi['result_time'],
+                'save_sto' => now()
+            ]);
+            return redirect()->route('page.dashboard');
+        }
+
+        session()->flash('error', 'Progress stock opname harus 100% complate.');
+        return redirect()->route('page.sto', [$id, 'false']);
     }
 
     function timer()
@@ -65,12 +100,16 @@ class StoController extends Controller
 
     public function index($id, $status = 'false')
     {
-        // dd($status);
+
+
         $index_sto = Sto::orderBy('created_at', 'desc')->get();
         $flag_timer =  SessionSto::select('save_sto')->latest()->first();
         $total_durasi =  SessionSto::select('durasi', 'id', 'session_sto')->where('session_sto', $id)->get();
-        $not_yet_sto = Barang::select('*')->where('tgl_masuk', '<', date('Y-m-d'))->whereNull('tgl_terakhir_sto')->orderBy('created_at', 'asc')->get();
+        // $not_yet_sto = Barang::select('*')->where('tgl_masuk', '<', date('Y-m-d'))->whereNull('tgl_terakhir_sto')->orderBy('created_at', 'asc')->get();
+        // $not_yet_sto = Barang::select('*')->Where(DB::raw('month(tgl_terakhir_sto)'), '<', date('m'))->orWhereNull('tgl_terakhir_sto')->orWhereYear('tgl_terakhir_sto', '<', date('Y'))->orderBy('created_at', 'asc')->get();
+        $not_yet_sto = Barang::select('*')->where('status_sto', 0)->orderBy('created_at', 'asc')->get();
         $id_session = $total_durasi[0]->id;
+
 
         $finish_sto =  Sto::select('*')->where('session_sto', '=', $id_session)->get();
 
@@ -83,9 +122,13 @@ class StoController extends Controller
 
     public function edit($id, $no_sto, $id_session)
     {
-        // dd($id_session);
+
         $barang = Barang::where('no_asset', '=', $id)->get();
         $sto_old = Sto::where('no_asset', $id)->latest()->first();
+        $endpoint = substr($id_session, strlen($id_session) - 4);
+        // $endpoint = substr($id_session, 0, strlen($id_session) - 5);
+
+        // dd($endpoint);
 
         if (empty($sto_old)) {
             $tgl_sto_old = '';
@@ -105,7 +148,7 @@ class StoController extends Controller
             }, explode("','", $matches[1]));
         }
 
-        return view('fiture.sto.update_sto', compact('barang', 'enum', 'tgl_sto_old', 'status_old', 'id_session', 'no_sto'));
+        return view('fiture.sto.update_sto', compact('barang', 'enum', 'tgl_sto_old', 'status_old', 'id_session', 'no_sto', 'endpoint'));
     }
 
     public function store(Request $request)
@@ -134,14 +177,28 @@ class StoController extends Controller
             'no_asset'      => $request->no_asset_id,
             'status'        => $request->status_id,
             'user'          => Auth::user()->name,
-            'tgl_save_sto'  => $request->tgl_end_sto
+            'tgl_save_sto'  => date('Y-m-d')
         ]);
 
         $update_save_sto->update([
-            'tgl_terakhir_sto' => date('Y-m-d')
+            'tgl_terakhir_sto' => date('Y-m-d'),
+            'status_sto'       => 1
         ]);
 
         session()->flash('success', 'Sto berhasil di update.');
+        return redirect()->route('page.sto', [$request->session_sto, 'false']);
+    }
+
+    public function update(Request $request)
+    {
+
+        $sto_edit = Sto::select('no_asset', 'session_sto', 'status')->where('no_asset', $request->no_asset_id)
+            ->where('session_sto', $request->id_session);
+
+        $sto_edit->update([
+            'status' => $request->status_id
+        ]);
+
         return redirect()->route('page.sto', [$request->session_sto, 'false']);
     }
 

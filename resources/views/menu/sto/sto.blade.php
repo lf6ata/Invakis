@@ -1,6 +1,10 @@
 @extends('index')
 
-@section('title','Stock Opname')
+@if ($status === 'false')
+    @section('title','Stock Opname')
+@else
+    @section('title', 'Rekap Sto')
+@endif
 @section('content')
 
 
@@ -166,11 +170,12 @@
                 <thead>
                     <tr>
                         <th width=5%>No</th>
-                        {{-- <th width=10%>Tgl Sto</th>  --}}
                         <th>No Asset</th> 
-                        <th>Status</th> 
-                        <th>Tgl Save Sto</th>
+                        <th>Nama Barang</th>
+                        <th>Lokasi</th>
                         <th>User</th> 
+                        <th>Status</th> 
+                        <th>Tgl Sto</th>
                         @if ($status === 'false')
                             <th>Action</th>
                         @endif
@@ -182,8 +187,10 @@
                     @foreach ($finish_sto as $no=>$s)
                         <tr>
                             <td>{{ $no+1 }}</td>
-                            {{-- <td>{{ $s->tgl_sto }}</td> --}}
                             <td>{{ $s->no_asset }}</td>
+                            <td>{{ $s->tbBarang[0]->tbCategori[0]->categori }}</td>
+                            <td>{{ $s->tbBarang[0]->tbZona[0]->lokasi }}</td>
+                            <td>{{ $s->user }}</td>
                             <td> 
                                 <span @if ($s->status == "Sangat Layak")
                                     class="badge badge-primary"
@@ -199,8 +206,7 @@
                                     {{ $s->status }}
                                 </span>
                             </td>
-                            <td>{{ $s->tgl_save_sto }}</td>
-                            <td>{{ $s->user }}</td>
+                            <td>{{ $s->created_at }}</td>
                             @if ($status === 'false')
                                 <td align="center">
                                     <form method="GET" action="{{ route('edit.sto',[$s->no_asset,$session_sto,$id_session_sto.'_edit']) }}">
@@ -257,7 +263,7 @@
                                 <td>{{ $no+1 }}</td>
                                 <td>{{ $n_sto->no_asset }}</td>
                                 <td>{{ $n_sto->tbCategori[0]->categori }}</td>
-                                <td>{{ $n_sto->lokasi }}</td>
+                                <td>{{ $n_sto->tbZona[0]->lokasi }}</td>
                                 <td>{{ $n_sto->tbKaryawan[0]->nama_kr }}</td>
                                 <td>{{ $n_sto->divisi }}</td>
                                 <td>{{ $n_sto->tgl_masuk }}</td>
@@ -265,7 +271,7 @@
                                 <td align="center">
                                     <form method="GET" action="{{ route('edit.sto',[$n_sto->no_asset,$session_sto,$id_session_sto.'_post']) }}">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-info px-4" >Sto</button>
+                                        <button type="submit" class="btn btn-sm btn-primary px-4" >Sto</button>
                                     </form>
                                 </td>
                             </tr>

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DataBaExport;
+use App\Exports\DataStoExport;
 use App\Models\Barang;
 use App\Models\SessionSto;
 use App\Models\Sto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StoController extends Controller
 {
@@ -216,5 +219,49 @@ class StoController extends Controller
                 'status' => 200
             ]);
         }
+    }
+
+    // Export data yang dipilih ke Excel
+    public function exportExcel(Request $request)
+    {
+        $id_session = $request->id_session;
+
+        if (empty($id_session)) {
+            return back()->with('error', 'Data tidak ditemukan');
+        }
+
+        $sto_export = Sto::where('session_sto', $id_session)->get();
+
+        //  Export ke Excel
+        return Excel::download(new DataStoExport($sto_export), date('YmdHis') . '_REKAP STO' . '.xlsx');
+    }
+
+
+    // Export data yang dipilih ke Excel
+    public function exportBa(Request $request)
+    {
+        $id_session = $request->id_session;
+
+
+        $sto_export = Sto::where('session_sto', $id_session)->where('status', 'Rusak')->get();
+        // // dd($sto_export->count());
+        // if ($sto_export->count() == 0) {
+        //     return response()->json([
+        //         'message' => 'Detail Data Post',
+        //     ]);
+        // }
+
+        // dd($sto_export);
+
+        // Mengecek apakah data ditemukan
+        if ($sto_export->isEmpty()) {
+            // Jika tidak ada data, mengembalikan response error
+            return response()->json([
+                'message' => 'Tidak ada data dengan status Rusak untuk session ini.',
+            ], 404); // 404 Not Found
+        }
+
+        //  Export ke Excel
+        return Excel::download(new DataBaExport($sto_export), date('YmdHis') . '_BERITA ACARA' . '.xlsx');
     }
 }

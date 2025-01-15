@@ -52,8 +52,8 @@
                 @foreach ($barang as $b)
                 <div class="card">
                     <div class="content" style="display: flex; justify-content: center;" >
-                        <div class="form-group center" style="max-width: 500px; width: 100%;">
-                            <img id="fotoAsset" data-id="{{ $b->id }}" style="max-width: 100%; height: auto;" src="{{ asset('storage/'.$b->image) }}" alt="Foto Asset">
+                        <div class="form-group text-center pt-3 radius-4" style="max-width: 500px; width: 100%;">
+                            <img class="rounded" id="fotoAsset" data-id="{{ $b->id }}" style="max-width: 100%;" src="{{ asset('storage/'.$b->image) }}" alt="Foto Asset">
                         </div>
                     </div>
                 </div>

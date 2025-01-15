@@ -21,5 +21,10 @@ class Sto extends Model
 
     ];
 
+    public function tbBarang()
+    {
+        return $this->hasMany(Barang::class, 'no_asset', 'no_asset');
+    }
+
     protected $table = 'sto';
 }

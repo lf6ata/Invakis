@@ -202,6 +202,8 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::post('/export-selected', [MasterdataController::class, 'exportSelected'])->name('export.selected');
+    Route::post('/export-sto', [StoController::class, 'exportExcel'])->name('export.excel');
+    Route::post('/export-ba', [StoController::class, 'exportBa'])->name('export.ba');
 
     Route::post('/exportpdf.selected', [MasterdataController::class, 'generatePDF'])->name('exportpdf.selected');
 

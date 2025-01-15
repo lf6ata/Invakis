@@ -30,7 +30,7 @@ return new class extends Migration
             $table->date('tgl_terakhir_sto')->nullable();
             $table->timestamps();
 
-            $table->index('id_categori')->key;
+            // $table->index('id_categori')->key;
             $table->index('id_jenis')->key;
             $table->index('id_merek')->key;
             $table->index('npk')->key;

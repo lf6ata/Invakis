@@ -59,7 +59,7 @@ class Barang extends Model
 
 
     protected $table = 'barang';
-    // protected $primaryKey = 'id_jenis';
+    // protected $primaryKey = 'no_asset';
     // protected $keyType = 'string';
     //public $timestamps = false;
 }

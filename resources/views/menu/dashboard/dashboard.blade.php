@@ -63,7 +63,7 @@
     </div> --}}
     @endif
 
-    {{ $count_status }}
+    {{-- {{ $count_status }} --}}
 
     <!-- Content Row -->
     <div class="row">
@@ -199,7 +199,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                               Sangat Layak</div>
-                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $count_status[2]->total_count }}</div> --}}
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_sangat_layak ?? 0}}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-check-circle-fill fa-2x text-primary"></i>
@@ -217,7 +217,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                Cukup Layak</div>
-                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $count_status[0]->total_count }}</div> --}}
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_cukup_layak  ?? 0}}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-check-circle fa-2x text-success"></i>
@@ -235,7 +235,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                Layak Pakai</div>
-                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $count_status[2]->total_count }}</div> --}}
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_layak_pakai ?? 0 }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-exclamation-circle fa-2x text-warning"></i>
@@ -253,7 +253,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                 Rusak</div>
-                            {{-- <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $count_status[1]->total_count }}</div> --}}
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_rusak ?? 0 }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-x-circle fa-2x text-danger"></i>
@@ -271,7 +271,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                Hilang</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $count_user }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_hilang ?? 0 }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-question-circle fa-2x text-info"></i>
@@ -321,7 +321,7 @@
                             <tr>
                                 <td>{{ $no+1 }}</td>
                                 <td>{{ $s->session_sto }}</td>
-                                <td class="{{ $s->progress > 50 ? 'text-primary' : 'text-danger' }}">{{ $s->progress == 100 ? 'complate' : $s->progress.'%'}}</td>
+                                <td align="center" class="{{ $s->progress > 50 ? 'text-primary' : 'text-danger' }}">{{ $s->progress == 100 ? 'Complete' : $s->progress.'%'}}</td>
                                 <td class="{{ $s->durasi != '00:00:00' ? 'text-dark' : 'text-danger' }}">{{ $s->durasi }}</td>
                                 <td>{{ $s->tgl_sto }}</td>
                                 @if ($s->save_sto == '' || $s->save_sto == NULL)
@@ -332,13 +332,30 @@
                                 
                                 @if ($s->save_sto == '' || $s->save_sto == NULL )
                                     <td align="center">
-                                        <a href={{ url('/invakis/sto/'.$s->session_sto.'/false') }}  class="btn btn-sm btn-primary">Lanjutkan</a>
+                                        <a href={{ url('/invakis/sto/'.$s->session_sto.'/false') }}  class="btn btn-sm btn-success">Lanjutkan</a>
                                     </td>
                                 @else
                                     <td align="center">
-                                        <a href={{ url('/invakis/sto/'.$s->session_sto.'/true') }}  class="btn btn-sm btn-primary">Detail</a>
-                                        <a href={{ url('/invakis/sto/'.$s->session_sto.'/true') }}  class="btn btn-sm btn-success">Export Excel</a>
-                                        <a href={{ url('/invakis/sto/'.$s->session_sto.'/true') }}  class="btn btn-sm btn-info">Export BA</a>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <form action="{{ route('page.sto',[$s->session_sto,'true/']) }}" method="GET">
+                                                <button id="createSto" type="submit" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addRole">
+                                                    <i class="fas fa-list fa-sm"></i> Detail
+                                                </button>
+                                            </form>
+
+                                            <div class="mx-2">
+                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button"
+                                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="true">
+                                                    Export
+                                                </button>
+                                                <div class="dropdown-menu animated--fade-in"
+                                                    aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" id="exportBa" data-id="{{ $s->id }}" href="javascript:void(0)"><i class="bi-file-earmark-pdf fa-sm"></i> Cetak BA</a>
+                                                    <a class="dropdown-item" id="exportExcel" data-id="{{ $s->id }}" href="javascript:void(0)"><i class="bi  bi-file-earmark-spreadsheet fa-sm"></i> Export Excel</a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 @endif
                                 
@@ -462,7 +479,7 @@ function updateChart(){
 }  
 
 //  Update grafik setiap 5 detik
- setInterval(updateChart, 115000); // Update setiap 5000 ms (5 detik)
+//  setInterval(updateChart, 115000); // Update setiap 5000 ms (5 detik)
  updateChart();
 
     // function generateDayWiseTimeSeries(baseval, count, yrange) {
@@ -478,6 +495,160 @@ function updateChart(){
     // }
     // return series;
     // }
+
+    $(document).ready(function() {
+        // Post Export Excel
+        $('body').on('click','#exportExcel', function(e) {
+            
+            e.preventDefault();
+
+            // Ambil ID session
+            let id_session = $(this).data('id');
+            console.log(id_session);
+            
+                if (id_session != 0) {
+                    Swal.fire({
+                        title: 'Mengekport Data...',
+                        text: 'Silakan tunggu...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    setTimeout(function() {
+                        $.ajax({
+                            url: '{{ route("export.excel") }}', // Route untuk export
+                            method: 'POST',
+                            data: {
+                                id_session: id_session,
+                                _token: '{{ csrf_token() }}' // Kirim CSRF token
+                            },
+                            xhrFields: {
+                                responseType: 'blob' // Mendapatkan response sebagai file
+                            },
+                            success: function(response, status, xhr) {
+                                // Buat URL dari blob dan download file
+                                var filename = "";
+                                var disposition = xhr.getResponseHeader('Content-Disposition');
+                                if (disposition && disposition.indexOf('attachment') !== -1) {
+                                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                                    var matches = filenameRegex.exec(disposition);
+                                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                                    Swal.close();
+                                }
+
+                                var link = document.createElement('a');
+                                var blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                                link.href = window.URL.createObjectURL(blob);
+                                link.download = filename || 'inventaris.xlsx';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                Swal.close();
+                            },
+                            error: function(response) {
+                                alert("An error occurred while exporting data.");
+                            }
+                        });
+                    }, 1000); // Jeda 1,5 detik (1500 ms)
+                } else {
+                    // alert("Please select at least one record to export.");
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Tolong pilih data yang ingin diexport",
+                        confirmButtonColor: '#4e73df',
+                    });
+                }
+        });
+
+        $('body').on('click','#exportBa', function(e) {
+            
+            e.preventDefault();
+
+            // Ambil ID session
+            let id_session = $(this).data('id');
+            console.log(id_session);
+            
+                if (id_session != 0) {
+                    Swal.fire({
+                        title: 'Mengekport Data...',
+                        text: 'Silakan tunggu...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    setTimeout(function() {
+                        $.ajax({
+                            url: '{{ route("export.ba") }}', // Route untuk export
+                            method: 'POST',
+                            data: {
+                                id_session: id_session,
+                                _token: '{{ csrf_token() }}' // Kirim CSRF token
+                            },
+                            xhrFields: {
+                                responseType: 'blob' // Mendapatkan response sebagai file
+                            },
+                            success: function (response, status, xhr) {
+                                console.log(response);
+                                
+                                // Dapatkan header Content-Disposition untuk menentukan nama file
+                                var disposition = xhr.getResponseHeader('Content-Disposition');
+                                var filename = 'exported_file.xlsx'; // Default filename
+
+                                // Mengekstrak nama file dari header Content-Disposition
+                                if (disposition && disposition.indexOf('attachment') !== -1) {
+                                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                                    var matches = filenameRegex.exec(disposition);
+                                    if (matches != null && matches[1]) {
+                                        filename = matches[1].replace(/['"]/g, '');
+                                    }
+                                }
+
+                                // Membuat link untuk mengunduh file
+                                var link = document.createElement('a');
+                                var blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                                link.href = window.URL.createObjectURL(blob);
+                                link.download = filename; // Menetapkan nama file yang didapat
+                                document.body.appendChild(link);
+                                link.click(); // Memulai download
+                                document.body.removeChild(link); // Menghapus link dari DOM
+
+                                // Menutup loading Swal
+                                Swal.close();
+                            },
+                            error: function(xhr) {
+                                // Jika error, menampilkan pesan error dari server
+                                if (xhr.status === 404) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Data Tidak Ditemukan',
+                                        text: xhr.responseJSON.message || 'Data dengan status "Rusak" tidak ditemukan untuk session ini.',
+                                        confirmButtonColor: '#4e73df'
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Terjadi Kesalahan',
+                                        text: 'Terjadi kesalahan saat mengekspor data.',
+                                        confirmButtonColor: '#4e73df'
+                                    });
+                                }
+                            }
+                        });
+                    }, 1000); // Jeda 1,5 detik (1500 ms)
+                } else {
+                    // alert("Please select at least one record to export.");
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Tolong pilih data yang ingin diexport",
+                        confirmButtonColor: '#4e73df',
+                    });
+                }
+        });
+    });
 </script>
 
 {{-- <script>

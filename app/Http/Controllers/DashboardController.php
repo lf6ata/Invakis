@@ -178,6 +178,24 @@ class DashboardController extends Controller
     public function pageDashboard()
     {
 
+        $current_sto = SessionSto::select('*')->orderBy('created_at', 'desc')->latest()->first();
+        if ($current_sto->save_sto != null) {
+            $total_hilang = Sto::select('*')->where('session_sto', $current_sto->id)->where('status', 'Hilang')->count();
+            $total_rusak = Sto::select('*')->where('session_sto', $current_sto->id)->where('status', 'Rusak')->count();
+            $total_layak_pakai = Sto::select('*')->where('session_sto', $current_sto->id)->where('status', 'Layak Pakai')->count();
+            $total_cukup_layak = Sto::select('*')->where('session_sto', $current_sto->id)->where('status', 'Cukup Layak')->count();
+            $total_sangat_layak = Sto::select('*')->where('session_sto', $current_sto->id)->where('status', 'Sangat Layak')->count();
+        } else {
+            $total_hilang = Sto::select('*')->where('session_sto', $current_sto->id - 1)->where('status', 'Hilang')->count();
+            $total_rusak = Sto::select('*')->where('session_sto', $current_sto->id - 1)->where('status', 'Rusak')->count();
+            $total_layak_pakai = Sto::select('*')->where('session_sto', $current_sto->id - 1)->where('status', 'Layak Pakai')->count();
+            $total_cukup_layak = Sto::select('*')->where('session_sto', $current_sto->id - 1)->where('status', 'Cukup Layak')->count();
+            $total_sangat_layak = Sto::select('*')->where('session_sto', $current_sto->id - 1)->where('status', 'Sangat Layak')->count();
+        }
+
+        // dd($tes);
+        // dd($total_layak_pakai);
+        // dd(Sto::orderBy('ceated_at', 'desc'));
         // $user = User::find(Auth::user()->id); // Ambil satu user
         // // dd(Auth::user()->roles->getRoleNames());
         // dd($user->getRoleNames());
@@ -275,7 +293,7 @@ class DashboardController extends Controller
 
         $countStatusSto = json_decode($this->getChartData()->content(), true);
 
-        $session_sto = SessionSto::select('session_sto', 'progress', 'durasi', 'tgl_sto', 'save_sto')->orderBy('session_sto', 'desc')->get();
+        $session_sto = SessionSto::select('id', 'session_sto', 'progress', 'durasi', 'tgl_sto', 'save_sto')->orderBy('session_sto', 'desc')->get();
 
         // $barang = Barang::where('id_categori', 1)->count();
 
@@ -302,7 +320,7 @@ class DashboardController extends Controller
         $count_rusak = $this->countSto('Rusak');
 
 
-        return view('menu.dashboard.dashboard', compact('count_user', 'count_barang', 'count_rusak', 'count_layak', 'count_cukup', 'count_sangat', 'count_session', 'count_status', 'session_sto'));
+        return view('menu.dashboard.dashboard', compact('total_hilang', 'total_rusak', 'total_layak_pakai', 'total_cukup_layak', 'total_sangat_layak', 'count_user', 'count_barang', 'count_rusak', 'count_layak', 'count_cukup', 'count_sangat', 'count_session', 'count_status', 'session_sto'));
     }
 
     public function getProgress()

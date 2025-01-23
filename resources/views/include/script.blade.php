@@ -17,18 +17,26 @@
     
     {{-- Script Inisialisasi Table Jquery --}}
     <script>
-    $(document).ready(function() {
-        $('#dataTable-Categori').DataTable();
-        $('#dataTable-Jenis').DataTable();
-        $('#dataTable-Merek').DataTable();
-        $('#dataTable-Warna').DataTable();
-        $('#dataTable-Lokasi').DataTable();
-        $('#dataTable-Divisi').DataTable();
+    document.addEventListener('DOMContentLoaded', function() {
 
-        // Membuat motif bari table belang belang
-        $('#myTable tbody tr:even').css('background-color', '#f2f2f2'); // Baris genap
-        $('#myTable tbody tr:odd').css('background-color', '#fff');     // Baris ganjil
+        // $('.form-control').val('');
+        
+        $(document).ready(function() {
+            $('#dataTable-Categori').DataTable();
+            $('#dataTable-Jenis').DataTable();
+            $('#dataTable-Merek').DataTable();
+            $('#dataTable-Warna').DataTable();
+            $('#dataTable-Lokasi').DataTable();
+            $('#dataTable-Divisi').DataTable();
+
+            // Membuat motif bari table belang belang
+            $('#myTable tbody tr:even').css('background-color', '#f2f2f2'); // Baris genap
+            $('#myTable tbody tr:odd').css('background-color', '#fff');     // Baris ganjil
+
+        });
     });
+
+    
     </script>
 
     <!-- PLUGIN DATEPICKER JS UNTUK PEMILIHAN TANGGAL -->

@@ -37,7 +37,7 @@
                     <div class="p-2">
                         <!-- Add Btn Divisi -->
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDivisi">
-                            <i class="fas fa-plus fa-sm"> Add Divisi</i>
+                            <i class="fas fa-plus fa-sm"></i> Add Divisi
                         </button>
                     </div>
                 </div>

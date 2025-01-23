@@ -83,6 +83,14 @@
                 </div>
             </div>
         </div>
+        
+        {{-- {{ dd($arrStatus) }} --}}
+        {{-- @foreach ($get_barang->zip($arrStatus) as $no => $item) --}}
+        {{-- {{ dd($item[0]->tbCategori[0]->categori)}} --}}
+            {{-- {{ $no }} --}}
+            {{-- {{ dd($item)}} --}}
+            {{-- {{ array_push($arrStatus, )}} --}}
+        {{-- @endforeach --}}
         <div class="card-body">
             <div class="table-responsive">
             <form id="exportForm" action="{{ route('export.selected') }}" method="POST">
@@ -108,49 +116,50 @@
                             <th>Jenis License</th>
                             <th>Kode License</th>
                             <th>Tanggal Masuk</th>
+                            <th>Status Barang</th>
                             <th>Action</th> 
                             
                         </tr>
                     </thead>
-
+                    
                     <tbody>
-                        @foreach($get_barang as $no=>$b)
-                            <tr id="row-{{ $b->id }}">
+                        @foreach($get_barang->zip($arrValue) as $no=>$b)
+                            <tr id="row-{{ $b[0]->id }}">
                                 <td align="center">{{ $no+1 }}</td>
-                                <td><input type="checkbox" class="dataCheckbox" name="selected_ids[]" value="{{ $b->id }}"></td>
-                                <td>{{ strtoupper($b->no_asset) }}</td>
+                                <td><input type="checkbox" class="dataCheckbox" name="selected_ids[]" value="{{ $b[0]->id }}"></td>
+                                <td>{{ strtoupper($b[0]->no_asset) }}</td>
                                 <td>
-                                @if (!empty($b->tbCategori[0]->categori))
-                                    {{ $b->tbCategori[0]->categori }}
+                                @if (!empty($b[0]->tbCategori[0]->categori))
+                                    {{ strtoupper($b[0]->tbCategori[0]->categori) }}
                                 @else
                                     <span class="btn btn-sm btn-outline-warning">empty</span>
                                 @endif
                                 </td>
                                 <td>
-                                @if (!empty($b->tbJenis[0]->jenis))
-                                    {{ $b->tbJenis[0]->jenis }}
+                                @if (!empty($b[0]->tbJenis[0]->jenis))
+                                    {{ strtoupper($b[0]->tbJenis[0]->jenis) }}
                                 @else
                                     <span class="btn btn-sm btn-outline-warning">empty</span>
                                 @endif
                                 </td>
                                 <td>
-                                @if ( !empty($b->tbMerek[0]->merek) )
-                                    {{ $b->tbMerek[0]->merek  }}</td>    
+                                @if ( !empty($b[0]->tbMerek[0]->merek) )
+                                    {{ strtoupper($b[0]->tbMerek[0]->merek)  }}</td>    
                                 @else
                                     <span class="btn btn-sm btn-outline-warning">empty</span>
                                 @endif
                                 </td>
                                 <td>
-                                    @if ( !empty($b->tbWarna[0]->warna) )
-                                        {{ $b->tbWarna[0]->warna  }}</td>    
+                                    @if ( !empty($b[0]->tbWarna[0]->warna) )
+                                        {{ $b[0]->tbWarna[0]->warna  }}</td>    
                                     @else
                                         <span class="btn btn-sm btn-outline-warning">empty</span>
                                     @endif
                                     </td>
                                 
-                                @if (!empty($b->tbZona[0]->lokasi))
+                                @if (!empty($b[0]->tbZona[0]->lokasi))
                                 <td>
-                                    {{ $b->tbZona[0]->lokasi }}
+                                    {{ $b[0]->tbZona[0]->lokasi }}
                                 </td>
                                 @else
                                 <td class="bg-secondary">
@@ -158,54 +167,72 @@
                                 @endif
                                 
                                 <td>
-                                @if (!empty($b->tbKaryawan[0]->npk))
-                                    {{ $b->tbKaryawan[0]->npk }}
+                                @if (!empty($b[0]->tbKaryawan[0]->npk))
+                                    {{ $b[0]->tbKaryawan[0]->npk }}
                                 @else
                                     <span class="btn btn-sm btn-outline-warning">remove</span>
                                 @endif
                                 </td>
-                                <td>{{ $b->tbKaryawan[0]->nama_kr  }}</td>
-                                <td>{{ $b->tbKaryawan[0]->divisi }}</td>
+                                <td>{{ $b[0]->tbKaryawan[0]->nama_kr  }}</td>
+                                <td>{{ $b[0]->tbKaryawan[0]->divisi }}</td>
                                 <td>
-                                    @if ($b->image == 'Not Image')
+                                    @if ($b[0]->image == 'Not Image')
                                         Not Image
                                     @else
-                                        <img id="fotoAsset" data-id="{{ $b->id }}" style="max-width: 50px; cursor: cell;" src="{{ asset('storage/'.$b->image) }}" alt="Foto Asset">    
+                                        <img id="fotoAsset" data-id="{{ $b[0]->id }}" style="max-width: 50px; cursor: cell;" src="{{ asset('storage/'.$b[0]->image) }}" alt="Foto Asset">    
                                     @endif
                                         
                                 </td>
 
-                                @if (!empty($b->serial_number))
+                                @if (!empty($b[0]->serial_number))
                                     <td>
-                                        {{ $b->serial_number }}
+                                        {{ $b[0]->serial_number }}
                                     </td>
                                 @else
                                     <td class="bg-secondary">
                                     </td>
                                 @endif
                                 
-                                @if (!empty($b->jenis_license))
+                                @if (!empty($b[0]->jenis_license))
                                 <td>
-                                    {{ $b->jenis_license }}
+                                    {{ $b[0]->jenis_license }}
                                 </td>
                                 @else
                                     <td class="bg-secondary">
                                     </td>
                                 @endif
 
-                                @if (!empty($b->kode_license))
+                                @if (!empty($b[0]->kode_license))
                                     <td>
-                                        {{ $b->kode_license }}
+                                        {{ $b[0]->kode_license }}
                                     </td>
                                 @else
                                     <td class="bg-secondary">
                                     </td>
                                 @endif
                                 
-                                <td>{{ $b->tgl_masuk }}</td>
+                                <td>{{ $b[0]->tgl_masuk }}</td>
+                                <td> 
+                                    <span @if ($b[1] == "Sangat Layak")
+                                        class="badge badge-primary"
+                                    @elseif ($b[1] == "Cukup Layak")
+                                        class="badge badge-success"
+                                    @elseif ($b[1] == "Layak Pakai")
+                                        class="badge badge-warning"
+                                    @elseif ($b[1] == "Rusak")
+                                        class="badge badge-danger"
+                                    @elseif ($b[1] == "Hilang")
+                                        class="badge badge-info"
+                                    @elseif ($b[1] == "Prosses sto")
+                                        class="text-danger"
+                                    @endif >
+                                        {{ $b[1]??"Belum Ada"}}
+                                    </span>
+                                    
+                                </td>
                                 <td align="center">
-                                    <a href="javascript:void(0)" id="btn-edit-barang" data-id="{{ $b->id }}" class="btn btn-sm btn-primary">Edit</a>
-                                    <a href="javascript:void(0)" id="btn-delete-barang" data-id="{{ $b->id }}" class="btn btn-sm btn-danger">Delete</a>
+                                    <a href="javascript:void(0)" id="btn-edit-barang" data-id="{{ $b[0]->id }}" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="javascript:void(0)" id="btn-delete-barang" data-id="{{ $b[0]->id }}" class="btn btn-sm btn-danger">Delete</a>
                                 </td>
                                 {{-- <td>
                                     @if (!empty($b->tbMerek[0]->merek) )

@@ -27,7 +27,7 @@
                 <hr class="sidebar-divider">
                 <!-- Heading -->
                 <div class="sidebar-heading">
-                    Config
+                    Configurasi
                 </div>
                 <!-- Nav Item - Pages Collapse Menu -->
                 <li
@@ -39,7 +39,7 @@
                     </a>
                     <div id="collapseConfig" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">User:</h6>
+                            <h6 class="collapse-header">Setting User :</h6>
                             <a class="collapse-item nav-dst {{ Route::currentRouteName() == 'page.user' ? 'active' : '' }}"
                                 href="{{ route('page.user') }}">User</a>
                             <a class="collapse-item nav-dst {{ Route::currentRouteName() == 'page.role' ? 'active' : '' }}"
@@ -54,7 +54,7 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Master
+                Master Data
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
@@ -67,19 +67,19 @@
                 </a>
                 <div id="collapsePagesItem" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Data Item:</h6>
+                        <h6 class="collapse-header">Data Item :</h6>
                         <a class="collapse-item nav-dst {{ Route::currentRouteName() == 'page.categori' ? 'active' : '' }}"
-                            href={{ Route('page.categori') }}>Kategori</a>
+                            href={{ Route('page.categori') }}>Data Kategori</a>
                         <a class="collapse-item nav-dst {{ Route::currentRouteName() == 'page.jenis' ? 'active' : '' }}"
-                            href={{ Route('page.jenis') }}>Jenis</a>
+                            href={{ Route('page.jenis') }}>Data Jenis</a>
                         <a class="collapse-item nav-dst {{ Route::currentRouteName() == 'page.merek' ? 'active' : '' }}"
-                            href={{ Route('page.merek') }}>Merek</a>
+                            href={{ Route('page.merek') }}>Data Merek</a>
                         <a class="collapse-item nav-dst {{ Route::currentRouteName() == 'page.warna' ? 'active' : '' }}"
-                            href={{ Route('page.warna') }}>Warna</a>
+                            href={{ Route('page.warna') }}>Data Warna</a>
                         <a class="collapse-item nav-dst {{ Route::currentRouteName() == 'page.lokasi' ? 'active' : '' }}"
-                            href={{ Route('page.lokasi') }}>Lokasi</a>
+                            href={{ Route('page.lokasi') }}>Data Lokasi</a>
                         <a class="collapse-item nav-dst {{ Route::currentRouteName() == 'page.divisi' ? 'active' : '' }}"
-                            href={{ Route('page.divisi') }}>Divisi</a>
+                            href={{ Route('page.divisi') }}>Data Divisi</a>
                         <div class="collapse-divider"></div>
                     </div>
                 </div>
@@ -95,9 +95,9 @@
                 </a>
                 <div id="collapsePagesBarang" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Data Barang:</h6>
+                        <h6 class="collapse-header">Data Barang :</h6>
                         <a class="collapse-item nav-dst {{ Route::currentRouteName() == 'page.barang' ? 'active' : '' }}"
-                            href={{ Route('page.barang', 'created_at') }}>Input Barang</a>
+                            href={{ Route('page.barang', 'created_at') }}>Data Barang</a>
                         <div class="collapse-divider"></div>
                     </div>
                 </div>
@@ -149,6 +149,7 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+
                 // Menunggu stelah perloaderd
                 checkLoad = window.getComputedStyle(document.getElementById('loading-spinner'));
                 console.log(checkLoad.display);

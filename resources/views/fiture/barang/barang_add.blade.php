@@ -81,7 +81,7 @@ aria-hidden="true">
 
                 <div class="form-group">
                     <label for="karyawan_id">Karyawan</label>
-                    <input type="Text" class="form-control @error('karyawan_id') invalid-border @enderror" id="karyawan_id" value="{{ old('karyawan_id') }}" name="karyawan_id" placeholder="Nama Karyawan" readonly>
+                    <input type="Text" class="form-control  @error('karyawan_id') invalid-border @enderror" id="karyawan_id" value="{{ old('karyawan_id') }}" name="karyawan_id" placeholder="Nama Karyawan" readonly>
                 </div>
 
                 <div class="form-group">

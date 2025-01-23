@@ -14,6 +14,7 @@ use App\Models\User;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -252,6 +253,15 @@ Route::middleware(['auth'])->group(function () {
 // Route::get('query', function () {
 //     return dd(Barang::where('no_asset','=','31-SA-21-1')->get());
 // });
+
+Route::get('query', function () {
+    // DB::table('barang')
+    $order = 'created_at';
+    $results = Barang::join('sto', 'barang.no_asset', '=', 'sto.no_asset')
+        ->select('*', 'barang.no_asset as no_barang', 'sto.status as status', 'barang.' . $order . ' as input_time')
+        ->where('sto.session_sto', 141)->orderBy('input_time', 'desc');
+    return dd($results->get()[0]->tbCategori[0]->toArray());
+});
 
 //Menegecek Query wher dengan Eloquent ORM
 // Route::get('tes', function ():View{

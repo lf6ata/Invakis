@@ -125,73 +125,133 @@ class DashboardController extends Controller
     {
         $currentYear = Carbon::now()->year;
 
+
         // Ambil data status dan tgl_sto dari tabel
-        $data = Sto::select(DB::raw('MONTH(created_at) as month, status, count(*) as count'))
+        $data = Sto::select(DB::raw('session_sto as session, status, count(*) as count'))
             ->whereYear('created_at', $currentYear)  // Filter berdasarkan tahun sekarang
-            ->groupBy('month', 'status') // Kelompokkan berdasarkan bulan dan status
-            ->orderBy('month') // Urutkan berdasarkan bulan
+            ->groupBy('session', 'status') // Kelompokkan berdasarkan bulan dan status
+            ->orderBy('session') // Urutkan berdasarkan bulan
             ->get();
+        // dd($data2);
+        // // Ambil data status dan tgl_sto dari tabel
+        // $data = Sto::select(DB::raw('MONTH(created_at) as month, status, count(*) as count'))
+        //     ->whereYear('created_at', $currentYear)  // Filter berdasarkan tahun sekarang
+        //     ->groupBy('month', 'status') // Kelompokkan berdasarkan bulan dan status
+        //     ->orderBy('month') // Urutkan berdasarkan bulan
+        //     ->get();
+        // // dd($data);
+
+
+        $arrSession = [];
+        $arrSto = [];
+        $session = SessionSto::select('id', 'session_sto')->get();
+        foreach ($session as  $sto) {
+            array_push($arrSession, $sto->id);
+            array_push($arrSto, $sto->session_sto);
+        }
+
+        $totalBarang = Barang::all()->count();
+
+        // dd(count($arrSession));
 
         // dd($data[1]->status);
 
 
         // Inisialisasi array bulan (Januari sampai Desember)
         // Nama bulan dalam bahasa Indonesia
-        $months = [
-            'Januari',
-            'Februari',
-            'Maret',
-            'April',
-            'Mei',
-            'Juni',
-            'Juli',
-            'Agustus',
-            'September',
-            'Oktober',
-            'November',
-            'Desember',
-        ];
+
+        // $months = [
+        //     'Januari',
+        //     'Februari',
+        //     'Maret',
+        //     'April',
+        //     'Mei',
+        //     'Juni',
+        //     'Juli',
+        //     'Agustus',
+        //     'September',
+        //     'Oktober',
+        //     'November',
+        //     'Desember',
+        // ];
+
+        // dd($months);
+
+        // $data2 = [
+        //     ['sto' => "STO01", 'status' => 'Rusak', 'count' => 2],
+        //     ['sto' => "STO01", 'status' => 'Sangat Layak', 'count' => 4],
+        //     ['sto' => "STO02", 'status' => 'Sangat Layak', 'count' => 4],
+        // ];
+
+        // dd($data);
+
 
         // Inisialisasi array untuk status
-        $statusLabels = ['Sangat Layak', 'Cukup Layak', 'Layak Pakai', 'Rusak'];
+        $statusLabels = ['Sangat Layak', 'Cukup Layak', 'Layak Pakai', 'Rusak', 'Hilang'];
         $statusCounts = [];
+
 
         // Inisialisasi data kosong untuk setiap status
         foreach ($statusLabels as $status) {
-            $statusCounts[$status] = array_fill(0, 12, 0);  // 12 bulan
+            $statusCounts[$status] = array_fill(0, count($session), 0);  // automatic panjang categori
         }
 
         // Loop untuk mengisi data jumlah berdasarkan bulan dan status
+        // foreach ($data as $row) {
+        //     dd($months);
+        //     // Bulan dimulai dari 1 (Januari) hingga 12 (Desember)
+        //     $monthIndex = array_search($this->getBulan($row->month), $months);
+        //     $statusCounts[$row->status][$monthIndex] = $row->count;
+        // }
+        // Loop untuk mengisi data jumlah berdasarkan bulan dan status
+        // foreach ($data2 as $row) {
+        //     // dd($arrSession);
+        //     // Bulan dimulai dari 1 (Januari) hingga 12 (Desember)
+        //     $monthIndex = array_search($row['sto'], $arrSession);
+        //     $statusCounts[$row['status']][$monthIndex] = $row['count'];
+        // }
+
         foreach ($data as $row) {
+            // dd(intval($row->count  / 7 * 100) . '%');
             // Bulan dimulai dari 1 (Januari) hingga 12 (Desember)
-            $monthIndex = array_search($this->getBulan($row->month), $months);
-            $statusCounts[$row->status][$monthIndex] = $row->count;
+            $sessionIndex = array_search($row->session, $arrSession);
+            $statusCounts[$row->status][$sessionIndex] =  $row->count;
+            // dd($persentase);
         }
+        // dd($statusCounts);
+
+        $arrSto == [] ? $arrSto = ['STO01', 'STO02', 'STO03', 'STO04', 'STO05', 'STO06', 'STO07', 'STO08', 'STO09', 'STO010'] : 'oke';
+
+        // dd($persentase);
 
         return response()->json([
-            'months' => $months,
+            'sessions' => $arrSto,
+            'totalBarang' => $totalBarang,
             'statusCounts' => $statusCounts,
             'currentYear' => $currentYear
         ]);
+        // return response()->json([
+        //     'months' => $months,
+        //     'statusCounts' => $statusCounts,
+        //     'currentYear' => $currentYear
+        // ]);
+
     }
 
     public function pageDashboard()
     {
 
         $current_sto = SessionSto::select('*')->orderBy('created_at', 'desc')->latest()->first();
-        if ($current_sto->save_sto != null) {
+        if ($current_sto == null) {
+            $total_hilang = $total_rusak = $total_layak_pakai = $total_cukup_layak = $total_sangat_layak = 0;
+        } else {
             $total_hilang = Sto::select('*')->where('session_sto', $current_sto->id)->where('status', 'Hilang')->count();
             $total_rusak = Sto::select('*')->where('session_sto', $current_sto->id)->where('status', 'Rusak')->count();
             $total_layak_pakai = Sto::select('*')->where('session_sto', $current_sto->id)->where('status', 'Layak Pakai')->count();
             $total_cukup_layak = Sto::select('*')->where('session_sto', $current_sto->id)->where('status', 'Cukup Layak')->count();
             $total_sangat_layak = Sto::select('*')->where('session_sto', $current_sto->id)->where('status', 'Sangat Layak')->count();
-        } else {
-            $total_hilang = Sto::select('*')->where('session_sto', $current_sto->id - 1)->where('status', 'Hilang')->count();
-            $total_rusak = Sto::select('*')->where('session_sto', $current_sto->id - 1)->where('status', 'Rusak')->count();
-            $total_layak_pakai = Sto::select('*')->where('session_sto', $current_sto->id - 1)->where('status', 'Layak Pakai')->count();
-            $total_cukup_layak = Sto::select('*')->where('session_sto', $current_sto->id - 1)->where('status', 'Cukup Layak')->count();
-            $total_sangat_layak = Sto::select('*')->where('session_sto', $current_sto->id - 1)->where('status', 'Sangat Layak')->count();
         }
+
 
         // dd($tes);
         // dd($total_layak_pakai);
@@ -304,7 +364,7 @@ class DashboardController extends Controller
             $count_user;
         }
 
-        $count_session = empty($session_sto->where('progress', '>', '0')->count()) ? 0 : $session_sto->where('progress', '>', '0')->count();
+        $count_session = empty($session_sto->where('save_sto', '!=', '')->count()) ? 0 : $session_sto->where('save_sto', '!=', '')->count();
 
         $count_barang = Barang::count();
         // dd($count_barang);

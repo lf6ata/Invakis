@@ -81,7 +81,7 @@
                     </div> --}}
                     <div class="form-group col-md-6">
                         <label for="lokasi">Lokasi</label>
-                        <input type="Text" class="form-control" id="lokasi"  value="{{ $b->lokasi }}" readonly>
+                        <input type="Text" class="form-control" id="lokasi"  value="{{ $b->tbZona[0]->lokasi }}" readonly>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="npk">Npk</label>

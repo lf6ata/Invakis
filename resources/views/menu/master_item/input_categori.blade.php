@@ -45,8 +45,8 @@
                             </div>
                             <div class="p-2">
                                 <!-- Add Btn Categori -->
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCategori">
-                                    <i class="fas fa-plus fa-sm"> Add Kategori</i>
+                                <button type="button" class="btn  btn-primary" data-toggle="modal" data-target="#addCategori">
+                                    <i class="fas fa-plus fa-sm"></i> Add Kategori
                                 </button>
                             </div>
                         </div>

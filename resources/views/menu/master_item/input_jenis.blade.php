@@ -36,7 +36,7 @@
                     <div class="p-2">
                         <!-- Add Btn Jenis -->
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addJenis">
-                            <i class="fas fa-plus fa-sm"> Add Jenis</i>
+                            <i class="fas fa-plus fa-sm"> </i> Add Jenis
                         </button>
                     </div>
                 </div>

@@ -9,6 +9,7 @@ use App\Models\Divisi;
 use App\Models\Jenis;
 use App\Models\Karyawan;
 use App\Models\Merek;
+use App\Models\SessionSto;
 use App\Models\Warna;
 use App\Models\Zona;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -923,7 +924,51 @@ class MasterdataController extends Controller
     public function getBarang($orderby)
     {
 
+        $arrValue = [];
+        $current_sto = SessionSto::select('*')->orderBy('created_at', 'desc')->latest()->first();
         $get_barang = Barang::orderBy($orderby, 'desc')->get();
+
+        if ($current_sto != null) {
+            $get_status = Barang::join('sto', 'barang.no_asset', '=', 'sto.no_asset')
+                ->select('barang.no_asset as no_barang', 'sto.status as status', 'sto.' . $orderby . ' as created_barang')
+                ->where('sto.session_sto', $current_sto->id ?? 0)->orderBy('created_barang', 'desc')
+                ->get();
+
+            foreach ($get_status->zip($get_barang) as  $value) {
+                array_push($arrValue, $value[0]->status ?? 'Prosses sto');
+            }
+        } else {
+            for ($i = 1; $i <= count($get_barang); $i++) {
+                array_push($arrValue, 'Belum Sto');
+            }
+        }
+
+        // dd($arrValue);
+
+
+
+
+
+        // dd($arrStatus);
+
+        // $arrData['status'] = array_fill(1, count($get_barang), 0);
+
+        // foreach ($arrValue as $key => $row) {
+
+        //     // dd(intval($row->count  / 7 * 100) . '%');
+        //     // Bulan dimulai dari 1 (Januari) hingga 12 (Desember)
+        //     $statusIndex = array_search($row, $arrStatus);
+        //     // dd($statusIndex);
+        //     $statusCounts['status'][$key] =  $row;
+        //     // dd($persentase);
+        // }
+        // // dd($get_barang);
+
+
+
+
+
+
         $get_categori = categori::all();
         $get_jenis = Jenis::all();
         $get_merek = Merek::all();
@@ -932,7 +977,7 @@ class MasterdataController extends Controller
         $get_zona = Zona::all();
 
 
-        return view('menu.barang.input_barang', compact('get_barang', 'get_categori', 'get_jenis', 'get_merek', 'get_warna', 'get_karyawan', 'get_zona'));
+        return view('menu.barang.input_barang', compact('arrValue', 'get_barang', 'get_categori', 'get_jenis', 'get_merek', 'get_warna', 'get_karyawan', 'get_zona'));
     }
 
     public function getKaryawan($id_npk)

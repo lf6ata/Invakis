@@ -36,7 +36,7 @@
                 <div class="p-2">
                      <!-- Add Btn Merek -->
                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMerek">
-                        <i class="fas fa-plus fa-sm"> Add Merek</i>
+                        <i class="fas fa-plus fa-sm"></i> Add Merek
                     </button>
                 </div>
             </div>

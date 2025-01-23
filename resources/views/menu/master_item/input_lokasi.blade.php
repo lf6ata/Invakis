@@ -36,7 +36,7 @@
                 <div class="p-2">
                     <!-- Add Btn Lokasi -->
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addLokasi">
-                        <i class="fas fa-plus fa-sm"> Add Lokasi</i>
+                        <i class="fas fa-plus fa-sm"></i> Add Lokasi
                     </button>
                 </div>
             </div>

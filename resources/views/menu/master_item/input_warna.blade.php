@@ -36,7 +36,7 @@
                 <div class="p-2">
                      <!-- Add Btn Warna -->
                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addWarna">
-                        <i class="fas fa-plus fa-sm"> Add Warna</i>
+                        <i class="fas fa-plus fa-sm"></i> Add Warna
                     </button>
                 </div>
             </div>

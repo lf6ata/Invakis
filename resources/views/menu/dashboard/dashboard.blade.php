@@ -368,6 +368,30 @@
     </div>
 
     
+    <div class="card shadow mb-4">
+        <div class="row d-flex justify-content-center">
+            <div class="py-3 col-md-6" >
+                <div class="px-4">
+                    <div class="d-flex justify-content-center">
+                        <label class="text-primary font-weight-bold" >FILTER GRAFIK</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="from-sto">Dari :</label>
+                        <input id="from-sto" class="form-control" type="text"  name="sto3" placeholder="STO01" style="width:100%    ">
+                    </div>
+
+                    <div class="form-group ">
+                        <label for="to-sto">Ke :</label>
+                        <input id="to-sto" class="form-control" type="text" name="sto2" placeholder="STO10  " style="width:100%">
+                        <button type="submit" class="btn btn-sm btn-primary my-3 btn-block">FILTER</button>    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    
     <!-- Grafik Line -->
     <div id="wrapper-chart">
         <div id="loading-spinner2" >
@@ -393,9 +417,13 @@ function updateChart(){
     document.getElementById('loading-spinner2').style.display = 'flex';
         
         $.get('/chart-data', function(data) {
-            const months = data.months;
+            // const months = data.months;
+            const arrSto = data.sessions;
             const currentYear = data.currentYear
             const statusCounts = data.statusCounts
+            const totalBarang = data.totalBarang
+            console.log(arrSto);
+            
             // console.log(statusCounts['Sangat Layak']);
             
         // Jika chart sudah ada, destroy sebelum membuat yang baru
@@ -422,6 +450,10 @@ function updateChart(){
                 name: 'Rusak',
                 data: statusCounts['Rusak']
                 // data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+                }, {
+                name: 'Hilang',
+                data: statusCounts['Hilang']
+                // data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
                 }],
                 chart: {
                 type: 'bar',
@@ -436,7 +468,7 @@ function updateChart(){
                 },
                 },
                 dataLabels: {
-                enabled: false
+                enabled: true
                 },
                 stroke: {
                 show: true,
@@ -444,9 +476,9 @@ function updateChart(){
                 colors: ['transparent']
                 },
                 xaxis: {
-                categories: months,
+                categories: arrSto ,
                 title: {
-                    text: 'Tahun '+currentYear
+                    text: 'Session '
                 }
                 },
                 yaxis: {
@@ -460,11 +492,151 @@ function updateChart(){
                 tooltip: {
                 y: {
                     formatter: function (val) {
-                    return val + " sto"
+                            return `${parseInt(val / totalBarang * 100)}%,${val}`;
                     }
                 }
                 }
                 };
+
+        // var options = {
+        //     series: [{
+        //         name: 'Sangat Layak',
+        //         data: statusCounts['Sangat Layak']
+        //     }, {
+        //         name: 'Cukup Layak',
+        //         data: statusCounts['Cukup Layak']
+        //     }, {
+        //         name: 'Layak Pakai',
+        //         data: statusCounts['Layak Pakai']
+        //     }, {
+        //         name: 'Rusak',
+        //         data: statusCounts['Rusak']
+        //     }],
+        //     chart: {
+        //         type: 'bar',
+        //         height: 350,
+        //         zoom: {
+        //             enabled: true,
+        //             type: 'x', // Enables zoom in X direction (horizontal)
+        //         },
+        //     },
+        //     plotOptions: {
+        //         bar: {
+        //             horizontal: false,
+        //             columnWidth: '55%',
+        //             borderRadius: 3,
+        //             borderRadiusApplication: 'end'
+        //         },
+        //     },
+        //     dataLabels: {
+        //         enabled: false
+        //     },
+        //     stroke: {
+        //         show: true,
+        //         width: 2,
+        //         colors: ['transparent']
+        //     },
+        //     xaxis: {
+        //         categories: ["STO01", "STO02", "STO03"], // Kategori STO
+        //         title: {
+        //             text: 'Tahun ' + currentYear
+        //         },
+        //         labels: {
+        //             rotate: -45, // Optional: Rotate the labels if needed
+        //             show: true
+        //         },
+        //         tooltip: {
+        //             enabled: true,
+        //             offsetY: 10,
+        //         },
+        //         scrollbar: {
+        //             enabled: true // Enables horizontal scrollbar
+        //         }
+        //     },
+        //     yaxis: {
+        //         title: {
+        //             text: 'Jumlah STO ' + currentYear
+        //         }
+        //     },
+        //     fill: {
+        //         opacity: 1
+        //     },
+        //     tooltip: {
+        //         y: {
+        //             formatter: function (val) {
+        //                 return val + " sto";
+        //             }
+        //         }
+        //     }
+        // };
+
+
+        //  var options = {
+        //   series: [{
+        //   name: 'PRODUCT A',
+        //   data: [44, 55, 41, 67, 22, 43]
+        // }, {
+        //   name: 'PRODUCT B',
+        //   data: [13, 23, 20, 8, 13, 27]
+        // }, {
+        //   name: 'PRODUCT C',
+        //   data: [11, 17, 15, 15, 21, 14]
+        // }, {
+        //   name: 'PRODUCT D',
+        //   data: [21, 7, 25, 13, 22, 8]
+        // }],
+        //   chart: {
+        //   type: 'bar',
+        //   height: 350,
+        //   stacked: true,
+        //   toolbar: {
+        //     show: true
+        //   },
+        //   zoom: {
+        //     enabled: true
+        //   }
+        // },
+        // responsive: [{
+        //   breakpoint: 480,
+        //   options: {
+        //     legend: {
+        //       position: 'bottom',
+        //       offsetX: -10,
+        //       offsetY: 0
+        //     }
+        //   }
+        // }],
+        // plotOptions: {
+        //   bar: {
+        //     horizontal: false,
+        //     borderRadius: 10,
+        //     borderRadiusApplication: 'end', // 'around', 'end'
+        //     borderRadiusWhenStacked: 'last', // 'all', 'last'
+        //     dataLabels: {
+        //       total: {
+        //         enabled: true,
+        //         style: {
+        //           fontSize: '13px',
+        //           fontWeight: 900
+        //         }
+        //       }
+        //     }
+        //   },
+        // },
+        // xaxis: {
+        //   type: 'datetime',
+        //   categories: ['01/01/2011 GMT', '01/02/2011 GMT', '01/03/2011 GMT', '01/04/2011 GMT',
+        //     '01/05/2011 GMT', '01/06/2011 GMT'
+        //   ],
+        // },
+        // legend: {
+        //   position: 'right',
+        //   offsetY: 40
+        // },
+        // fill: {
+        //   opacity: 1
+        // }
+        // };
 
                 chart = new ApexCharts(document.querySelector("#chart-area"), options);
                 chart.render();

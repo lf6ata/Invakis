@@ -12,7 +12,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class DataExport implements FromView, WithStyles ,WithEvents,ShouldAutoSize
+class DataExport implements FromView, WithStyles, WithEvents, ShouldAutoSize
 {
     protected $barang;
 
@@ -33,7 +33,7 @@ class DataExport implements FromView, WithStyles ,WithEvents,ShouldAutoSize
     {
         // Set font untuk judul (header) di baris pertama
         return [
-             1   => ['font' => ['bold' => true, 'size' => 16]], // Header style
+            1   => ['font' => ['bold' => true, 'size' => 16]], // Header style
             'A'  => ['font' => ['bold' => true]],                // Seluruh kolom A di-bold
         ];
     }
@@ -43,7 +43,7 @@ class DataExport implements FromView, WithStyles ,WithEvents,ShouldAutoSize
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
+            AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
                 // Ambil range terakhir berdasarkan data
@@ -60,20 +60,20 @@ class DataExport implements FromView, WithStyles ,WithEvents,ShouldAutoSize
                 // $sheet->getRowDimension(2)->setRowHeight(25); // Baris 2 tinggi 25
 
                 // Mengatur alignment di seluruh tabel
-                $sheet->getStyle('A1','A3')->applyFromArray([
+                $sheet->getStyle('A1', 'A3')->applyFromArray([
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, // Teks rata tengah
                         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,   // Teks rata tengah vertikal
                     ],
                 ]);
-                
+
                 // // Mengatur alignment pada kolom A
                 // $sheet->getStyle('A1:A10')->applyFromArray([
                 //     'alignment' => [
                 //         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT, // Teks rata kiri
                 //     ],
                 // ]);
-                
+
                 // Terapkan border ke seluruh data
                 $sheet->getStyle($range)->applyFromArray([
                     'borders' => [
@@ -85,18 +85,17 @@ class DataExport implements FromView, WithStyles ,WithEvents,ShouldAutoSize
                 ]);
 
                 // Terapkan styling di header 
-                $sheet->getStyle('A1:'.$highestColumn.'2')->applyFromArray([
+                $sheet->getStyle('A1:' . $highestColumn . '2')->applyFromArray([
                     'font' => [
-                            'bold' => true,
-                            'color' => ['rgb' => 'FFFFFF'],
-                        ],
-                        'fill' => [
-                            'fillType' => Fill::FILL_SOLID,
-                            'startColor' => ['rgb' => '4e73df'], // Color Background 
-                        ],
+                        'bold' => true,
+                        'color' => ['rgb' => 'FFFFFF'],
+                    ],
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => ['rgb' => '4e73df'], // Color Background 
+                    ],
                 ]);
             },
         ];
-        
     }
 }

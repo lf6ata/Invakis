@@ -16,7 +16,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item {{ Request::is('dashboard') ? 'active' : '' }}">
+            <li class="nav-item {{ Request::is('invakis/dashboard') ? 'active' : '' }}">
                 <a class="nav-link nav-dst" href={{ route('page.dashboard') }}>
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>

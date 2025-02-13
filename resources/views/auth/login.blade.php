@@ -91,7 +91,7 @@
                                             placeholder="Enter Email Address..." value="{{ old('email') }}" autofocus>
                                             <span style="color: red">
                                                     @error('email')
-                                                        {{ $message }}
+                                                        * {{ $message }}
                                                     @enderror
                                             </span>
                                         </div>
@@ -100,7 +100,7 @@
                                                 id="exampleInputPassword" placeholder="Password">
                                             <span style="color: red">
                                                 @error('password')
-                                                    {{ $message }}
+                                                    * {{ $message }}
                                                 @enderror
                                             </span>
                                         </div>

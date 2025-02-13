@@ -32,7 +32,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credential)) {
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/invakis/dashboard');
         }
 
         return back()->with('wrong', 'user dan password yang anda masukan salah');

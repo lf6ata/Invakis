@@ -19,6 +19,21 @@
     </script>
 @endif
 
+{{-- @if (@session('error'))
+    <script>
+        Swal.fire({
+                    title: 'Menambahkan...',
+                    text: 'Silakan tunggu...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+        });
+        setTimeout(function() {
+            Swal.fire('Menambahkan data!', '{{ session("error") }}', 'error');
+        }, 1500); // Jeda 1,5 detik (1500 ms)
+    </script>
+@endif --}}
 {{-- @if (session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
@@ -223,7 +238,7 @@
                                         class="badge badge-danger"
                                     @elseif ($b[1] == "Hilang")
                                         class="badge badge-info"
-                                    @elseif ($b[1] == "Prosses sto")
+                                    @elseif ($b[1] == "Belum Sto")
                                         class="text-danger"
                                     @endif >
                                         {{ $b[1]??"Belum Ada"}}

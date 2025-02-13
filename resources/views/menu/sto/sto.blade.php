@@ -154,6 +154,19 @@
         {{ session('error') }}
     </div>  
 @endif
+
+@if(session('error_scan'))
+    <script>
+        setTimeout(function() {
+            Swal.fire({
+                title: 'Error',
+                text: '{{ session("error_scan") }}',
+                icon: 'error',
+                confirmButtonColor: '#4e73df',
+            });
+        }, 1000); // Jeda 1,5 detik (1500 ms)
+    </script>
+@endif
 <!-- DataTales Sudah STO -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">

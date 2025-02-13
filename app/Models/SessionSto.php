@@ -13,6 +13,7 @@ class SessionSto extends Model
      */
     protected $fillable = [
         'session_sto',
+        'total_barang',
         'progress',
         'durasi',
         'tgl_sto',

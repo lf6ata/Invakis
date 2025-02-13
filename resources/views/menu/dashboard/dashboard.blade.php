@@ -111,7 +111,7 @@
         </script> --}}
 
         <!-- Total Barang Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -133,7 +133,7 @@
         </div>
 
         <!-- Total Barang Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-danger shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -174,7 +174,7 @@
         </div> --}}
 
         <!--Total User Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -190,114 +190,134 @@
                 </div>
             </div>
         </div>
-
-        <!--Sangat Layak Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                              Sangat Layak</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_sangat_layak ?? 0}}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-check-circle-fill fa-2x text-primary"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!--Cukup Layak Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                               Cukup Layak</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_cukup_layak  ?? 0}}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-check-circle fa-2x text-success"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!--Total User Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                               Layak Pakai</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_layak_pakai ?? 0 }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-exclamation-circle fa-2x text-warning"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!--Total User Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Rusak</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_rusak ?? 0 }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-x-circle fa-2x text-danger"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!--Total User Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                               Hilang</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_hilang ?? 0 }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-question-circle fa-2x text-info"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
     <!-- End Row -->
+    
+    <div class="card shadow mb-4">
+            <div class="card-header ">
+                <h6 class="m-0 font-weight-bold text-primary ">Status sto saat ini</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!--Sangat Layak Card Example -->
+                    <div class="col-xl-2 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Sangat Layak</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_sangat_layak ?? 0}}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="bi bi-check-circle-fill fa-2x text-primary"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!--Cukup Layak Card Example -->
+                    <div class="col-xl-2 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Cukup Layak</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_cukup_layak  ?? 0}}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="bi bi-check-circle fa-2x text-success"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!--Total User Card Example -->
+                    <div class="col-xl-2 col-md-6 mb-4">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Layak Pakai</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_layak_pakai ?? 0 }}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="bi bi-exclamation-circle fa-2x text-warning"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!--Total User Card Example -->
+                    <div class="col-xl-2 col-md-6 mb-4">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                            Rusak</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_rusak ?? 0 }}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="bi bi-x-circle fa-2x text-danger"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!--Total User Card Example -->
+                    <div class="col-xl-2 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Hilang</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_hilang ?? 0 }}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="bi bi-question-circle fa-2x text-info"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+    </div>
+
+     <!-- Grafik Line -->
+     <div id="wrapper-chart">
+        {{-- <div id="loading-spinner2" >
+                <div class="spinner2"></div>
+        </div> --}}
+        <div id="chart-area"></div>
+        
+    </div>
 
     <!-- DataTales Session STO -->
-    <div class="card shadow mb-4">
+    <div class="card shadow mt-4">
         <div class="card-header py-3">
             <div class="d-flex align-items-center">
                 <div class="p-2 flex-grow-1">
                     <h6 class="m-0 font-weight-bold text-primary ">Session STO</h6>
                 </div>
-                <div class="p-2">
-                    <form action="{{ route('create_session_sto') }}">
-                        <button id="createSto" type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addRole">
-                            <i class="fas fa-plus fa-sm"></i> Buat STO
-                        </button>
-                    </form>
-                </div>
+                @if (Auth::user()->getRoleNames()->implode(', ') == 'admin')
+                    <div class="p-2">
+                        <form action="{{ route('create_session_sto') }}">
+                            <button id="createSto" type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addRole">
+                                <i class="fas fa-plus fa-sm"></i> Buat STO
+                            </button>
+                        </form>
+                    </div>
+                @endif
             </div>
         </div>
         <div class="card-body">
@@ -351,7 +371,7 @@
                                                 </button>
                                                 <div class="dropdown-menu animated--fade-in"
                                                     aria-labelledby="dropdownMenuButton">
-                                                    <a class="dropdown-item" id="exportBa" data-id="{{ $s->id }}" href="javascript:void(0)"><i class="bi-file-earmark-pdf fa-sm"></i> Cetak BA</a>
+                                                    <a class="dropdown-item" id="exportBa" data-id="{{ $s->id }}" href="javascript:void(0)"><i class="bi-file-earmark-pdf fa-sm"></i> Cetak BA</a>    
                                                     <a class="dropdown-item" id="exportExcel" data-id="{{ $s->id }}" href="javascript:void(0)"><i class="bi  bi-file-earmark-spreadsheet fa-sm"></i> Export Excel</a>
                                                 </div>
                                             </div>
@@ -367,7 +387,7 @@
         </div>
     </div>
 
-    
+{{--     
     <div class="card shadow mb-4">
         <div class="row d-flex justify-content-center">
             <div class="py-3 col-md-6" >
@@ -388,19 +408,17 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     
 
     
     <!-- Grafik Line -->
     <div id="wrapper-chart">
-        <div id="loading-spinner2" >
+        {{-- <div id="loading-spinner2" >
                 <div class="spinner2"></div>
-        </div>
-        <div id="chart-area"></div>
-        {{-- <div id="chart-bar">
-      
         </div> --}}
+        <div id="chart-area"></div>
+        
     </div>
 
 {{-- </div> --}}
@@ -409,12 +427,12 @@
 <script src={{ asset("plugin/js/apexcharts.min.js") }}></script>
 <script>
 
-var chart;
-function updateChart(){
+// var chart;
+// function updateChart(){
 
-    if (chart) { hart.destroy();}
+    // if (chart) { hart.destroy();}
 
-    document.getElementById('loading-spinner2').style.display = 'flex';
+    // document.getElementById('loading-spinner2').style.display = 'flex';
         
         $.get('/chart-data', function(data) {
             // const months = data.months;
@@ -422,7 +440,7 @@ function updateChart(){
             const currentYear = data.currentYear
             const statusCounts = data.statusCounts
             const totalBarang = data.totalBarang
-            console.log(arrSto);
+            // console.log(arrSto);
             
             // console.log(statusCounts['Sangat Layak']);
             
@@ -433,70 +451,85 @@ function updateChart(){
                 
             // }
 
-        var options = {
-                series: [{
-                name: 'Sangat Layak',
-                data: statusCounts['Sangat Layak']
-                // data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
-                }, {
-                name: 'Cukup Layak',
-                data: statusCounts['Cukup Layak']
-                // data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
-                }, {
-                name: 'Layak Pakai',
-                data: statusCounts['Layak Pakai']
-                // data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
-                }, {
-                name: 'Rusak',
-                data: statusCounts['Rusak']
-                // data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
-                }, {
-                name: 'Hilang',
-                data: statusCounts['Hilang']
-                // data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
-                }],
-                chart: {
-                type: 'bar',
-                height: 350,
-                },
-                plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '55%',
-                    borderRadius: 3,
-                    borderRadiusApplication: 'end'
-                },
-                },
-                dataLabels: {
-                enabled: true
-                },
-                stroke: {
-                show: true,
-                width: 2,
-                colors: ['transparent']
-                },
-                xaxis: {
-                categories: arrSto ,
-                title: {
-                    text: 'Session '
-                }
-                },
-                yaxis: {
-                title: {
-                    text: 'Jumlah STO ' + currentYear
-                }
-                },
-                fill: {
-                opacity: 1
-                },
-                tooltip: {
-                y: {
-                    formatter: function (val) {
-                            return `${parseInt(val / totalBarang * 100)}%,${val}`;
-                    }
-                }
-                }
-                };
+                var options = {
+                        series: [{
+                        name: 'Sangat Layak',
+                        data: statusCounts['Sangat Layak']
+                        // data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+                        }, {
+                        name: 'Cukup Layak',
+                        data: statusCounts['Cukup Layak']
+                        // data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+                        }, {
+                        name: 'Layak Pakai',
+                        data: statusCounts['Layak Pakai']
+                        // data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+                        }, {
+                        name: 'Rusak',
+                        data: statusCounts['Rusak']
+                        // data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+                        }, {
+                        name: 'Hilang',
+                        data: statusCounts['Hilang']
+                        // data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+                        }],
+                        chart: {
+                        type: 'bar',
+                        height: 350,
+                        },
+                        plotOptions: {
+                        bar: {
+                            horizontal: false,
+                            columnWidth: '55%',
+                            borderRadius: 3,
+                            borderRadiusApplication: 'end',
+                            dataLabels: {
+                                position: 'top', // top, center, bottom
+                            },
+                        },
+                        },
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function (val, { seriesIndex, dataPointIndex, w }) {
+                                const total = w.config.xaxis.totalBarang[dataPointIndex];
+                                return `${parseInt(val / total * 100)}%,${val}`;
+                            },
+                            offsetY: -20,
+                            style: {
+                                fontSize: '12px',
+                                colors: ["#304758"]
+                            }
+                        },
+                        stroke: {
+                        show: true,
+                        width: 2,
+                        colors: ['transparent']
+                        },
+                        xaxis: {
+                        categories: arrSto ,
+                        totalBarang : totalBarang,
+                        title: {
+                            text: 'Session '
+                        }
+                        },
+                        yaxis: {
+                        title: {
+                            text: 'Jumlah STO ' + currentYear
+                        }
+                        },
+                        fill: {
+                        opacity: 1
+                        },
+                        tooltip: {
+                                y: {
+                                    formatter: function (val,{ seriesIndex, dataPointIndex, w }) {
+                                            // Mengambil kategori berdasarkan dataPointIndex
+                                            const total = w.config.xaxis.totalBarang[dataPointIndex];
+                                            return `${parseInt(val / total * 100)}%,${val}`;
+                                    }
+                                }
+                            }
+                    };
 
         // var options = {
         //     series: [{
@@ -640,19 +673,19 @@ function updateChart(){
 
                 chart = new ApexCharts(document.querySelector("#chart-area"), options);
                 chart.render();
-                document.getElementById('chart-area').style.display = 'none';
-        })
+                // document.getElementById('chart-area').style.display = 'none';
+        });
 
-        setTimeout(function() {
-        document.getElementById('chart-area').style.display = 'flex';
-        document.getElementById('loading-spinner2').style.display = 'none';
-    }, 1800); // Jeda 1,5 detik (1500 ms)
+    //     setTimeout(function() {
+    //     document.getElementById('chart-area').style.display = 'flex';
+    //     document.getElementById('loading-spinner2').style.display = 'none';
+    // }, 1800); // Jeda 1,5 detik (1500 ms)
     
-}  
+// }  
+// updateChart();
 
 //  Update grafik setiap 5 detik
 //  setInterval(updateChart, 115000); // Update setiap 5000 ms (5 detik)
- updateChart();
 
     // function generateDayWiseTimeSeries(baseval, count, yrange) {
     // var i = 0;
@@ -763,7 +796,6 @@ function updateChart(){
                                 responseType: 'blob' // Mendapatkan response sebagai file
                             },
                             success: function (response, status, xhr) {
-                                console.log(response);
                                 
                                 // Dapatkan header Content-Disposition untuk menentukan nama file
                                 var disposition = xhr.getResponseHeader('Content-Disposition');
@@ -791,12 +823,13 @@ function updateChart(){
                                 Swal.close();
                             },
                             error: function(xhr) {
+                                
                                 // Jika error, menampilkan pesan error dari server
                                 if (xhr.status === 404) {
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Data Tidak Ditemukan',
-                                        text: xhr.responseJSON.message || 'Data dengan status "Rusak" tidak ditemukan untuk session ini.',
+                                        text:  'Data dengan status "Rusak" tidak ditemukan untuk session ini.',
                                         confirmButtonColor: '#4e73df'
                                     });
                                 } else {

@@ -45,6 +45,8 @@ class StoController extends Controller
     {
 
         $id_session_sto   = SessionSto::where('session_sto', $id);
+        $reset_status_sto = Barang::select('status_sto');
+
 
         //untuk mengurai string JSON tersebut menjadi array atau objek
         $total_durasi = json_decode($this->timer()->content(), true);
@@ -58,10 +60,15 @@ class StoController extends Controller
                 'durasi'  => $total_durasi['result_time'],
                 'save_sto' => now()
             ]);
+
+            $reset_status_sto->update([
+                'status_sto' => 0
+            ]);
+
             return redirect()->route('page.dashboard');
         }
 
-        session()->flash('error', 'Progress stock opname harus 100% complate.');
+        session()->flash('error', 'Sto belum dapat di close karena baru ' . $progress['percentage'] . '%, silahkan di selesaikan hingga 100%.');
         return redirect()->route('page.sto', [$id, 'false']);
     }
 
@@ -126,6 +133,7 @@ class StoController extends Controller
     public function edit($id, $no_sto, $id_session)
     {
 
+
         $barang = Barang::where('no_asset', '=', $id)->get();
         $sto_old = Sto::where('no_asset', $id)->latest()->first();
         $endpoint = substr($id_session, strlen($id_session) - 4);
@@ -151,7 +159,12 @@ class StoController extends Controller
             }, explode("','", $matches[1]));
         }
 
+        // if ($barang[0]->status_sto != 1) {
         return view('fiture.sto.update_sto', compact('barang', 'enum', 'tgl_sto_old', 'status_old', 'id_session', 'no_sto', 'endpoint'));
+        // } else {
+        //     session()->flash('error_scan', 'no asset sudah di sto');
+        //     return redirect()->route('page.sto', [$no_sto, 'false']);
+        // }
     }
 
     public function store(Request $request)
@@ -167,29 +180,35 @@ class StoController extends Controller
         $sto = Sto::where('no_asset', $request->no_asset_id)->latest()->first();
         $update_save_sto = Barang::where('no_asset', $request->no_asset_id);
 
-        if (empty($sto)) {
-            $tgl_sto_old = $request->tgl_end_sto;
+        // dd($update_save_sto->get()[0]->status_sto);
+        if ($update_save_sto->get()[0]->status_sto != 1) {
+            if (empty($sto)) {
+                $tgl_sto_old = $request->tgl_end_sto;
+            } else {
+                $tgl_sto_old = $sto->tgl_save_sto;
+            }
+
+            // dd($tgl_sto_old->tgl_save_sto);
+            Sto::create([
+                'session_sto'   => $request->id_session,
+                'tgl_sto'       => $tgl_sto_old,
+                'no_asset'      => $request->no_asset_id,
+                'status'        => $request->status_id,
+                'user'          => Auth::user()->name,
+                'tgl_save_sto'  => date('Y-m-d')
+            ]);
+
+            $update_save_sto->update([
+                'tgl_terakhir_sto' => date('Y-m-d'),
+                'status_sto'       => 1
+            ]);
+
+            session()->flash('success', 'Sto berhasil di update.');
+            return redirect()->route('page.sto', [$request->session_sto, 'false']);
         } else {
-            $tgl_sto_old = $sto->tgl_save_sto;
+            session()->flash('error_scan', 'no asset sudah di sto');
+            return redirect()->route('page.sto',  [$request->session_sto, 'false']);
         }
-
-        // dd($tgl_sto_old->tgl_save_sto);
-        Sto::create([
-            'session_sto'   => $request->id_session,
-            'tgl_sto'       => $tgl_sto_old,
-            'no_asset'      => $request->no_asset_id,
-            'status'        => $request->status_id,
-            'user'          => Auth::user()->name,
-            'tgl_save_sto'  => date('Y-m-d')
-        ]);
-
-        $update_save_sto->update([
-            'tgl_terakhir_sto' => date('Y-m-d'),
-            'status_sto'       => 1
-        ]);
-
-        session()->flash('success', 'Sto berhasil di update.');
-        return redirect()->route('page.sto', [$request->session_sto, 'false']);
     }
 
     public function update(Request $request)
@@ -208,6 +227,8 @@ class StoController extends Controller
     public function scan(Request $request)
     {
         $barang = Barang::where('no_asset', '=', $request->id_qrcode)->get();
+        $current_sto = SessionSto::select('session_sto')->orderBy('created_at', 'desc')->latest()->first();
+
         // dd($barang);
         if ($barang->isEmpty()) {
             return response()->json([
@@ -216,7 +237,8 @@ class StoController extends Controller
         } else {
 
             return response()->json([
-                'status' => 200
+                'status' => 200,
+                'session_sto' => $current_sto->session_sto
             ]);
         }
     }

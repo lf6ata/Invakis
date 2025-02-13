@@ -16,13 +16,11 @@ class PreventLoggedIn
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->roles[0]->name == 'admin') {
-        
-            return redirect('/dashboard');
-            
+        if (Auth::check() && Auth::user()->roles[0]->name == 'admin' || Auth::check() && Auth::user()->roles[0]->name == 'user') {
+
+            return redirect('invakis/dashboard');
         }
-        
+
         return $next($request);
-        
     }
 }

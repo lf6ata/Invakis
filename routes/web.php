@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MasterdataController;
 use App\Http\Controllers\PegawaiController;
@@ -10,42 +9,26 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StoController;
 use App\Http\Controllers\UserController;
 use App\Models\Barang;
-use App\Models\User;
-use Illuminate\Container\Attributes\Auth;
-use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/', function () {
-    return redirect('/login');
+    return redirect('invakis/login');
 });
 
-Route::get('/session_sto', [DashboardController::class, 'createSessionSto'])->name('create_session_sto');
-
-Route::get('/timer', [StoController::class, 'timer']);
-
-Route::get('/save_timer/{id}', [StoController::class, 'saveTimer'])->name('save_timer');
-
-Route::get('/save_sto/{id}', [StoController::class, 'saveSto'])->name('save_sto');
-
-Route::get('/percentage', [DashboardController::class, 'getProgress'])->name('get.progress');
-
-Route::get('/chart-data', [DashboardController::class, 'getChartData']);
 
 //View Page Login
-Route::get('/login', [AuthController::class, 'authLogin'])->name('login')->middleware(['preventloggedin']);
+Route::get('invakis/login', [AuthController::class, 'authLogin'])->name('login')->middleware(['preventloggedin']);
 //Prosse login
 Route::post('/login/auth', [AuthController::class, 'store'])->name('auth.login')->middleware(['preventloggedin']);
 
-//Prosse logut
-Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.logout');
+
 
 // Route::get('/', [MasterdataController::class,'pageCategori'])->name('page.dashboard');
 
 //View Content Dashboard
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'pageDashboard'])->name('page.dashboard');
+    Route::get('/invakis/dashboard', [DashboardController::class, 'pageDashboard'])->name('page.dashboard');
 
     Route::middleware('admin')->group(function () {
         //View Halaman Pegawai
@@ -81,10 +64,25 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invakis/role/edit/{id}', [RoleController::class, 'edit']);
         //Update Role
         Route::put('/invakis/role/update/{id}', [RoleController::class, 'update']);
+
+        Route::get('/session_sto', [DashboardController::class, 'createSessionSto'])->name('create_session_sto');
     });
 
+    //Prosse logut
+    Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.logout');
+
+    Route::get('/timer', [StoController::class, 'timer']);
+
+    Route::get('/save_timer/{id}', [StoController::class, 'saveTimer'])->name('save_timer');
+
+    Route::get('/save_sto/{id}', [StoController::class, 'saveSto'])->name('save_sto');
+
+    Route::get('/percentage', [DashboardController::class, 'getProgress'])->name('get.progress');
+
+    Route::get('/chart-data', [DashboardController::class, 'getChartData']);
+
     //View Content Data Categori
-    Route::get('/invakis/barang/categori', [MasterdataController::class, 'pageCategori'])->name('page.categori');
+    Route::get('/invakis/item/kategori', [MasterdataController::class, 'pageCategori'])->name('page.categori');
     //View Content Create Categori
     Route::post('/invakis/barang/create_categori', [MasterdataController::class, 'categoriCreate'])->name('create.categori');
     //View Content Show Edit Categori

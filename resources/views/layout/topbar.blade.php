@@ -104,7 +104,7 @@ $(document).ready(function(){
                     },
                     success: function(response) {
                         setTimeout(() => {
-                            window.location.href ='/login';
+                            window.location.href ='/invakis/login';
                         }, 500);
                         
                         

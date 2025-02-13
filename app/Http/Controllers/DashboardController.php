@@ -25,12 +25,10 @@ class DashboardController extends Controller
     {
 
         $tb_session_sto = new SessionSto();
-        $reset_status_sto = Barang::select('status_sto');
+        // $reset_status_sto = Barang::select('status_sto');
+        $totalItem = Barang::select('status_sto')->count();
         $flag = $tb_session_sto::select('session_sto', 'save_sto')->latest()->first();
-
-        $reset_status_sto->update([
-            'status_sto' => 0
-        ]);
+        $not_yet_sto = Barang::select('status_sto')->where('status_sto', 0)->get();
 
         //Check no urut session sto
         if (!empty($flag)) {
@@ -40,15 +38,19 @@ class DashboardController extends Controller
             } else {
                 // $not_yet_sto = Barang::select('*')->where('tgl_masuk', '<', date('Y-m-d'))->whereNull('tgl_terakhir_sto')->orderBy('created_at', 'asc')->get();
                 // $not_yet_sto = Barang::select('*')->where('tgl_masuk', '<', date('Y-m-d'))->whereNull('tgl_terakhir_sto')->orWhereMonth('tgl_terakhir_sto', '<', date('m'))->orwhereYear('tgl_terakhir_sto', '<', date('Y'))->orderBy('created_at', 'asc')->get();
-                $not_yet_sto = Barang::select('status_sto')->where('status_sto', 0)->get();
                 // dd(empty($not_yet_sto[0]));
                 // if (empty($not_yet_sto[0]->no_asset)) {
+
                 if (empty($not_yet_sto[0])) {
                     return back()->with('message', 'Belum ada barang yang dapat di sto');
                 } else {
+                    // $reset_status_sto->update([
+                    //     'status_sto' => 0
+                    // ]);
                     $no_index = intval(substr($flag->session_sto, 3)) + 1;
                     $tb_session_sto::create([
                         'session_sto'   =>  'STO' . sprintf('%02d', $no_index),
+                        'total_barang'  => $totalItem,
                         'progress'      =>  0,
                         'durasi'        =>  '-',
                         'tgl_sto'       =>  now()
@@ -58,15 +60,20 @@ class DashboardController extends Controller
                 }
             }
         } else {
-            $no_index = 1;
-            $tb_session_sto::create([
-                'session_sto'   =>  'STO' . sprintf('%02d', $no_index),
-                'progress'      =>  0,
-                'durasi'        =>  '-',
-                'tgl_sto'       =>  now(),
-                // 'tgl_sto'       =>  date("Y-m-d"),
-            ]);
-            return redirect()->route('page.sto', ['STO' . sprintf('%02d', $no_index), 'false']);
+            if (empty($not_yet_sto[0])) {
+                return back()->with('message', 'Belum ada barang yang dapat di sto');
+            } else {
+                $no_index = 1;
+                $tb_session_sto::create([
+                    'session_sto'   =>  'STO' . sprintf('%02d', $no_index),
+                    'total_barang'  => $totalItem,
+                    'progress'      =>  0,
+                    'durasi'        =>  '-',
+                    'tgl_sto'       =>  now(),
+                    // 'tgl_sto'       =>  date("Y-m-d"),
+                ]);
+                return redirect()->route('page.sto', ['STO' . sprintf('%02d', $no_index), 'false']);
+            }
         }
     }
 
@@ -79,47 +86,47 @@ class DashboardController extends Controller
         })->where('Sto.status', $status)->count();
     }
 
-    function  getBulan($bln)
-    {
-        switch ($bln) {
-            case  1:
-                return  "Januari";
-                break;
-            case  2:
-                return  "Februari";
-                break;
-            case  3:
-                return  "Maret";
-                break;
-            case  4:
-                return  "April";
-                break;
-            case  5:
-                return  "Mei";
-                break;
-            case  6:
-                return  "Juni";
-                break;
-            case  7:
-                return  "Juli";
-                break;
-            case  8:
-                return  "Agustus";
-                break;
-            case  9:
-                return  "September";
-                break;
-            case  10:
-                return  "Oktober";
-                break;
-            case  11:
-                return  "November";
-                break;
-            case  12:
-                return  "Desember";
-                break;
-        }
-    }
+    // function  getBulan($bln)
+    // {
+    //     switch ($bln) {
+    //         case  1:
+    //             return  "Januari";
+    //             break;
+    //         case  2:
+    //             return  "Februari";
+    //             break;
+    //         case  3:
+    //             return  "Maret";
+    //             break;
+    //         case  4:
+    //             return  "April";
+    //             break;
+    //         case  5:
+    //             return  "Mei";
+    //             break;
+    //         case  6:
+    //             return  "Juni";
+    //             break;
+    //         case  7:
+    //             return  "Juli";
+    //             break;
+    //         case  8:
+    //             return  "Agustus";
+    //             break;
+    //         case  9:
+    //             return  "September";
+    //             break;
+    //         case  10:
+    //             return  "Oktober";
+    //             break;
+    //         case  11:
+    //             return  "November";
+    //             break;
+    //         case  12:
+    //             return  "Desember";
+    //             break;
+    //     }
+    // }
 
     function getChartData()
     {
@@ -144,13 +151,14 @@ class DashboardController extends Controller
 
         $arrSession = [];
         $arrSto = [];
-        $session = SessionSto::select('id', 'session_sto')->get();
+        $totalBarang = [];
+        $session = SessionSto::select('id', 'session_sto', 'total_barang')->get();
         foreach ($session as  $sto) {
             array_push($arrSession, $sto->id);
             array_push($arrSto, $sto->session_sto);
+            array_push($totalBarang, $sto->total_barang);
         }
 
-        $totalBarang = Barang::all()->count();
 
         // dd(count($arrSession));
 
@@ -216,11 +224,42 @@ class DashboardController extends Controller
             // Bulan dimulai dari 1 (Januari) hingga 12 (Desember)
             $sessionIndex = array_search($row->session, $arrSession);
             $statusCounts[$row->status][$sessionIndex] =  $row->count;
+            // array_shift($statusCounts[$row->status]);
             // dd($persentase);
         }
+        $arrSto == [] ? $arrSto = ['STO01', 'STO02', 'STO03'] : '';
+        // array_shift($arrSto); //menghapus index array pertama 
+
+
+        for ($i = 3; $i < $session->count(); $i++) {
+            array_shift($statusCounts['Sangat Layak']);
+            array_shift($statusCounts['Cukup Layak']);
+            array_shift($statusCounts['Layak Pakai']);
+            array_shift($statusCounts['Rusak']);
+            array_shift($statusCounts['Hilang']);
+
+            array_shift($arrSto);
+        }
+
+
+
+        // array_shift($statusCounts['Sangat Layak']);
+        // array_shift($statusCounts['Sangat Layak']);
+        // array_shift($statusCounts['Sangat Layak']);
+        // array_shift($statusCounts['Sangat Layak']);
+        // array_shift($statusCounts['Sangat Layak']);
+        // array_shift($statusCounts['Sangat Layak']);
+        // array_shift($statusCounts['Sangat Layak']);
+
+        // array_shift($statusCounts['Cukup Layak']);
+        // array_shift($statusCounts['Layak Pakai']);
+        // array_shift($statusCounts['Rusak']);
+        // array_shift($statusCounts['Hilang']);
         // dd($statusCounts);
 
-        $arrSto == [] ? $arrSto = ['STO01', 'STO02', 'STO03', 'STO04', 'STO05', 'STO06', 'STO07', 'STO08', 'STO09', 'STO010'] : 'oke';
+
+        // array_pop($arrSto); //menghapus index arr terakhir
+        // dd($statusCounts);
 
         // dd($persentase);
 
@@ -242,6 +281,9 @@ class DashboardController extends Controller
     {
 
         $current_sto = SessionSto::select('*')->orderBy('created_at', 'desc')->latest()->first();
+
+        $tes = Sto::select('*');
+        // dd($current_sto->session_sto);
         if ($current_sto == null) {
             $total_hilang = $total_rusak = $total_layak_pakai = $total_cukup_layak = $total_sangat_layak = 0;
         } else {
@@ -380,7 +422,7 @@ class DashboardController extends Controller
         $count_rusak = $this->countSto('Rusak');
 
 
-        return view('menu.dashboard.dashboard', compact('total_hilang', 'total_rusak', 'total_layak_pakai', 'total_cukup_layak', 'total_sangat_layak', 'count_user', 'count_barang', 'count_rusak', 'count_layak', 'count_cukup', 'count_sangat', 'count_session', 'count_status', 'session_sto'));
+        return view('menu.dashboard.dashboard', compact('tes', 'total_hilang', 'total_rusak', 'total_layak_pakai', 'total_cukup_layak', 'total_sangat_layak', 'count_user', 'count_barang', 'count_rusak', 'count_layak', 'count_cukup', 'count_sangat', 'count_session', 'count_status', 'session_sto'));
     }
 
     public function getProgress()

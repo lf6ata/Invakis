@@ -21,8 +21,7 @@ class Admin
             // return redirect('/dashboard');
             return $next($request);
         }
-        
+
         return redirect('/dashboard');
-        
     }
 }

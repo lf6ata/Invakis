@@ -17,6 +17,7 @@ use Faker\Core\File;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage as FacadesStorage;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
@@ -24,6 +25,8 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Svg\Tag\Rect;
 use Symfony\Component\Console\Input\Input;
 use Yajra\DataTables\DataTables;
+
+use function Laravel\Prompts\progress;
 
 class MasterdataController extends Controller
 {
@@ -929,13 +932,27 @@ class MasterdataController extends Controller
         $get_barang = Barang::orderBy($orderby, 'desc')->get();
 
         if ($current_sto != null) {
-            $get_status = Barang::join('sto', 'barang.no_asset', '=', 'sto.no_asset')
-                ->select('barang.no_asset as no_barang', 'sto.status as status', 'sto.' . $orderby . ' as created_barang')
-                ->where('sto.session_sto', $current_sto->id ?? 0)->orderBy('created_barang', 'desc')
+            // $get_status = Barang::join('sto', 'barang.no_asset', '=', 'sto.no_asset')
+            //     ->select('barang.no_asset as no_barang', 'sto.status as status', 'sto.' . $orderby . ' as created_barang')
+            //     ->where('sto.session_sto', $current_sto->id ?? 0)->groupBy('barang.no_asset')->orderBy('created_barang', 'desc')
+            //     ->get();
+            $get_status = DB::table('barang')
+                ->leftJoin(
+                    DB::raw('(SELECT no_asset, session_sto, status FROM sto WHERE session_sto =' . $current_sto->id . ' ) AS tes'),
+                    'barang.no_asset',
+                    '=',
+                    'tes.no_asset'
+                )
+                ->select(
+                    'barang.no_asset',
+                    DB::raw('IFNULL(tes.status, null) AS status'),
+                    'barang.created_at'
+                )
+                ->orderByDesc('barang.created_at')
                 ->get();
 
             foreach ($get_status->zip($get_barang) as  $value) {
-                array_push($arrValue, $value[0]->status ?? 'Prosses sto');
+                array_push($arrValue, $value[0]->status ?? 'Belum Sto');
             }
         } else {
             for ($i = 1; $i <= count($get_barang); $i++) {
@@ -943,7 +960,7 @@ class MasterdataController extends Controller
             }
         }
 
-        // dd($arrValue);
+        // dd($get_status);
 
 
 
@@ -999,6 +1016,14 @@ class MasterdataController extends Controller
     public function storeBarang(Request $request)
     {
         $tb_barang = new Barang();
+        // $total_barang = $tb_barang->count();
+        // $current_sto = SessionSto::select('session_sto', 'progress')->orderBy('created_at', 'desc')->latest()->first();
+
+        // if ($current_sto->progress !== 100) {
+        //     $current_sto->update([
+        //         'total_barang' => $total_barang
+        //     ]);
+
 
         // Definisikan field yang memerlukan pesan `required` khusus
         $fields = [
@@ -1042,7 +1067,7 @@ class MasterdataController extends Controller
                 'npk_id'        => 'required',
                 'karyawan_id'   => 'required',
                 'divisi_id'     => 'required',
-                'image'         => 'image|mimes:jpeg,png,jpg|max:2048', // Maksimal 2MB
+                'image'         => 'image|mimes:jpeg,png,jpg|max:3048', // Maksimal 2MB
                 'sn_id'         => 'string |nullable',
                 'jlicense_id'   => 'string |nullable',
                 'kdlicense_id'  => 'string |nullable',
@@ -1104,8 +1129,13 @@ class MasterdataController extends Controller
         ]);
 
 
+
         session()->flash('success', 'Barang berhasil di tambah.');
         return redirect()->route('page.barang', 'created_at');
+        // } else {
+        //     session()->flash('error', 'Session STO harus berakhir');
+        //     return redirect()->route('page.barang', 'created_at');
+        // }
     }
 
     public function viewFoto($id)
@@ -1197,7 +1227,7 @@ class MasterdataController extends Controller
                 'npk'           => 'required',
                 'nama'          => 'required',
                 'divisi'        => 'required',
-                'imagenew'      => 'nullable|image|mimes:jpeg,png,jpg|max:1047', // Maksimal 1MB
+                'imagenew'      => 'nullable|image|mimes:jpeg,png,jpg|max:3047', // Maksimal 1MB
                 'sn'            => 'string |nullable',
                 'jlicense'      => 'string |nullable',
                 'kdlicense'     => 'string |nullable',
@@ -1210,6 +1240,7 @@ class MasterdataController extends Controller
 
             $file = $request->file('imagenew');
 
+
             // Mengahapus file image yang seblumnya
             $path_old = $index_barang->image;
             if (FacadesStorage::disk('public')->exists($path_old)) {
@@ -1219,6 +1250,8 @@ class MasterdataController extends Controller
             // Buat nama file baru dengan timestamp dan nama asli
             $filename = time() . '_' . $file->getClientOriginalName();
 
+            $tes = shell_exec("pngquant --quality=60-90 - < " . escapeshellarg($file));
+            dd($tes);
             // Pindahkan file ke folder storage atau public
             $path = $file->storeAs('images', $filename, 'public'); // Simpan di folder 'public/images'
 
@@ -1277,6 +1310,7 @@ class MasterdataController extends Controller
 
         // Hapus kategori
         $barang->delete();
+        DB::statement('ALTER TABLE barang auto_increment = 1');
 
         // Kembalikan respon sukses
         return response()->json(['message' => 'Category deleted successfully'], 200);

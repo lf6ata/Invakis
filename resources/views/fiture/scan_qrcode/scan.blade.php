@@ -74,8 +74,9 @@
                     id_qrcode: id_qrcode
                 },
                 success:function(response){
+
                     if (response.status == 200) {
-                        window.location.href = `/invakis/sto_edit/${id_qrcode}/${id_session_sto}`;
+                        window.location.href = `/invakis/sto_edit/${id_qrcode}/${response.session_sto}/${id_session_sto}_post`;
                     } 
                     else {
              

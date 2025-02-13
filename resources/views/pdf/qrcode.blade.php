@@ -74,12 +74,12 @@
             @foreach($barang as $b)
             
                 <td>
-                    <div;>
-                        <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(110)->generate( $b->no_asset )) !!} ">
-                        <br>{{ $b->no_asset }}
+                    <div style="border: 2px dotted black; padding:2px;">
+                        <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->merge('\public\storage\images\1730255331_1618488616721.jpg', 0.4)->errorCorrection('H')->size(109)->generate( $b->no_asset )) !!} ">
+                        <br><span style="font-size: 14px">{{ $b->no_asset }}</span>
                     </div>
                 </td>
-                @if ($loop->iteration % 6 == 0) <tr></tr> @endif
+                @if ($loop->iteration % 5 == 0) <tr></tr> @endif
             @endforeach
             {{-- @if ($loop->iteration % 6 == 0) </tr><tr> @endif --}}
         </tr>
